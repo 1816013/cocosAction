@@ -2,10 +2,7 @@
 
 void OPRT_touch::Update(Node* sp)
 {
-	//data[static_cast<int>(DIR::RIGHT)] = true;
 	auto listener = EventListenerTouchOneByOne::create();
-	//auto listener = EventListenerMouse::create();
-	//auto sprite = Sprite::create("CloseSelected.png");
 	listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool
 	{
 		Point pos = touch->getLocation();
@@ -14,7 +11,7 @@ void OPRT_touch::Update(Node* sp)
 	};
 	listener->onTouchMoved = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool
 	{
-		int margin = 50;
+		int margin = 30;
 		Point pos = touch->getLocation();
 		auto start_p = _startTPos;
 		if (pos.x > start_p.x + margin)
@@ -79,19 +76,4 @@ void OPRT_touch::Update(Node* sp)
 OPRT_TYPE OPRT_touch::GetType(void)
 {
 	return OPRT_TYPE::TOUCH;
-}
-
-bool OPRT_touch::TouchStart(EventListenerTouchOneByOne* listener)
-{
-	
-	
-	return true;
-}
-
-void OPRT_touch::TouchEnd(void)
-{
-}
-
-void OPRT_touch::TouchMove(void)
-{
 }

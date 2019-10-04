@@ -104,7 +104,20 @@ bool HelloWorld::init()
     }
 
     // add "HelloWorld" splash screen"
-    sprite = Sprite::create("HelloWorld.png");
+	auto sprite1 = Sprite::create("HelloWorld.png");
+	if (sprite1 == nullptr)
+	{
+		problemLoading("'HelloWorld.png'");
+	}
+	else
+	{
+		// position the sprite on the center of the screen
+		sprite1->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+
+		// add the sprite as a child to this layer
+		this->addChild(sprite1, 1);
+	}
+    sprite = Sprite::create("image/Sprites/player/player-idle/player-idle-1.png");
     if (sprite == nullptr)
     {
         problemLoading("'HelloWorld.png'");
@@ -117,7 +130,9 @@ bool HelloWorld::init()
         // add the sprite as a child to this layer
         this->addChild(sprite, 0);
     }
+	
 	pos = Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
+	
 	
 	
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
@@ -137,21 +152,23 @@ bool HelloWorld::init()
 void HelloWorld::update(float delta)
 {
 	state->Update(sprite);
+
+	auto speed = 3;
 	if (state->GetData(DIR::UP) == true)
 	{
-		sprite->setPosition(pos.x, pos.y++);
+		sprite->setPosition(pos.x, pos.y += speed);
 	}
 	if (state->GetData(DIR::RIGHT) == true)
 	{
-		sprite->setPosition(pos.x++, pos.y);
+		sprite->setPosition(pos.x += speed, pos.y);
 	}
 	if (state->GetData(DIR::DOWN) == true)
 	{
-		sprite->setPosition(pos.x, pos.y--);
+		sprite->setPosition(pos.x, pos.y -= speed);
 	}
 	if (state->GetData(DIR::LEFT) == true)
 	{
-		sprite->setPosition(pos.x--, pos.y);
+		sprite->setPosition(pos.x -= speed, pos.y);
 	}
 	/*auto listener = EventListenerKeyboard::create();
 	listener->onKeyPressed = [this](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)->bool
