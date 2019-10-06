@@ -26,6 +26,7 @@
 #include "SimpleAudioEngine.h"
 #include <input/OPRT_key.h>
 #include <input/OPRT_touch.h>
+#include <Unit/Player.h>
 
 USING_NS_CC;
 
@@ -104,35 +105,23 @@ bool HelloWorld::init()
     }
 
     // add "HelloWorld" splash screen"
-	auto sprite1 = Sprite::create("HelloWorld.png");
-	if (sprite1 == nullptr)
+	sprite = Sprite::create("HelloWorld.png");
+	if (sprite == nullptr)
 	{
 		problemLoading("'HelloWorld.png'");
 	}
 	else
 	{
 		// position the sprite on the center of the screen
-		sprite1->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+		sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
 		// add the sprite as a child to this layer
-		this->addChild(sprite1, 1);
+		this->addChild(sprite, 1);
 	}
-    sprite = Sprite::create("image/Sprites/player/player-idle/player-idle-1.png");
-    if (sprite == nullptr)
-    {
-        problemLoading("'HelloWorld.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-
-        // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
-    }
+    
 	
 	pos = Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
-	
+	objList.emplace_back(new Player());
 	
 	
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
@@ -152,6 +141,10 @@ bool HelloWorld::init()
 void HelloWorld::update(float delta)
 {
 	state->Update(sprite);
+	for (auto itr : objList)
+	{
+		itr->Update(state->GetData(DIR::UP));
+	}
 
 	auto speed = 3;
 	if (state->GetData(DIR::UP) == true)
