@@ -26,7 +26,7 @@
 #include "SimpleAudioEngine.h"
 #include <input/OPRT_key.h>
 #include <input/OPRT_touch.h>
-#include <Unit/Player.h>
+//#include <Unit/Player.h>
 
 USING_NS_CC;
 
@@ -118,20 +118,33 @@ bool HelloWorld::init()
 		// add the sprite as a child to this layer
 		this->addChild(sprite, 1);
 	}
+	sprite = Sprite::create("image/Sprites/player/player-idle/player-idle-1.png");
+	if (sprite == nullptr)
+	{
+		//problemLoading("'HelloWorld.png'");
+	}
+	else
+	{
+		// position the sprite on the center of the screen
+		sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+
+		// add the sprite as a child to this layer
+		this->addChild(sprite, 0);
+	}
     
 	
 	pos = Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
-	objList.emplace_back(new Player());
+	//objList.emplace_back(new Player());
 	
 	
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
-	state = new(OPRT_key);
+	_inputState = std::make_unique<OPRT_key>();
+	//state = new(OPRT_key);
 #else
-	state = new(OPRT_touch);
+	_inputState.reset(new OPRT_touch());
+	//_inputState = std::make_unique<OPRT_touch>();
+	//state = new(OPRT_touch);
 #endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-		
-
-	state->dataInit();
 
 	this->scheduleUpdate();
     return true;
@@ -140,26 +153,21 @@ bool HelloWorld::init()
 
 void HelloWorld::update(float delta)
 {
-	state->Update(sprite);
-	for (auto itr : objList)
-	{
-		itr->Update(state->GetData(DIR::UP));
-	}
-
+	_inputState->Update(sprite);
 	auto speed = 3;
-	if (state->GetData(DIR::UP) == true)
+	if (_inputState->GetData(DIR::UP) == true)
 	{
 		sprite->setPosition(pos.x, pos.y += speed);
 	}
-	if (state->GetData(DIR::RIGHT) == true)
+	if (_inputState->GetData(DIR::RIGHT) == true)
 	{
 		sprite->setPosition(pos.x += speed, pos.y);
 	}
-	if (state->GetData(DIR::DOWN) == true)
+	if (_inputState->GetData(DIR::DOWN) == true)
 	{
 		sprite->setPosition(pos.x, pos.y -= speed);
 	}
-	if (state->GetData(DIR::LEFT) == true)
+	if (_inputState->GetData(DIR::LEFT) == true)
 	{
 		sprite->setPosition(pos.x -= speed, pos.y);
 	}

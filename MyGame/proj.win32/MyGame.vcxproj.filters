@@ -13,6 +13,9 @@
     <Filter Include="src\input">
       <UniqueIdentifier>{c6773c4f-3efc-4b8a-b4d6-bf5cb74d1128}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\unit">
+      <UniqueIdentifier>{8e1e1c27-dd45-42fb-b6db-5ae4d909cae9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -25,8 +28,19 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="_DebugConOut.cpp" />
-    <ClCompile Include="..\Classes\input\OPRT_key.cpp" />
-    <ClCompile Include="..\Classes\input\OPRT_touch.cpp" />
+    <ClCompile Include="..\Classes\input\OPRT_key.cpp">
+      <Filter>src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\input\OPRT_touch.cpp">
+      <Filter>src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Unit\Player.cpp">
+      <Filter>src\unit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Unit\Obj.cpp">
+      <Filter>src\unit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\input\OPRT_state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -39,9 +53,21 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="_DebugConOut.h" />
-    <ClInclude Include="..\Classes\input\OPRT_key.h" />
-    <ClInclude Include="..\Classes\input\OPRT_state.h" />
-    <ClInclude Include="..\Classes\input\OPRT_touch.h" />
+    <ClInclude Include="..\Classes\input\OPRT_key.h">
+      <Filter>src\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\input\OPRT_state.h">
+      <Filter>src\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\input\OPRT_touch.h">
+      <Filter>src\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Unit\Obj.h">
+      <Filter>src\unit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Unit\Player.h">
+      <Filter>src\unit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

@@ -1,5 +1,6 @@
 #pragma once
 #include "cocos2d.h"
+#include <array>
 
 USING_NS_CC;
 
@@ -28,6 +29,7 @@ enum class TGR_KEY	// ÄØ¶Þ°”»’è—p
 
 struct OPRT_state
 {
+	OPRT_state(){};
 	void operator()(Node* sp)
 	{
 		Update(sp);
@@ -39,14 +41,9 @@ struct OPRT_state
 	{
 		return data[static_cast<int>(dir)];
 	};
-	void dataInit(void)
-	{
-		for (int i = 0; i < static_cast<int>(DIR::MAX); i++)
-		{
-			data[i] = false;
-		}
-	}
+
 
 protected:
-	bool data[static_cast<int>(DIR::MAX)];
+	//bool data[static_cast<int>(DIR::MAX)];
+	std::array<bool, static_cast<int>(DIR::MAX)>data;
 };

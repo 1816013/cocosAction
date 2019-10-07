@@ -29,7 +29,7 @@
 #include <vector>
 #include <memory>
 #include "input/OPRT_state.h"
-#include <Unit/Obj.h>
+//#include <Unit/Obj.h>
 
 class HelloWorld : public cocos2d::Scene
 {
@@ -47,7 +47,8 @@ public:
 private:
 	cocos2d::Sprite* sprite = nullptr;
 	Vec2 pos;
-	std::vector<std::shared_ptr<Obj>> objList;
+	std::unique_ptr<OPRT_state>_inputState;
+	//std::vector<std::shared_ptr<Obj>> objList;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

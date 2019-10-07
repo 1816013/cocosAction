@@ -154,7 +154,10 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\input\OPRT_key.cpp" />
+    <ClCompile Include="..\Classes\input\OPRT_state.cpp" />
     <ClCompile Include="..\Classes\input\OPRT_touch.cpp" />
+    <ClCompile Include="..\Classes\Unit\Obj.cpp" />
+    <ClCompile Include="..\Classes\Unit\Player.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="_DebugConOut.cpp" />
   </ItemGroup>
@@ -164,6 +167,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\input\OPRT_key.h" />
     <ClInclude Include="..\Classes\input\OPRT_state.h" />
     <ClInclude Include="..\Classes\input\OPRT_touch.h" />
+    <ClInclude Include="..\Classes\Unit\Obj.h" />
+    <ClInclude Include="..\Classes\Unit\Player.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="_DebugConOut.h" />
   </ItemGroup>

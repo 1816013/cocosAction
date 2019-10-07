@@ -1,5 +1,13 @@
 #include "OPRT_touch.h"
 
+OPRT_touch::OPRT_touch()
+{
+	for (int i = 0; i < static_cast<int>(DIR::MAX); i++)
+	{
+		data[i] = false;
+	}
+}
+
 void OPRT_touch::Update(Node* sp)
 {
 	auto listener = EventListenerTouchOneByOne::create();

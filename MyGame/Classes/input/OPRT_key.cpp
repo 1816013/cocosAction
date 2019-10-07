@@ -1,5 +1,13 @@
 #include "OPRT_key.h"
 
+OPRT_key::OPRT_key()
+{
+	for (int i = 0; i < static_cast<int>(DIR::MAX); i++)
+	{
+		data[i] = false;
+	}
+}
+
 void OPRT_key::Update(Node* sp)
 {
 	auto listener = EventListenerKeyboard::create();
