@@ -153,6 +153,7 @@ bool HelloWorld::init()
 
 void HelloWorld::update(float delta)
 {
+	sprite->getChildByName("player");
 	_inputState->Update(sprite);
 	auto speed = 3;
 	if (_inputState->GetData(DIR::UP) == true)
