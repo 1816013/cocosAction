@@ -45,7 +45,7 @@ public:
     CREATE_FUNC(HelloWorld);
 	OPRT_state* state;
 private:
-	cocos2d::Sprite* sprite = nullptr;
+	cocos2d::Sprite* player = nullptr;
 	Vec2 pos;
 	std::unique_ptr<OPRT_state>_inputState;
 	//std::vector<std::shared_ptr<Obj>> objList;

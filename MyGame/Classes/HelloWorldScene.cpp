@@ -104,35 +104,55 @@ bool HelloWorld::init()
         this->addChild(label, 1);
     }
 
-    // add "HelloWorld" splash screen"
-	sprite = Sprite::create("HelloWorld.png");
-	if (sprite == nullptr)
+    //// add "HelloWorld" splash screen"
+
+	//sprite = Sprite::create("HelloWorld.png");
+	//if (sprite == nullptr)
+	//{
+	//	problemLoading("'HelloWorld.png'");
+	//}
+	//else
+	//{
+	//	// position the sprite on the center of the screen
+	//	sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+
+	//	// add the sprite as a child to this layer
+	//	this->addChild(sprite, 1);
+	//}
+
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player-idle.plist");
+	player = Sprite::createWithSpriteFrameName("player-idle-1.png");
+	if (player == nullptr)
 	{
-		problemLoading("'HelloWorld.png'");
+		//problemLoading("'player_idle.png'");
 	}
 	else
 	{
 		// position the sprite on the center of the screen
-		sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-
+		player->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 		// add the sprite as a child to this layer
-		this->addChild(sprite, 1);
+		this->addChild(player, 0);
 	}
-	sprite = Sprite::create("image/Sprites/player/player-idle/player-idle-1.png");
-	if (sprite == nullptr)
-	{
-		//problemLoading("'HelloWorld.png'");
-	}
-	else
-	{
-		// position the sprite on the center of the screen
-		sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
-		// add the sprite as a child to this layer
-		this->addChild(sprite, 0);
+	// アニメーション
+	auto animation = Animation::create();
+	for (int i = 1; i <= 4; i++) 
+	{
+		auto str = __String::createWithFormat("player-idle-%i.png", i);
+		SpriteFrame *sprite = SpriteFrameCache::getInstance()->getSpriteFrameByName(str->getCString());
+		animation->addSpriteFrame(sprite);
+
 	}
-    
+
+	animation->setDelayPerUnit(0.2f); //アニメの動く時間を設定
+	animation->setRestoreOriginalFrame(true);	// ｱﾆﾒｰｼｮﾝ終了時にｱﾆﾒｰｼｮﾝの最初に戻るかどうか
 	
+	auto action = Animate::create(animation);
+	auto anime = RepeatForever::create(action);
+	player->runAction(anime);
+	
+
+
 	pos = Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
 	//objList.emplace_back(new Player());
 	
@@ -153,46 +173,25 @@ bool HelloWorld::init()
 
 void HelloWorld::update(float delta)
 {
-	sprite->getChildByName("player");
-	_inputState->Update(sprite);
+	_inputState->Update(this);
 	auto speed = 3;
 	if (_inputState->GetData(DIR::UP) == true)
 	{
-		sprite->setPosition(pos.x, pos.y += speed);
+		player->setPosition(pos.x, pos.y += speed);
 	}
 	if (_inputState->GetData(DIR::RIGHT) == true)
 	{
-		sprite->setPosition(pos.x += speed, pos.y);
+		player->setPosition(pos.x += speed, pos.y);
 	}
 	if (_inputState->GetData(DIR::DOWN) == true)
 	{
-		sprite->setPosition(pos.x, pos.y -= speed);
+		player->setPosition(pos.x, pos.y -= speed);
 	}
 	if (_inputState->GetData(DIR::LEFT) == true)
 	{
-		sprite->setPosition(pos.x -= speed, pos.y);
+		player->setPosition(pos.x -= speed, pos.y);
 	}
-	/*auto listener = EventListenerKeyboard::create();
-	listener->onKeyPressed = [this](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)->bool
-	{
-		if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW)
-		{
-			bool data[5];
-			data[0] = true;
-		}
-		return true;
-	};
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);*/
-
-
-	//listener->onKeyReleased((EventKeyboard::KeyCode,Event*)
-	//rightMove = MoveTo::create(2, Vec2(50, 0));
-	//leftMove = MoveTo::create(2, Vec2(-50, 0));
-	//jump = JumpTo::create(3, Vec2(0, 0), 70, 6);
-	//// sokuji
-	//flipX = FlipX::create(true);
-	//sequence = Sequence::create(rightMove, leftMove, jump, flipX, nullptr);
-
+	
 
 	//sprite->runAction(RepeatForever sequence);
 }
