@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>frames</key>
+        <dict>
+            <key>player-duck.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{80,80}</string>
+                <key>spriteSourceSize</key>
+                <string>{80,80}</string>
+                <key>textureRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+        </dict>
+        <key>metadata</key>
+        <dict>
+            <key>format</key>
+            <integer>3</integer>
+            <key>pixelFormat</key>
+            <string>RGBA8888</string>
+            <key>premultiplyAlpha</key>
+            <false/>
+            <key>realTextureFileName</key>
+            <string>player-duck.png</string>
+            <key>size</key>
+            <string>{80,80}</string>
+            <key>smartupdate</key>
+            <string>$TexturePacker:SmartUpdate:befe34fb59207a8608b0268d007a6101:e4ea5fd871a60cb573d80359824d109c:c1b84b95f25a9846cf8ab6cd7825c487$</string>
+            <key>textureFileName</key>
+            <string>player-duck.png</string>
+        </dict>
+    </dict>
+</plist>

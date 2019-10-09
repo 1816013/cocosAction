@@ -44,10 +44,17 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 	OPRT_state* state;
+
+	bool AnimCreate(const char* name, int cnt, float time, bool flag, const std::string & key);
 private:
+	bool LRflag;
+	bool oldLRflag = false;
+	bool jumpFlag;
+	int jumpCnt = 0;
 	cocos2d::Sprite* player = nullptr;
 	Vec2 pos;
 	std::unique_ptr<OPRT_state>_inputState;
+	Animation* oldanim;
 	//std::vector<std::shared_ptr<Obj>> objList;
 };
 
