@@ -31,6 +31,13 @@
 #include "input/OPRT_state.h"
 //#include <Unit/Obj.h>
 
+enum class ActionType
+{
+	IDLE,
+	RUN
+
+};
+
 class HelloWorld : public cocos2d::Scene
 {
 public:
@@ -47,10 +54,14 @@ public:
 
 	bool AnimCreate(const char* name, int cnt, float time, bool flag, const std::string & key);
 private:
+
 	bool LRflag;
 	bool oldLRflag = false;
 	bool jumpFlag;
-	int jumpCnt = 0;
+	bool jumpTimeFlag = false;
+	int jumpTime = 0;	// ¼Þ¬ÝÌß’†‚ÌŽžŠÔ
+
+	bool old = false;
 	cocos2d::Sprite* player = nullptr;
 	Vec2 pos;
 	std::unique_ptr<OPRT_state>_inputState;

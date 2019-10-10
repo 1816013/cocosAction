@@ -118,7 +118,10 @@ bool HelloWorld::init()
 	//	this->addChild(sprite, 1);
 	//}
 
+	// plist
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player-idle.plist");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player-run.plist");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player-jump.plist");
 
 	// プレイヤー初期設定
 	player = Sprite::createWithSpriteFrameName("player-idle-1.png");
@@ -130,10 +133,11 @@ bool HelloWorld::init()
 	{
 		// position the sprite on the center of the screen
 		player->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+		player->setScale(2.0f);
 		// add the sprite as a child to this layer
 		this->addChild(player, 0);
 	}
-
+	
 	// アニメーション設定
 	// idle
 	AnimCreate("player-idle-%i.png", 4, 0.1f, true, "idle");
@@ -152,12 +156,10 @@ bool HelloWorld::init()
 	//oldanim = animation;
 	//player->runAction(anime);*/
 
-	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player-run.plist");
 	// run
-	AnimCreate("player-run-%i.png", 4, 0.1f, true, "run");
-	
+	AnimCreate("player-run-%i.png", 10, 0.1f, true, "run");
 	// jump
-	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player-jump.plist");
+	
 	//auto sprite = Sprite::createWithSpriteFrameName("player-jump-1.png");
 	// position the sprite on the center of the screen
 	//player->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
@@ -196,74 +198,98 @@ bool HelloWorld::init()
 
 void HelloWorld::update(float delta)
 {
+	Action* anime = nullptr;
+	Action* action = nullptr;
+	Action* jump;
 
 	Animation* animation = oldanim;
-	Action* anime;
-
 	_inputState->Update(this);
 	auto speed = 3;
-	if (_inputState->GetData(DIR::UP) == true)
+	if (_inputState->GetData(DIR::UP))
 	{
 		jumpFlag = true;
 		//player->setPosition(pos.x, pos.y += speed);
 		animation = AnimationCache::getInstance()->getAnimation("jump");
-		auto action = Animate::create(animation);
-		auto jump = JumpBy::create(1, { 0,0 }, 50, 1);
-		anime = Spawn::create(action, jump, nullptr);
+		anime = Repeat::create(Animate::create(animation), 1);
+		jump = JumpBy::create(1.0f, { 0,0 }, 50, 1);
+		anime->setTag(0);
+		jump->setTag(2);
+		jumpTimeFlag = true;
+		jumpTime = 0;
+		//anime = Spawn::create(anim, jump, nullptr);
 	}
 	if (_inputState->GetData(DIR::RIGHT))
 	{
-		
-		player->setPosition(pos.x += speed, pos.y);
-		if (!jumpFlag)
-		{
-			LRflag = false;
-			animation = AnimationCache::getInstance()->getAnimation("run");
-			auto action = Animate::create(animation);			
-			anime = RepeatForever::create(Spawn::create(action, FlipX::create(LRflag), nullptr));
-		}
+		LRflag = false;
+		animation = AnimationCache::getInstance()->getAnimation("run");
+		anime = RepeatForever::create(Animate::create(animation));
+		auto move = MoveBy::create(0, Vec2(1, 0));
+		action = Spawn::create(FlipX::create(LRflag), move, nullptr);
+		anime->setTag(0);
+		action->setTag(1);	
 	}
 	if (_inputState->GetData(DIR::DOWN))
 	{
-		player->setPosition(pos.x, pos.y -= speed);
+		animation = AnimationCache::getInstance()->getAnimation("idle");
+		anime = RepeatForever::create(Animate::create(animation));
+		action = Spawn::create(FlipX::create(LRflag), nullptr);
+		anime->setTag(0);
+		action->setTag(1);
 	}
 	if (_inputState->GetData(DIR::LEFT))
 	{
+		LRflag = true;
+		animation = AnimationCache::getInstance()->getAnimation("run");
+		anime = RepeatForever::create(Animate::create(animation));
+		auto move = MoveBy::create(0, Vec2(-1, 0));
+		action = Spawn::create(FlipX::create(LRflag), move, nullptr);
+		anime->setTag(0);
+		action->setTag(1);
 		
-		player->setPosition(pos.x -= speed, pos.y);
-		if (!jumpFlag)
-		{
-			LRflag = true;
-			animation = AnimationCache::getInstance()->getAnimation("run");
-			auto action = Animate::create(animation);
-			anime = RepeatForever::create(Spawn::create(action, FlipX::create(LRflag), nullptr));
-		}
 	}
-	if(!_inputState->GetData(DIR::UP) && !_inputState->GetData(DIR::RIGHT) && !_inputState->GetData(DIR::DOWN) && !_inputState->GetData(DIR::LEFT) || _inputState->GetData(DIR::RIGHT) && _inputState->GetData(DIR::LEFT))
+	if (!_inputState->GetData(DIR::UP) && !_inputState->GetData(DIR::RIGHT) && !_inputState->GetData(DIR::DOWN) && !_inputState->GetData(DIR::LEFT) || _inputState->GetData(DIR::RIGHT) && _inputState->GetData(DIR::LEFT))
 	{
-		if (!jumpFlag)
+		if (!jumpTimeFlag)
 		{
 			animation = AnimationCache::getInstance()->getAnimation("idle");
-			auto action = Animate::create(animation);
-			anime = RepeatForever::create(Spawn::create(action, FlipX::create(LRflag), nullptr));
+			anime = RepeatForever::create(Animate::create(animation));
+			action = Spawn::create(FlipX::create(LRflag), nullptr);
+			anime->setTag(0);
+			action->setTag(1);
 		}
+	}
+
+	if (anime != nullptr)
+	{
+		if (oldanim != animation || oldLRflag != LRflag)
+		{
+			//player->stopAllActions();
+			player->stopActionByTag(0);
+			player->runAction(anime);
+		}
+	}
+
+	if (action != nullptr)
+	{
+		player->stopActionByTag(1);
+		player->runAction(action);
 	}
 	
-	if (jumpFlag)
+	if (jump != nullptr)
 	{
-		jumpCnt++;
-
-		if (jumpCnt > animation->getDuration())
+		if (jumpFlag)
 		{
+			player->runAction(jump);
 			jumpFlag = false;
-			jumpCnt = 0;
 		}
 	}
-
-	if (oldanim != animation || oldLRflag != LRflag)
+	if (jumpTimeFlag)
 	{
-		player->stopAllActions();
-		player->runAction(anime);
+		jumpTime++;
+	}
+	if (jumpTime > 60)
+	{
+		jumpTimeFlag = false;
 	}
 	oldLRflag = LRflag;
 	oldanim = animation;
@@ -289,7 +315,6 @@ bool HelloWorld::AnimCreate(const char* name, int cnt, float time, bool flag, co
 	auto animation = Animation::create();
 	for (int i = 1; i <= cnt; i++)
 	{
-		
 		auto str = __String::createWithFormat(name, i);
 		SpriteFrame *sprite = SpriteFrameCache::getInstance()->getSpriteFrameByName(str->getCString());
 		animation->addSpriteFrame(sprite);
