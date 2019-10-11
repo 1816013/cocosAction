@@ -24,9 +24,7 @@
 
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
-#include <input/OPRT_key.h>
-#include <input/OPRT_touch.h>
-//#include <Unit/Player.h>
+#include <Unit/Player.h>
 
 USING_NS_CC;
 
@@ -118,78 +116,11 @@ bool HelloWorld::init()
 	//	this->addChild(sprite, 1);
 	//}
 
-	// plist
-	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player-idle.plist");
-	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player-run.plist");
-	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player-jump.plist");
-
-	// プレイヤー初期設定
-	player = Sprite::createWithSpriteFrameName("player-idle-1.png");
-	if (player == nullptr)
-	{
-		problemLoading("'player_idle-1.png'");
-	}
-	else
-	{
-		// position the sprite on the center of the screen
-		player->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-		player->setScale(2.0f);
-		// add the sprite as a child to this layer
-		this->addChild(player, 0);
-	}
+	auto player = Player::createSprite();
 	
-	// アニメーション設定
-	// idle
-	AnimCreate("player-idle-%i.png", 4, 0.1f, true, "idle");
-	//auto animation = Animation::create();
-	//for (int i = 1; i <= 4; i++) 
-	//{
-	//	auto str = __String::createWithFormat("player-idle-%i.png", i);
-	//	SpriteFrame *sprite = SpriteFrameCache::getInstance()->getSpriteFrameByName(str->getCString());
-	//	animation->addSpriteFrame(sprite);
-	//}
-	//animation->setDelayPerUnit(0.2f); //アニメの動く時間を設定
-	//animation->setRestoreOriginalFrame(true);	// ｱﾆﾒｰｼｮﾝ終了時にｱﾆﾒｰｼｮﾝの最初に戻るかどうか
-	//AnimationCache::getInstance()->addAnimation(animation, "idle");
-	//auto action = Animate::create(animation);
-	//auto anime = RepeatForever::create(action);
-	//oldanim = animation;
-	//player->runAction(anime);*/
+	this->addChild(player, 0);
 
-	// run
-	AnimCreate("player-run-%i.png", 10, 0.1f, true, "run");
-	// jump
-	
-	//auto sprite = Sprite::createWithSpriteFrameName("player-jump-1.png");
-	// position the sprite on the center of the screen
-	//player->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-	// add the sprite as a child to this layer
-	//this->addChild(sprite, 0);
-	// アニメーション
-	AnimCreate("player-jump-%i.png", 6, 0.1f, true, "jump");
-	//auto animation2 = Animation::create();
-	//for (int i = 1; i <= 6; i++)
-	//{
-	//	auto str2 = __String::createWithFormat("player-jump-%i.png", i);
-	//	SpriteFrame *sprite2 = SpriteFrameCache::getInstance()->getSpriteFrameByName(str2->getCString());
-	//	animation2->addSpriteFrame(sprite2);
-	//}
-	//animation2->setDelayPerUnit(0.2f); //アニメの動く時間を設定
-	//animation2->setRestoreOriginalFrame(true);	// ｱﾆﾒｰｼｮﾝ終了時にｱﾆﾒｰｼｮﾝの最初に戻るかどうか
-	//AnimationCache::getInstance()->addAnimation(animation2, "jump");
 
-	//objList.emplace_back(new Player());
-	pos = Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
-	LRflag = false;
-	
-#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
-	_inputState = std::make_unique<OPRT_key>();
-	//state = new(OPRT_key);
-#else
-	_inputState.reset(new OPRT_touch());
-	//_inputState = std::make_unique<OPRT_touch>();
-	//state = new(OPRT_touch);
-#endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 
 	this->scheduleUpdate();
     return true;
@@ -198,101 +129,7 @@ bool HelloWorld::init()
 
 void HelloWorld::update(float delta)
 {
-	Action* anime = nullptr;
-	Action* action = nullptr;
-	Action* jump;
-
-	Animation* animation = oldanim;
-	_inputState->Update(this);
-	auto speed = 3;
-	if (_inputState->GetData(DIR::UP))
-	{
-		jumpFlag = true;
-		//player->setPosition(pos.x, pos.y += speed);
-		animation = AnimationCache::getInstance()->getAnimation("jump");
-		anime = Repeat::create(Animate::create(animation), 1);
-		jump = JumpBy::create(1.0f, { 0,0 }, 50, 1);
-		anime->setTag(0);
-		jump->setTag(2);
-		jumpTimeFlag = true;
-		jumpTime = 0;
-		//anime = Spawn::create(anim, jump, nullptr);
-	}
-	if (_inputState->GetData(DIR::RIGHT))
-	{
-		LRflag = false;
-		animation = AnimationCache::getInstance()->getAnimation("run");
-		anime = RepeatForever::create(Animate::create(animation));
-		auto move = MoveBy::create(0, Vec2(1, 0));
-		action = Spawn::create(FlipX::create(LRflag), move, nullptr);
-		anime->setTag(0);
-		action->setTag(1);	
-	}
-	if (_inputState->GetData(DIR::DOWN))
-	{
-		animation = AnimationCache::getInstance()->getAnimation("idle");
-		anime = RepeatForever::create(Animate::create(animation));
-		action = Spawn::create(FlipX::create(LRflag), nullptr);
-		anime->setTag(0);
-		action->setTag(1);
-	}
-	if (_inputState->GetData(DIR::LEFT))
-	{
-		LRflag = true;
-		animation = AnimationCache::getInstance()->getAnimation("run");
-		anime = RepeatForever::create(Animate::create(animation));
-		auto move = MoveBy::create(0, Vec2(-1, 0));
-		action = Spawn::create(FlipX::create(LRflag), move, nullptr);
-		anime->setTag(0);
-		action->setTag(1);
-		
-	}
-	if (!_inputState->GetData(DIR::UP) && !_inputState->GetData(DIR::RIGHT) && !_inputState->GetData(DIR::DOWN) && !_inputState->GetData(DIR::LEFT) || _inputState->GetData(DIR::RIGHT) && _inputState->GetData(DIR::LEFT))
-	{
-		if (!jumpTimeFlag)
-		{
-			animation = AnimationCache::getInstance()->getAnimation("idle");
-			anime = RepeatForever::create(Animate::create(animation));
-			action = Spawn::create(FlipX::create(LRflag), nullptr);
-			anime->setTag(0);
-			action->setTag(1);
-		}
-	}
-
-	if (anime != nullptr)
-	{
-		if (oldanim != animation || oldLRflag != LRflag)
-		{
-			//player->stopAllActions();
-			player->stopActionByTag(0);
-			player->runAction(anime);
-		}
-	}
-
-	if (action != nullptr)
-	{
-		player->stopActionByTag(1);
-		player->runAction(action);
-	}
 	
-	if (jump != nullptr)
-	{
-		if (jumpFlag)
-		{
-			player->runAction(jump);
-			jumpFlag = false;
-		}
-	}
-	if (jumpTimeFlag)
-	{
-		jumpTime++;
-	}
-	if (jumpTime > 60)
-	{
-		jumpTimeFlag = false;
-	}
-	oldLRflag = LRflag;
-	oldanim = animation;
 	//sprite->runAction(RepeatForever sequence);
 }
 
@@ -310,19 +147,3 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 
 }
 
-bool HelloWorld::AnimCreate(const char* name, int cnt, float time, bool flag, const std::string & key)
-{
-	auto animation = Animation::create();
-	for (int i = 1; i <= cnt; i++)
-	{
-		auto str = __String::createWithFormat(name, i);
-		SpriteFrame *sprite = SpriteFrameCache::getInstance()->getSpriteFrameByName(str->getCString());
-		animation->addSpriteFrame(sprite);
-	}
-
-	animation->setDelayPerUnit(time); //アニメの動く時間を設定
-	animation->setRestoreOriginalFrame(flag);	// ｱﾆﾒｰｼｮﾝ終了時にｱﾆﾒｰｼｮﾝの最初に戻るかどうか
-
-	AnimationCache::getInstance()->addAnimation(animation, key);
-	return true;
-}

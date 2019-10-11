@@ -28,8 +28,7 @@
 #include "cocos2d.h"
 #include <vector>
 #include <memory>
-#include "input/OPRT_state.h"
-//#include <Unit/Obj.h>
+#include <Unit/Obj.h>
 
 enum class ActionType
 {
@@ -51,22 +50,7 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 	OPRT_state* state;
-
-	bool AnimCreate(const char* name, int cnt, float time, bool flag, const std::string & key);
 private:
-
-	bool LRflag;
-	bool oldLRflag = false;
-	bool jumpFlag;
-	bool jumpTimeFlag = false;
-	int jumpTime = 0;	// ¼Þ¬ÝÌß’†‚ÌŽžŠÔ
-
-	bool old = false;
-	cocos2d::Sprite* player = nullptr;
-	Vec2 pos;
-	std::unique_ptr<OPRT_state>_inputState;
-	Animation* oldanim;
-	//std::vector<std::shared_ptr<Obj>> objList;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

@@ -24,9 +24,6 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="_DebugConOut.cpp" />
     <ClCompile Include="..\Classes\input\OPRT_key.cpp">
       <Filter>src\input</Filter>
@@ -41,6 +38,10 @@
       <Filter>src\unit</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\input\OPRT_state.cpp" />
+    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimMng.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -68,6 +69,7 @@
     <ClInclude Include="..\Classes\Unit\Player.h">
       <Filter>src\unit</Filter>
     </ClInclude>
+    <ClInclude Include="AnimMng.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">
