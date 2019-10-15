@@ -38,19 +38,16 @@
       <Filter>src\unit</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\input\OPRT_state.cpp" />
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
+    <ClCompile Include="..\Classes\AnimMng.cpp" />
+    <ClCompile Include="..\Classes\GameScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="AnimMng.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\AppDelegate.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\HelloWorldScene.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="_DebugConOut.h" />
@@ -69,7 +66,10 @@
     <ClInclude Include="..\Classes\Unit\Player.h">
       <Filter>src\unit</Filter>
     </ClInclude>
-    <ClInclude Include="AnimMng.h" />
+    <ClInclude Include="..\Classes\AnimMng.h" />
+    <ClInclude Include="..\Classes\GameScene.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

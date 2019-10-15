@@ -55,6 +55,7 @@ list(APPEND GAME_SOURCE
         Classes/input/OPRT_state.cpp
 	    Classes/Unit/Player.cpp
 	    Classes/Unit/Obj.cpp
+        Classes/AnimMng.cpp
         )
 list(APPEND GAME_HEADER
         Classes/AppDelegate.h
@@ -64,6 +65,7 @@ list(APPEND GAME_HEADER
      	Classes/input/OPRT_touch.h
 	    Classes/Unit/Player.h
 	    Classes/Unit/Obj.h
+        Classes/AnimMng.h
      )
 
 if(ANDROID)

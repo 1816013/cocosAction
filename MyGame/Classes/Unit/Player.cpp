@@ -25,7 +25,7 @@ bool Player::init()
 	}
 	
 
-	// ƒAƒjƒ[ƒVƒ‡ƒ“İ’è
+	// plistèª­ã¿è¾¼ã¿
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player-idle.plist");
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player-run.plist");
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player-jump.plist");
@@ -39,8 +39,8 @@ bool Player::init()
 	//	SpriteFrame *sprite = SpriteFrameCache::getInstance()->getSpriteFrameByName(str->getCString());
 	//	animation->addSpriteFrame(sprite);
 	//}
-	//animation->setDelayPerUnit(0.2f); //ƒAƒjƒ‚Ì“®‚­ŠÔ‚ğİ’è
-	//animation->setRestoreOriginalFrame(true);	// ±ÆÒ°¼®İI—¹‚É±ÆÒ°¼®İ‚ÌÅ‰‚É–ß‚é‚©‚Ç‚¤‚©
+	//animation->setDelayPerUnit(0.2f); //ï¿½Aï¿½jï¿½ï¿½ï¿½Ì“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô‚ï¿½İ’ï¿½
+	//animation->setRestoreOriginalFrame(true);	// ï¿½ï¿½Ò°ï¿½ï¿½İIï¿½ï¿½ï¿½ï¿½ï¿½É±ï¿½Ò°ï¿½ï¿½İ‚ÌÅï¿½ï¿½É–ß‚é‚©ï¿½Ç‚ï¿½ï¿½ï¿½
 	//AnimationCache::getInstance()->addAnimation(animation, "idle");
 	//auto action = Animate::create(animation);
 	//auto anime = RepeatForever::create(action);
@@ -56,29 +56,18 @@ bool Player::init()
 	//player->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 	// add the sprite as a child to this layer
 	//this->addChild(sprite, 0);
-	// ƒAƒjƒ[ƒVƒ‡ƒ“
+	// ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½
 	AnimCreate("player-jump", 6, 0.1f);
-	//auto animation2 = Animation::create();
-	//for (int i = 1; i <= 6; i++)
-	//{
-	//	auto str2 = __String::createWithFormat("player-jump-%i.png", i);
-	//	SpriteFrame *sprite2 = SpriteFrameCache::getInstance()->getSpriteFrameByName(str2->getCString());
-	//	animation2->addSpriteFrame(sprite2);
-	//}
-	//animation2->setDelayPerUnit(0.2f); //ƒAƒjƒ‚Ì“®‚­ŠÔ‚ğİ’è
-	//animation2->setRestoreOriginalFrame(true);	// ±ÆÒ°¼®İI—¹‚É±ÆÒ°¼®İ‚ÌÅ‰‚É–ß‚é‚©‚Ç‚¤‚©
-	//AnimationCache::getInstance()->addAnimation(animation2, "jump");
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	auto pos = Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
 
-	// ÌßÚ²Ô°‰Šúİ’è
-	// ÌßÚ²Ô°‰Šú‰æ‘œ
+	// ï¾Œï¾Ÿï¾šï½²ï¾”ï½°åˆæœŸè¨­å®š
 	this->Sprite::createWithSpriteFrameName("player-idle-1.png");
 	// position the sprite on the center of the screen
 	this->setPosition(pos);
-	this->setScale(2.0f);
+	//this->setScale(2.0f);
 	LRflag = false;
 
 
@@ -112,7 +101,7 @@ void Player::update(float delta)
 		//player->setPosition(pos.x, pos.y += speed);
 		animation = AnimationCache::getInstance()->getAnimation("player-jump");
 		anime = Repeat::create(Animate::create(animation), 1);
-		jump = Spawn::create(JumpBy::create(1.0f, { 0,0 }, 50, 1), CALLBACK_FUNCTION, nullptr);
+		jump = Spawn::create(JumpBy::create(1.0f, { 0,0 }, 50, 1), nullptr);
 		anime->setTag(0);
 		jump->setTag(2);
 		jumpTimeFlag = true;
@@ -217,8 +206,8 @@ bool Player::AnimCreate(std::string key, int cnt, float time )
 		animation->addSpriteFrame(sprite);
 	}
 
-	animation->setDelayPerUnit(time); //ƒAƒjƒ‚Ì“®‚­ŠÔ‚ğİ’è
-	animation->setRestoreOriginalFrame(true);	// ±ÆÒ°¼®İI—¹‚É±ÆÒ°¼®İ‚ÌÅ‰‚É–ß‚é‚©‚Ç‚¤‚©
+	animation->setDelayPerUnit(time); // ï½±ï¾†ï¾’ï½°ï½¼ï½®ï¾ã®æœŸé–“
+	animation->setRestoreOriginalFrame(true);	// ï½±ï¾†ï¾’ï½°ï½¼ï½®ï¾çµ‚äº†æ™‚ã«åˆã‚ã«æˆ»ã‚‹ã‹
 
 	AnimationCache::getInstance()->addAnimation(animation, key);
 	return true;

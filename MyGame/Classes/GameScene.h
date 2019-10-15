@@ -37,7 +37,7 @@ enum class ActionType
 
 };
 
-class HelloWorld : public cocos2d::Scene
+class GameScene : public cocos2d::Scene
 {
 public:
     static cocos2d::Scene* createScene();
@@ -48,7 +48,7 @@ public:
     void menuCloseCallback(cocos2d::Ref* pSender);
     
     // implement the "static create()" method manually
-    CREATE_FUNC(HelloWorld);
+    CREATE_FUNC(GameScene);
 	OPRT_state* state;
 private:
 };

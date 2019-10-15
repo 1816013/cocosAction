@@ -22,15 +22,15 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "HelloWorldScene.h"
+#include "GameScene.h"
 #include "SimpleAudioEngine.h"
 #include <Unit/Player.h>
 
 USING_NS_CC;
 
-Scene* HelloWorld::createScene()
+Scene* GameScene::createScene()
 {
-    return HelloWorld::create();
+    return GameScene::create();
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -41,7 +41,7 @@ static void problemLoading(const char* filename)
 }
 
 // on "init" you need to initialize your instance
-bool HelloWorld::init()
+bool GameScene::init()
 {
     //////////////////////////////
     // 1. super init first
@@ -61,7 +61,7 @@ bool HelloWorld::init()
     auto closeItem = MenuItemImage::create(
                                            "CloseNormal.png",
                                            "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+                                           CC_CALLBACK_1(GameScene::menuCloseCallback, this));
 
     if (closeItem == nullptr ||
         closeItem->getContentSize().width <= 0 ||
@@ -87,7 +87,7 @@ bool HelloWorld::init()
     // add a label shows "Hello World"
     // create and initialize a label
 
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
+    auto label = Label::createWithTTF("Game Scene", "fonts/Marker Felt.ttf", 24);
     if (label == nullptr)
     {
         problemLoading("'fonts/Marker Felt.ttf'");
@@ -99,7 +99,7 @@ bool HelloWorld::init()
                                 origin.y + visibleSize.height - label->getContentSize().height));
 
         // add the label as a child to this layer
-        this->addChild(label, 1);
+        this->addChild(label, 5);
     }
 
     //// add "HelloWorld" splash screen"
@@ -116,25 +116,47 @@ bool HelloWorld::init()
 	//	this->addChild(sprite, 1);
 	//}
 
+
+
+	auto pos = Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2);
+
+	// Ú²Ô°ì¬
+	auto bglayer = Layer::create();
+	auto charbglayer = Layer::create();
+	auto flontbglayer = Layer::create();
+	auto backbglayer = Layer::create();
+
+	// ½Ìß×²Äì¬
+	auto backS = Sprite::create("image/Environment/background.png");
+	backS->setPosition(pos);
+	auto flontS = Sprite::create("image/Environment/middleground.png");
+	flontS->setPosition(pos);
 	auto player = Player::createSprite();
+
+	// ½Ìß×²Ä‚ðÚ²Ô°‚É‚Ô‚ç‰º‚°‚é
+	charbglayer->addChild(player, 0);
+	backbglayer->addChild(backS, 0);
+	flontbglayer->addChild(flontS, 0);
+
+	// ¼°Ý‚É‚Ô‚ç‰º‚°‚é
+	this->addChild(backbglayer, 0);
+	this->addChild(charbglayer, 1);
+	this->addChild(flontbglayer, 2);
 	
-	this->addChild(player, 0);
-
-
 
 	this->scheduleUpdate();
     return true;
 	
 }
 
-void HelloWorld::update(float delta)
+void GameScene::update(float delta)
 {
 	
 	//sprite->runAction(RepeatForever sequence);
 }
 
 
-void HelloWorld::menuCloseCallback(Ref* pSender)
+void GameScene::menuCloseCallback(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
     Director::getInstance()->end();
