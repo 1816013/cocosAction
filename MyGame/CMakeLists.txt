@@ -49,7 +49,7 @@ endif()
 # add cross-platforms source files and header files 
 list(APPEND GAME_SOURCE
         Classes/AppDelegate.cpp
-        Classes/HelloWorldScene.cpp
+        Classes/GameScene.cpp
         Classes/input/OPRT_key.cpp
         Classes/input/OPRT_touch.cpp
         Classes/input/OPRT_state.cpp
@@ -59,7 +59,7 @@ list(APPEND GAME_SOURCE
         )
 list(APPEND GAME_HEADER
         Classes/AppDelegate.h
-        Classes/HelloWorldScene.h
+        Classes/GameScene.h
         Classes/input/OPRT_state.h
         Classes/input/OPRT_key.h
      	Classes/input/OPRT_touch.h

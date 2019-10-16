@@ -49,6 +49,8 @@ bool GameScene::init()
     {
         return false;
     }
+	
+
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -120,6 +122,9 @@ bool GameScene::init()
 
 	auto pos = Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2);
 
+	ZorderBack = static_cast<int>(Zorder_ID::BACK);
+	ZorderChar = static_cast<int>(Zorder_ID::CHAR);
+	ZorderFlont = static_cast<int>(Zorder_ID::FLONT);
 	// Ú²Ô°ì¬
 	auto bglayer = Layer::create();
 	auto charbglayer = Layer::create();
@@ -129,8 +134,8 @@ bool GameScene::init()
 	// ½Ìß×²Äì¬
 	auto backS = Sprite::create("image/Environment/background.png");
 	backS->setPosition(pos);
-	auto flontS = Sprite::create("image/Environment/middleground.png");
-	flontS->setPosition(pos);
+	auto flontS = TMXTiledMap::create("map2.tmx");
+	flontS->setPosition({ -16, 0 });
 	auto player = Player::createSprite();
 
 	// ½Ìß×²Ä‚ðÚ²Ô°‚É‚Ô‚ç‰º‚°‚é
@@ -139,9 +144,9 @@ bool GameScene::init()
 	flontbglayer->addChild(flontS, 0);
 
 	// ¼°Ý‚É‚Ô‚ç‰º‚°‚é
-	this->addChild(backbglayer, 0);
-	this->addChild(charbglayer, 1);
-	this->addChild(flontbglayer, 2);
+	this->addChild(backbglayer, ZorderBack);
+	this->addChild(charbglayer, ZorderChar);
+	this->addChild(flontbglayer, ZorderFlont);
 	
 
 	this->scheduleUpdate();

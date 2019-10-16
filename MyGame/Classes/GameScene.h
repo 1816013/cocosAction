@@ -34,7 +34,14 @@ enum class ActionType
 {
 	IDLE,
 	RUN
+};
 
+enum class Zorder_ID
+{
+	BACK = 0,
+	CHAR = 50,
+	FLONT = 100,
+	MAX = 1000000
 };
 
 class GameScene : public cocos2d::Scene
@@ -51,6 +58,9 @@ public:
     CREATE_FUNC(GameScene);
 	OPRT_state* state;
 private:
+	int ZorderBack;		// ˆê”ÔŒã‚ë‚Ìzorder
+	int ZorderChar;		// ·¬×‚Ìzorder
+	int ZorderFlont;	// ˆê”Ô‘O‚Ìzorder
 };
 
 #endif // __HELLOWORLD_SCENE_H__

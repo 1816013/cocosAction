@@ -14,10 +14,12 @@ public:
 		return *s_Instance;
 	}	
 	~AnimMng();
+
+	bool AnimCreate(const std::string key, int cnt, float time);
 private:
 	AnimMng();
 
-	bool AnimCreate(const char* name, int cnt, float time, bool flag, const std::string & key);
+	
 
 
 

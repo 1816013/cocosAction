@@ -48,7 +48,3 @@ protected:
 	//bool data[static_cast<int>(DIR::MAX)];
 	std::array<bool, static_cast<int>(DIR::MAX)>data;
 };
-DIR begin(DIR);	// DIR‚ÌÅ‰‚Ì—v‘f
-DIR end(DIR);		// DIR‚ÌÅŒã‚Ì—v‘f
-DIR operator*(DIR key);
-DIR operator++(DIR& key);
