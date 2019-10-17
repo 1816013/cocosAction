@@ -1,20 +1,17 @@
 #include "OPRT_touch.h"
 
-OPRT_touch::OPRT_touch()
+OPRT_touch::OPRT_touch(Node* sp)
 {
 	for (int i = 0; i < static_cast<int>(DIR::MAX); i++)
 	{
 		data[i] = false;
 	}
-}
 
-void OPRT_touch::Update(Node* sp)
-{
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool
 	{
 		Point pos = touch->getLocation();
-		_startTPos = pos;		
+		_startTPos = pos;
 		return true;
 	};
 	listener->onTouchMoved = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool
@@ -79,6 +76,11 @@ void OPRT_touch::Update(Node* sp)
 	};
 
 	sp->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, sp);
+}
+
+void OPRT_touch::Update()
+{
+	
 }
 
 OPRT_TYPE OPRT_touch::GetType(void)

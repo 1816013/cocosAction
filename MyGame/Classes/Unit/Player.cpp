@@ -56,7 +56,7 @@ bool Player::init()
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	auto pos = Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
+	auto pos = Vec2(visibleSize.width / 2 + origin.x,48);
 
 	// ﾌﾟﾚｲﾔｰ初期設定
 	this->Sprite::createWithSpriteFrameName("player-idle-1.png");
@@ -69,10 +69,10 @@ bool Player::init()
 	this->scheduleUpdate();
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
-	_inputState = std::make_unique<OPRT_key>();
+	_inputState = std::make_unique<OPRT_key>(this);
 	//state = new(OPRT_key);
 #else
-	_inputState.reset(new OPRT_touch());
+	_inputState.reset(new OPRT_touch(this));
 	//_inputState = std::make_unique<OPRT_touch>();
 	//state = new(OPRT_touch);
 #endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
@@ -88,7 +88,7 @@ void Player::update(float delta)
 	Action* jump = nullptr;
 	Animation* animation = oldanim;
 
-	_inputState->Update(this);
+	//_inputState->Update();
 	auto speed = 3;
 
 	auto callback = CallFunc::create([this]()
@@ -118,10 +118,10 @@ void Player::update(float delta)
 			anime = RepeatForever::create(Animate::create(animation));
 			anime->setTag(0);
 		}
-			auto move = MoveBy::create(0, Vec2(5, 0));
-			action = Spawn::create(FlipX::create(LRflag), move, nullptr);
+		auto move = MoveBy::create(0, Vec2(5, 0));
+		action = Spawn::create(FlipX::create(LRflag), move, nullptr);
 			
-			action->setTag(1);
+		action->setTag(1);
 		
 	}
 	if (_inputState->GetData(DIR::DOWN))

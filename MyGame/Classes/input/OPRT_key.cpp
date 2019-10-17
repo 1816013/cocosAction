@@ -1,15 +1,12 @@
 #include "OPRT_key.h"
 
-OPRT_key::OPRT_key()
+OPRT_key::OPRT_key(Node* sp)
 {
 	for (int i = 0; i < static_cast<int>(DIR::MAX); i++)
 	{
 		data[i] = false;
 	}
-}
 
-void OPRT_key::Update(Node* sp)
-{
 	auto listener = EventListenerKeyboard::create();
 	listener->onKeyPressed = [this](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)->bool
 	{
@@ -53,6 +50,11 @@ void OPRT_key::Update(Node* sp)
 		return true;
 	};
 	sp->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, sp);
+}
+
+void OPRT_key::Update()
+{
+	
 }
 
 OPRT_TYPE OPRT_key::GetType(void)

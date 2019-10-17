@@ -31,11 +31,7 @@ enum class TGR_KEY	// ÄØ¶Þ°”»’è—p
 struct OPRT_state
 {
 	OPRT_state(){};
-	void operator()(Node* sp)
-	{
-		Update(sp);
-	}
-	virtual void Update(Node* sp) = 0;
+	virtual void Update() = 0;
 	virtual OPRT_TYPE GetType(void) = 0;
 
 	bool GetData(DIR dir) 
