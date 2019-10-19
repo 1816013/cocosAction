@@ -2,6 +2,7 @@
 #include "AnimMng.h"
 #include <input/OPRT_key.h>
 #include <input/OPRT_touch.h>
+//#include "_DebugConOut.h"
 
 cocos2d::Sprite * Player::createSprite()
 {
@@ -56,15 +57,14 @@ bool Player::init()
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	auto pos = Vec2(visibleSize.width / 2 + origin.x,48);
+	auto Ppos = Vec2(48,96);
 
 	// ﾌﾟﾚｲﾔｰ初期設定
 	this->Sprite::createWithSpriteFrameName("player-idle-1.png");
 	// position the sprite on the center of the screen
-	this->setPosition(pos);
+	this->setPosition(Ppos);
 	//this->setScale(2.0f);
 	LRflag = false;
-
 
 	this->scheduleUpdate();
 
@@ -83,6 +83,50 @@ bool Player::init()
 
 void Player::update(float delta)
 {
+	// colision
+	auto directer = Director::getInstance();
+	auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
+	//int* num = (int*)malloc(sizeof(int) * 10);
+	auto col = map->layerNamed("footing");
+	//auto colF = col->propertyNamed("colision").asBool();
+	//if (colGID.size() == 0)
+	//{
+	//	for (float y = 0; y < map->getMapSize().height; y++)
+	//	{
+	//		for (float x = 0; x < map->getMapSize().width; x++)
+	//		{
+	//			colGID.emplace_back(col->getTileGIDAt({ x, y }));
+	//			//colGID[x + y * map->getMapSize().width] = ;
+	//		}
+	//	}
+	//}
+	
+	auto pPos = this->getPosition();
+	auto pSize = Vec2(60, 120);
+
+	_cPos[static_cast<int>(ConerPos::LEFT_UP)] = Vec2(pPos.x - pSize.x / 2, pPos.y + pSize.y / 2);
+	_cPos[static_cast<int>(ConerPos::RIGHT_UP)] = Vec2(pPos.x + pSize.x / 2, pPos.y + pSize.y / 2);
+	_cPos[static_cast<int>(ConerPos::RIGHT_DOWN)] = Vec2(pPos.x + pSize.x / 2, pPos.y - pSize.y / 2);
+	_cPos[static_cast<int>(ConerPos::LEFT_DOWN)] = Vec2(pPos.x - pSize.x / 2, pPos.y - pSize.y / 2);
+
+	
+	Vec2 pID;
+	pID = { pPos.x / col->getMapTileSize().width, map->getMapSize().height - ((pPos.y - 75) / col->getMapTileSize().height) };
+	if (pID.x < map->getMapSize().width && pID.y < map->getMapSize().height && pID.x > 0 && pID.y > 0)
+	{
+		if (col->getTileGIDAt({ pID.x, pID.y }) != 0)
+		{
+			this->setPosition(pPos.x, pPos.y + 10);
+			//TRACE("HIT%d\n", hitc++);
+		}
+		else
+		{
+			this->setPosition(pPos.x, pPos.y - 10);
+		}
+	}
+	
+
+	// move & animation
 	Action* anime = nullptr;
 	Action* action = nullptr;
 	Action* jump = nullptr;
@@ -95,8 +139,6 @@ void Player::update(float delta)
 	{
 		jumpFancFlag = false;
 	});
-
-
 	if (_inputState->GetData(DIR::UP))
 	{
 		jumpFlag = true;
@@ -126,14 +168,15 @@ void Player::update(float delta)
 	}
 	if (_inputState->GetData(DIR::DOWN))
 	{
-		if (!jumpFancFlag)
+		this->setPosition(this->getPosition().x, this->getPosition().y - 5);
+		/*if (!jumpFancFlag)
 		{
 			animation = AnimationCache::getInstance()->getAnimation("player-idle");
 			anime = RepeatForever::create(Animate::create(animation));
 			action = Spawn::create(FlipX::create(LRflag), nullptr);
 			anime->setTag(0);
 			action->setTag(1);
-		}
+		}*/
 	}
 	if (_inputState->GetData(DIR::LEFT))
 	{

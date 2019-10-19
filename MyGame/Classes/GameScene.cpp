@@ -126,10 +126,14 @@ bool GameScene::init()
 	ZorderChar = static_cast<int>(Zorder_ID::CHAR);
 	ZorderFlont = static_cast<int>(Zorder_ID::FLONT);
 	// Ú²Ô°ì¬
-	auto bglayer = Layer::create();
+	//auto bglayer = Layer::create();
+	
 	auto charbglayer = Layer::create();
+	charbglayer->setName("charLayer");
 	auto flontbglayer = Layer::create();
+	flontbglayer->setName("flontLayer");
 	auto backbglayer = Layer::create();
+	backbglayer->setName("backLayer");
 
 	// ½Ìß×²Äì¬
 	// ”wŒi
@@ -140,17 +144,20 @@ bool GameScene::init()
 
 	// Ï¯Ìß
 	auto mapS = TMXTiledMap::create("map2.tmx");
-	mapS->setPosition({ -16, 0 });
+	mapS->setName("mapData");
+	//mapS->setPosition({ -16, 0 });
 	auto waterL = mapS->getLayer("water");	// …
 	waterL->setGlobalZOrder(ZorderFlont);
 	auto plantL = mapS->getLayer("plant");	// A•¨
 	plantL->setGlobalZOrder(ZorderFlont);
 	auto caveL = mapS->getLayer("cave1");
 	caveL->setGlobalZOrder(ZorderFlont);
+	
+
 	// ¹Þ°Ä
 	auto gateS = Sprite::create("image/Environment/Props/gate-01.png");
 	gateS->setPosition(gateS->getContentSize().width / 2, gateS->getContentSize().height / 2 + 48);
-
+	
 	// ÌßÚ²Ô°
 	auto player = Player::createSprite();
 
