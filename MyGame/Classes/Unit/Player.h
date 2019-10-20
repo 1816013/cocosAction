@@ -38,7 +38,9 @@ private:
 	bool oldLRflag = false;			// 1ÌÚ°Ñ‘O‚É‰E‚Æ¶‚Ç‚¿‚ç‚ğŒü‚¢‚Ä‚¢‚½‚©
 	bool jumpFlag;					// ¼Ş¬İÌßÎŞÀİ‚ª‰Ÿ‚³‚ê‚½‚©@íœ—\’è
 	bool jumpFancFlag = false;		// ¼Ş¬İÌß’†:true	¼Ş¬İÌß‚µ‚Ä‚¢‚È‚¢:false
-	int jumpTime = 0;	// ¼Ş¬İÌß’†‚ÌŠÔ
+
+	Size tileSize;// À²Ù‚Ì‘å‚«‚³
+	Size mapTile;// Ï¯Ìß‚ÌÀ²Ù”ˆê‚Â–Ú‚Íx, “ñ‚Â–Ú‚Íy
 
 	//std::vector<int>colGID;
 	std::array<Vec2, static_cast<int>(ConerPos::MAX)>_cPos;
@@ -47,6 +49,7 @@ private:
 
 	int hitc = 0;
 
+	bool Colision(const Vec2 ID, TMXLayer & col);
 	//bool AnimCreate(std::string key, int cnt, float time);
 };
 
