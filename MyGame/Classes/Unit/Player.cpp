@@ -2,6 +2,7 @@
 #include "AnimMng.h"
 #include <input/OPRT_key.h>
 #include <input/OPRT_touch.h>
+
 //#include "_DebugConOut.h"
 
 cocos2d::Sprite * Player::createSprite()
@@ -55,8 +56,8 @@ bool Player::init()
 	//_inputState = std::make_unique<OPRT_touch>();
 	//state = new(OPRT_touch);
 #endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-
-
+	//col.reset(new Colision());
+	
 	return true;
 }
 
@@ -65,7 +66,7 @@ void Player::update(float delta)
 	auto directer = Director::getInstance();
 	auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
 	//int* num = (int*)malloc(sizeof(int) * 10);
-	TMXLayer* col = map->layerNamed("footing");
+	TMXLayer* colLayer = map->layerNamed("footing");
 	//auto colF = col->propertyNamed("colision").asBool();
 	//if (colGID.size() == 0)
 	//{
@@ -81,7 +82,7 @@ void Player::update(float delta)
 	
 	auto pPos = this->getPosition();
 	auto pSize = Size(60, 120);
-	tileSize = Size(col->getMapTileSize().width, col->getMapTileSize().height); 
+	tileSize = Size(colLayer->getMapTileSize().width, colLayer->getMapTileSize().height); 
 	mapTile = Size(map->getMapSize().width, map->getMapSize().height); 
 	/*_cPos[static_cast<int>(ConerPos::LEFT_UP)] = Vec2(pPos.x - pSize.width / 2, pPos.y + pSize.height / 2);
 	_cPos[static_cast<int>(ConerPos::RIGHT_UP)] = Vec2(pPos.x + pSize.width / 2, pPos.y + pSize.height / 2);
@@ -94,49 +95,58 @@ void Player::update(float delta)
 		    mapTile.height - ((pPos.y - pSize.height / 2) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標のID	
 	if (pID.x < mapTile.width && pID.y < mapTile.height && pID.x > 0 && pID.y > 0)
 	{
-		if (col->getTileGIDAt({ pID.x, pID.y}) != 0)
+		if (colLayer->getTileGIDAt({ pID.x, pID.y}) != 0)
 		{
 			this->setPosition(pPos.x, pPos.y + (pPos.y - ((mapTile.height - pID.y + 1 ) *  tileSize.height)));
 			//TRACE("HIT%d\n", hitc++);				
 		}
 	}
-	//
 
 	// 重力
+	auto G = 10;
 	Vec2 pNextID = { pPos.x / tileSize.width, 
-					 mapTile.height - ((pPos.y - pSize.height / 2 - 10) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標次のID
-	if (Colision(pNextID, *col))
+					 mapTile.height - ((pPos.y - pSize.height / 2 - G) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標次のID
+	if (col(pNextID, *colLayer, mapTile))
 	{
 		if (!jumpFancFlag)
 		{
-			this->setPosition(pPos.x, pPos.y - 10);
+			this->setPosition(pPos.x, pPos.y - G);
 		}
 	}
 
+	// ﾃﾞﾊﾞｯｸﾞ用 ※画面外の時落ちなかったため
+	if (pNextID.y < 0)
+	{
+		this->setPosition(this->getPosition().x, this->getPosition().y - G);
+	}
 	// move & animation @関数分け予定
 	Action* anime = nullptr;
 	Action* action = nullptr;
 	Action* jump = nullptr;
-	Animation* animation = oldanim;
-
-	//_inputState->Update();
+	Animation* animation = nullptr;
 	auto speed = 5;
-
+	//_inputState->Update();
+	
+	// jump 
 	auto callback = CallFunc::create([this]()
 	{
 		jumpFancFlag = false;
 	});
 	if (_inputState->GetData(DIR::UP))
 	{
-		jumpFlag = true;
-		animation = AnimationCache::getInstance()->getAnimation("player-jump");
-		anime = Repeat::create(Animate::create(animation), 1);
-		jump = Sequence::create(JumpBy::create(1.0f, { 0,0 }, 70, 1), callback, nullptr);
-		anime->setTag(intCast(Tag::ANIM));
-		jump->setTag(intCast(Tag::TRG_ACT));
-		jumpFancFlag = true;
+		if (!jumpFancFlag)
+		{
+			jumpFlag = true;
+			animation = AnimationCache::getInstance()->getAnimation("player-jump");
+			anime = Repeat::create(Animate::create(animation), 1);
+			jumpFancFlag = true;
+			jump = Sequence::create(JumpBy::create(1.0f, { 0,0 }, 200, 1), callback, nullptr);			
+			jump->setTag(intCast(Tag::TRG_ACT));
+		}
+		
 	}
 
+	// 移動
 	if (_inputState->GetData(DIR::RIGHT))
 	{
 		LRflag = false;
@@ -144,12 +154,11 @@ void Player::update(float delta)
 		{
 			animation = AnimationCache::getInstance()->getAnimation("player-run");
 			anime = RepeatForever::create(Animate::create(animation));
-			anime->setTag(intCast(Tag::ANIM));
 		}
 		MoveBy* move;
 		pNextID = { (pPos.x + pSize.width / 2 + speed) / tileSize.width,
 					 mapTile.height - ((pPos.y - pSize.height / 2) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標次のID
-		if (Colision(pNextID, *col))
+		if (col(pNextID, *colLayer, mapTile))
 		{
 			move = MoveBy::create(0, Vec2(speed, 0));
 			action = Spawn::create(FlipX::create(LRflag), move, nullptr);	
@@ -161,30 +170,19 @@ void Player::update(float delta)
 			action->setTag(intCast(Tag::ACT));
 		}		
 	}
-	if (_inputState->GetData(DIR::DOWN))
-	{
-		this->setPosition(this->getPosition().x, this->getPosition().y - speed);
-		/*if (!jumpFancFlag)
-		{
-			animation = AnimationCache::getInstance()->getAnimation("player-idle");
-			anime = RepeatForever::create(Animate::create(animation));
-			action = Spawn::create(FlipX::create(LRflag), nullptr);
-			anime->setTag(0);
-			action->setTag(1);
-		}*/
-	}
+
+	// 左移動
 	if (_inputState->GetData(DIR::LEFT))
 	{
 		LRflag = true;
 		if (!jumpFancFlag)
-		{			
+		{
 			animation = AnimationCache::getInstance()->getAnimation("player-run");
 			anime = RepeatForever::create(Animate::create(animation));
-			anime->setTag(intCast(Tag::ANIM));
 		}
 		pNextID = { (pPos.x - pSize.width / 2 - speed) / tileSize.width,
-				     mapTile.height - ((pPos.y - pSize.height / 2) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標次のID
-		if (Colision(pNextID, *col))
+					 mapTile.height - ((pPos.y - pSize.height / 2) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標次のID
+		if (col(pNextID, *colLayer, mapTile))
 		{
 			auto move = MoveBy::create(0, Vec2(-speed, 0));
 			action = Spawn::create(FlipX::create(LRflag), move, nullptr);
@@ -195,35 +193,39 @@ void Player::update(float delta)
 			action = FlipX::create(LRflag);
 			action->setTag(intCast(Tag::ACT));
 		}
-		
+
 	}
-	/*if (!_inputState->GetData(DIR::UP) && !_inputState->GetData(DIR::RIGHT) && !_inputState->GetData(DIR::DOWN) && !_inputState->GetData(DIR::LEFT) || _inputState->GetData(DIR::RIGHT) && _inputState->GetData(DIR::LEFT))
+
+	// しゃがみ予定
+	if (_inputState->GetData(DIR::DOWN))
 	{
-		if (!jumpTimeFlag)
+		pNextID = { (pPos.x + pSize.width / 2) / tileSize.width,
+					 mapTile.height - ((pPos.y - pSize.height / 2 - speed) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標次のID
+		if (col(pNextID, *colLayer, mapTile))
 		{
-			animation = AnimationCache::getInstance()->getAnimation("idle");
-			anime = RepeatForever::create(Animate::create(animation));
-			action = Spawn::create(FlipX::create(LRflag), nullptr);
-			anime->setTag(0);
-			action->setTag(1);
-		}
-	}*/
-	if (anime == nullptr)
+			this->setPosition(this->getPosition().x, this->getPosition().y - speed);
+		}	
+		this->setPosition(this->getPosition().x, this->getPosition().y - speed);
+	}
+	
+	// 待機
+	if (animation == nullptr)
 	{
 		if (!jumpFancFlag)
 		{
 			animation = AnimationCache::getInstance()->getAnimation("player-idle");
 			anime = RepeatForever::create(Animate::create(animation));
-			anime->setTag(intCast(Tag::ANIM));
 			action = Spawn::create(FlipX::create(LRflag), nullptr);
 			action->setTag(intCast(Tag::ACT));
 		}
-			
 	}
-	
-
-	if (anime != nullptr)
+	// ｱﾆﾒｰｼｮﾝ
+	if (animation != nullptr)
 	{
+		if(anime->getTag() == -1)
+		{ 
+			anime->setTag(intCast(Tag::ANIM));
+		}
 		if (oldanim != animation || oldLRflag != LRflag)
 		{
 			this->stopActionByTag(intCast(Tag::ANIM));
@@ -234,7 +236,7 @@ void Player::update(float delta)
 	if (action != nullptr)
 	{
 		this->stopActionByTag(intCast(Tag::ACT));
-		this->runAction(action);	
+		this->runAction(action);
 	}
 
 	if (jump != nullptr)
@@ -245,22 +247,25 @@ void Player::update(float delta)
 			jumpFlag = false;
 		}
 	}
+
+	
+
+	
 	oldLRflag = LRflag;
 	oldanim = animation;
 }
 
-bool Player::Colision(const Vec2 ID,  TMXLayer & col)
-{
-	if (ID.x < mapTile.width && ID.y < mapTile.height && ID.x > 0 && ID.y > 0)
-	{
-		if (col.getTileGIDAt({ ID.x, ID.y }) == 0)
-		{		
-			return true;
-		}
-
-	}
-	return false;
-}
+//bool Player::Colision(const Vec2 ID,  TMXLayer & col)
+//{
+//	if (ID.x < mapTile.width && ID.y < mapTile.height && ID.x > 0 && ID.y > 0)
+//	{
+//		if (col.getTileGIDAt({ ID.x, ID.y }) == 0)
+//		{		
+//			return true;
+//		}
+//	}
+//	return false;
+//}
 
 //bool Player::AnimCreate(std::string key, int cnt, float time )
 //{

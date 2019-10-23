@@ -16,6 +16,8 @@ public:
 	~AnimMng();
 
 	bool AnimCreate(const std::string key, int cnt, float time);
+	Action* setAnim(Animation* anim);
+	Action* setAnim(Animation* anim, int repeatCnt);
 private:
 	AnimMng();
 

@@ -3,6 +3,7 @@
 #include "input/OPRT_state.h"
 #include <vector>
 #include <array>
+#include <Colision.h>
 
 #define intCast(tag) static_cast<int>(tag)
 enum class Tag
@@ -49,7 +50,9 @@ private:
 
 	int hitc = 0;
 
-	bool Colision(const Vec2 ID, TMXLayer & col);
+	//std::unique_ptr<Colision>col;
+	Colision col;
+	//bool Colision(const Vec2 ID, TMXLayer & col);
 	//bool AnimCreate(std::string key, int cnt, float time);
 };
 

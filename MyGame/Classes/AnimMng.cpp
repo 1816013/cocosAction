@@ -28,3 +28,15 @@ bool AnimMng::AnimCreate(const std::string key, int cnt, float time)
 	AnimationCache::getInstance()->addAnimation(animation, key);
 	return true;
 }
+
+Action* AnimMng::setAnim(Animation* anim)
+{
+	auto anime = RepeatForever::create(Animate::create(anim));
+	return anime;
+}
+
+Action* AnimMng::setAnim(Animation* anim, int repeatCnt)
+{
+	auto anime = Repeat::create(Animate::create(anim), repeatCnt);
+	return anime;
+}
