@@ -5,5 +5,5 @@ USING_NS_CC;
 
 struct Colision
 {
-	bool operator()(const Vec2 ID, TMXLayer & col, const Size mapTile) const;		
+	bool operator()(Sprite & sp, TMXTiledMap & map, Size distance) const;	// “–‚½‚è”»’è(ŠÖ”µÌŞ¼Şª¸Ä)
 };

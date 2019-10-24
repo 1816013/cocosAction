@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <memory>
 
-#define TRACE(fmt, ...) printf(fmt, __VA_ARGS__) // ¼½ÃÑºİÄÛ°ÙÊßÈÙ‚Éprintf‚Å•`‰æ
+#define TRACE(fmt, ...) printf(fmt, __VA_ARGS__) // ¼½ÃÑºİÄÛ°ÙÊßÈÙ‚Éprintf‚Åo—Í
 
 #define AST() {\
 	CHAR ast_mes[256];\
@@ -19,6 +19,7 @@ public:
 		return (*s_Instance);
 	}
 private:
+	// ÃŞØ°À°
 	struct _DebugConOutDeleter
 	{
 		void operator()(_DebugConOut* _debugContOut) const

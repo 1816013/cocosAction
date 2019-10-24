@@ -21,42 +21,35 @@ Player::~Player()
 
 bool Player::init()
 {
-	// 1. super init first
+	// ｽﾌﾟﾗｲﾄｸﾗｽの初期化
 	if (!Sprite::init())
 	{
 		return false;
 	}
 	// ｱﾆﾒｰｼｮﾝ
 	// idle
-	lpAnimMng.AnimCreate("player-idle", 4, 0.1f );
-
+	lpAnimMng.AnimCreate("player", "player-idle", 4, 0.1f);
 	// run
-	lpAnimMng.AnimCreate("player-run", 10, 0.1f);
+	lpAnimMng.AnimCreate("player", "player-run", 10, 0.1f);
 	// jump
-	lpAnimMng.AnimCreate("player-jump", 6, 0.1f);
+	lpAnimMng.AnimCreate("player","player-jump", 6, 0.1f);
 
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	auto Ppos = Vec2(visibleSize.width / 2, visibleSize.height / 2);
-
+	auto visibleSize = Director::getInstance()->getVisibleSize();		// ｳｲﾝﾄﾞｳｻｲｽﾞ
+	
 	// ﾌﾟﾚｲﾔｰ初期設定
 	this->Sprite::createWithSpriteFrameName("player-idle-1.png");
-	// position the sprite on the center of the screen
+	auto Ppos = Vec2(visibleSize.width / 2, visibleSize.height / 2);	// ﾌﾟﾚｲﾔｰ初期位置
 	this->setPosition(Ppos);
-	//this->setScale(2.0f);
 	LRflag = false;
 
 	this->scheduleUpdate();
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 	_inputState = std::make_unique<OPRT_key>(this);
-	//state = new(OPRT_key);
 #else
 	_inputState.reset(new OPRT_touch(this));
 	//_inputState = std::make_unique<OPRT_touch>();
-	//state = new(OPRT_touch);
 #endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-	//col.reset(new Colision());
 	
 	return true;
 }
@@ -66,30 +59,14 @@ void Player::update(float delta)
 	auto directer = Director::getInstance();
 	auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
 	//int* num = (int*)malloc(sizeof(int) * 10);
-	TMXLayer* colLayer = map->layerNamed("footing");
-	//auto colF = col->propertyNamed("colision").asBool();
-	//if (colGID.size() == 0)
-	//{
-	//	for (float y = 0; y < map->getMapSize().height; y++)
-	//	{
-	//		for (float x = 0; x < map->getMapSize().width; x++)
-	//		{
-	//			colGID.emplace_back(col->getTileGIDAt({ x, y }));
-	//			//colGID[x + y * map->getMapSize().width] = ;
-	//		}
-	//	}
-	//}
+	TMXLayer* colLayer = map->getLayer("footing");
 	
-	auto pPos = this->getPosition();
 	auto pSize = Size(60, 120);
 	tileSize = Size(colLayer->getMapTileSize().width, colLayer->getMapTileSize().height); 
 	mapTile = Size(map->getMapSize().width, map->getMapSize().height); 
-	/*_cPos[static_cast<int>(ConerPos::LEFT_UP)] = Vec2(pPos.x - pSize.width / 2, pPos.y + pSize.height / 2);
-	_cPos[static_cast<int>(ConerPos::RIGHT_UP)] = Vec2(pPos.x + pSize.width / 2, pPos.y + pSize.height / 2);
-	_cPos[static_cast<int>(ConerPos::RIGHT_DOWN)] = Vec2(pPos.x + pSize.width / 2, pPos.y - pSize.height / 2);
-	_cPos[static_cast<int>(ConerPos::LEFT_DOWN)] = Vec2(pPos.x - pSize.width / 2, pPos.y - pSize.height / 2);*/
 
-	// ﾌﾟﾚｲﾔｰが埋まっていたら上に一応上げる処理@削除するかも
+	// ﾌﾟﾚｲﾔｰが埋まっていたら上に一応上げる処理@ｼﾞｬﾝﾌﾟ次第で削除するかも
+	auto pPos = this->getPosition();
 	Vec2 pID;
 	pID = { pPos.x / tileSize.width, 
 		    mapTile.height - ((pPos.y - pSize.height / 2) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標のID	
@@ -104,9 +81,10 @@ void Player::update(float delta)
 
 	// 重力
 	auto G = 10;
-	Vec2 pNextID = { pPos.x / tileSize.width, 
-					 mapTile.height - ((pPos.y - pSize.height / 2 - G) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標次のID
-	if (col(pNextID, *colLayer, mapTile))
+	
+	if (col(*this, *map, { 0, -pSize.height / 2 - G })
+	 && col(*this, *map,{ -pSize.width / 2, -pSize.height / 2 - G })
+	 && col(*this, *map, { pSize.width / 2, -pSize.height / 2 - G }))
 	{
 		if (!jumpFancFlag)
 		{
@@ -115,19 +93,32 @@ void Player::update(float delta)
 	}
 
 	// ﾃﾞﾊﾞｯｸﾞ用 ※画面外の時落ちなかったため
+	Vec2 pNextID = { pPos.x / tileSize.width,
+					 mapTile.height - ((pPos.y - pSize.height / 2 - G) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標次のID
 	if (pNextID.y < 0)
 	{
 		this->setPosition(this->getPosition().x, this->getPosition().y - G);
+		if (_inputState->GetData(DIR::RIGHT))
+		{
+			this->setPosition(this->getPosition().x + 5, this->getPosition().y);
+		}
+		if (_inputState->GetData(DIR::LEFT))
+		{
+			this->setPosition(this->getPosition().x - 5, this->getPosition().y);
+		}
 	}
-	// move & animation @関数分け予定
-	Action* anime = nullptr;
+
+	// ｱｸｼｮﾝとｱﾆﾒｰｼｮﾝ @関数分け予定
+	Animation* animation = nullptr;	// ｱﾆﾒｰｼｮﾝ
+	Action* animeAct = nullptr;		// ｱﾆﾒｰｼｮﾝ(リピートなど)
 	Action* action = nullptr;
-	Action* jump = nullptr;
-	Animation* animation = nullptr;
+	Action* jumpAct = nullptr;
+	
 	auto speed = 5;
 	//_inputState->Update();
-	
-	// jump 
+
+	// ｼﾞｬﾝﾌﾟ 
+	// ｺｰﾙﾊﾞｯｸ処理　ｼﾞｬﾝﾌﾟ中ﾌﾗｸﾞをfalseにする
 	auto callback = CallFunc::create([this]()
 	{
 		jumpFancFlag = false;
@@ -138,70 +129,52 @@ void Player::update(float delta)
 		{
 			jumpFlag = true;
 			animation = AnimationCache::getInstance()->getAnimation("player-jump");
-			anime = Repeat::create(Animate::create(animation), 1);
+			animeAct = Repeat::create(Animate::create(animation), 1);
 			jumpFancFlag = true;
-			jump = Sequence::create(JumpBy::create(1.0f, { 0,0 }, 200, 1), callback, nullptr);			
-			jump->setTag(intCast(Tag::TRG_ACT));
+			jumpAct = Sequence::create(JumpBy::create(1.0f, { 0,0 }, 200, 1), callback, nullptr);			
+			jumpAct->setTag(intCast(Tag::TRG_ACT));
 		}
-		
 	}
 
 	// 移動
+	// 右
 	if (_inputState->GetData(DIR::RIGHT))
 	{
 		LRflag = false;
 		if (!jumpFancFlag)
 		{
 			animation = AnimationCache::getInstance()->getAnimation("player-run");
-			anime = RepeatForever::create(Animate::create(animation));
+			animeAct = RepeatForever::create(Animate::create(animation));
 		}
-		MoveBy* move;
-		pNextID = { (pPos.x + pSize.width / 2 + speed) / tileSize.width,
-					 mapTile.height - ((pPos.y - pSize.height / 2) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標次のID
-		if (col(pNextID, *colLayer, mapTile))
+		if (col(*this, *map, { pSize.width / 2 + speed, - pSize.height / 2 })
+			&& col(*this, *map, { pSize.width / 2 + speed, + pSize.height / 2}))
 		{
-			move = MoveBy::create(0, Vec2(speed, 0));
-			action = Spawn::create(FlipX::create(LRflag), move, nullptr);	
+			action = MoveBy::create(0, Vec2(speed, 0));
 			action->setTag(intCast(Tag::ACT));
 		}
-		else
-		{
-			action = FlipX::create(LRflag);
-			action->setTag(intCast(Tag::ACT));
-		}		
 	}
-
-	// 左移動
+	// 左
 	if (_inputState->GetData(DIR::LEFT))
 	{
 		LRflag = true;
 		if (!jumpFancFlag)
 		{
 			animation = AnimationCache::getInstance()->getAnimation("player-run");
-			anime = RepeatForever::create(Animate::create(animation));
+			animeAct = RepeatForever::create(Animate::create(animation));
 		}
-		pNextID = { (pPos.x - pSize.width / 2 - speed) / tileSize.width,
-					 mapTile.height - ((pPos.y - pSize.height / 2) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標次のID
-		if (col(pNextID, *colLayer, mapTile))
+		if (col(*this, *map, { -pSize.width / 2 - speed, -pSize.height / 2 })
+		 && col(*this, *map, { -pSize.width / 2 - speed, pSize.height / 2 }))
 		{
-			auto move = MoveBy::create(0, Vec2(-speed, 0));
-			action = Spawn::create(FlipX::create(LRflag), move, nullptr);
+			action =  MoveBy::create(0, Vec2(-speed, 0));
 			action->setTag(intCast(Tag::ACT));
 		}
-		else
-		{
-			action = FlipX::create(LRflag);
-			action->setTag(intCast(Tag::ACT));
-		}
-
 	}
 
 	// しゃがみ予定
 	if (_inputState->GetData(DIR::DOWN))
 	{
-		pNextID = { (pPos.x + pSize.width / 2) / tileSize.width,
-					 mapTile.height - ((pPos.y - pSize.height / 2 - speed) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標次のID
-		if (col(pNextID, *colLayer, mapTile))
+		if (col(*this, *map, { -pSize.width / 2, -pSize.height / 2 - speed })
+		 && col(*this, *map, { pSize.width / 2, -pSize.height / 2 - speed }))
 		{
 			this->setPosition(this->getPosition().x, this->getPosition().y - speed);
 		}	
@@ -214,43 +187,40 @@ void Player::update(float delta)
 		if (!jumpFancFlag)
 		{
 			animation = AnimationCache::getInstance()->getAnimation("player-idle");
-			anime = RepeatForever::create(Animate::create(animation));
-			action = Spawn::create(FlipX::create(LRflag), nullptr);
-			action->setTag(intCast(Tag::ACT));
-		}
-	}
-	// ｱﾆﾒｰｼｮﾝ
-	if (animation != nullptr)
-	{
-		if(anime->getTag() == -1)
-		{ 
-			anime->setTag(intCast(Tag::ANIM));
-		}
-		if (oldanim != animation || oldLRflag != LRflag)
-		{
-			this->stopActionByTag(intCast(Tag::ANIM));
-			this->runAction(anime);
+			animeAct = RepeatForever::create(Animate::create(animation));
 		}
 	}
 
+	// ｱﾆﾒｰｼｮﾝrun
+	if (animation != nullptr)
+	{
+		animeAct->setTag(intCast(Tag::ANIM));
+		if (oldanim != animation)
+		{
+			this->stopActionByTag(intCast(Tag::ANIM));
+			this->runAction(animeAct);
+		}
+	}
+	// 描画左右反転
+	if (LRflag != oldLRflag)
+	{
+		this->runAction(FlipX::create(LRflag));
+	}
+	// ｱｸｼｮﾝrun
 	if (action != nullptr)
 	{
 		this->stopActionByTag(intCast(Tag::ACT));
 		this->runAction(action);
 	}
-
-	if (jump != nullptr)
+	// ｼﾞｬﾝﾌﾟrun
+	if (jumpAct != nullptr)
 	{
 		if (jumpFlag)
 		{
-			this->runAction(jump);
+			this->runAction(jumpAct);
 			jumpFlag = false;
 		}
 	}
-
-	
-
-	
 	oldLRflag = LRflag;
 	oldanim = animation;
 }

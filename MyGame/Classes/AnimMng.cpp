@@ -11,9 +11,9 @@ AnimMng::~AnimMng()
 {
 }
 
-bool AnimMng::AnimCreate(const std::string key, int cnt, float time)
+bool AnimMng::AnimCreate(const std::string type, const std::string key, int cnt, float time)
 {
-	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(key + ".plist");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("plist/"+ type + "/" + key + ".plist");
 	auto animation = Animation::create();
 	for (int i = 1; i <= cnt; i++)
 	{
@@ -29,14 +29,14 @@ bool AnimMng::AnimCreate(const std::string key, int cnt, float time)
 	return true;
 }
 
-Action* AnimMng::setAnim(Animation* anim)
-{
-	auto anime = RepeatForever::create(Animate::create(anim));
-	return anime;
-}
-
-Action* AnimMng::setAnim(Animation* anim, int repeatCnt)
-{
-	auto anime = Repeat::create(Animate::create(anim), repeatCnt);
-	return anime;
-}
+//Action* AnimMng::setAnim(Animation* anim)
+//{
+//	auto anime = RepeatForever::create(Animate::create(anim));
+//	return anime;
+//}
+//
+//Action* AnimMng::setAnim(Animation* anim, int repeatCnt)
+//{
+//	auto anime = Repeat::create(Animate::create(anim), repeatCnt);
+//	return anime;
+//}

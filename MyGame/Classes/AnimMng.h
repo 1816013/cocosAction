@@ -15,9 +15,9 @@ public:
 	}	
 	~AnimMng();
 
-	bool AnimCreate(const std::string key, int cnt, float time);
-	Action* setAnim(Animation* anim);
-	Action* setAnim(Animation* anim, int repeatCnt);
+	bool AnimCreate(const std::string type, const std::string key, int cnt, float time);	// ±∆“∞ºÆ›ÇÃçÏê¨
+	/*Action* setAnim(Animation* anim);							
+	Action* setAnim(Animation* anim, int repeatCnt);*/
 private:
 	AnimMng();
 
