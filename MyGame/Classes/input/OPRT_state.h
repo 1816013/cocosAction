@@ -44,3 +44,7 @@ protected:
 	//bool data[static_cast<int>(DIR::MAX)];
 	std::array<bool, static_cast<int>(DIR::MAX)>data;
 };
+DIR begin(DIR);
+DIR end(DIR);
+DIR operator*(DIR key);
+DIR operator++(DIR & key);

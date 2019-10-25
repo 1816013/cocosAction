@@ -2,7 +2,10 @@
 #include <algorithm>
 #include <array>
 
-bool Colision::operator()(Sprite & sp, TMXTiledMap & map, Size distance) const
+USING_NS_CC;
+
+
+bool Colision::operator()(Sprite & sp, TMXTiledMap & map, Size distance) const // “–‚½‚è”»’è
 {
 	auto col = map.getLayer("footing");
 	auto mapSize = map.getMapSize();

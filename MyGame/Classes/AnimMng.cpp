@@ -1,7 +1,8 @@
 #include "AnimMng.h"
 
-std::unique_ptr<AnimMng>AnimMng::s_Instance(new AnimMng);
+USING_NS_CC;
 
+std::unique_ptr<AnimMng>AnimMng::s_Instance(new AnimMng);
 
 AnimMng::AnimMng()
 {
@@ -11,15 +12,29 @@ AnimMng::~AnimMng()
 {
 }
 
-bool AnimMng::AnimCreate(const std::string type, const std::string key, int cnt, float time)
+// ±ÆÒ°¼®Ý‚Ìì¬
+bool AnimMng::AnimCreate(const std::string type, const std::string key, int num, float time)
 {
-	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("plist/"+ type + "/" + key + ".plist");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("plist/"+ type + "/" + type + "-" + key + ".plist");
 	auto animation = Animation::create();
-	for (int i = 1; i <= cnt; i++)
+	if (num == 1)
 	{
-		auto str = __String::createWithFormat((key + "-%i.png").c_str(), i);
-		SpriteFrame *sprite = SpriteFrameCache::getInstance()->getSpriteFrameByName(str->getCString());
+		auto str = type + "-" + key + ".png";
+		SpriteFrame *sprite = SpriteFrameCache::getInstance()->getSpriteFrameByName(str);
 		animation->addSpriteFrame(sprite);
+	}
+	else
+	{
+		for (int i = 1; i <= 20; i++)
+		{
+			auto str = __String::createWithFormat((type + "-" + key + "-%i.png").c_str(), i);
+			SpriteFrame *sprite = SpriteFrameCache::getInstance()->getSpriteFrameByName(str->getCString());
+			if (sprite == nullptr)
+			{
+				break;
+			}
+			animation->addSpriteFrame(sprite);
+		}
 	}
 
 	animation->setDelayPerUnit(time); // ±ÆÒ°¼®Ý‚ÌŠúŠÔ

@@ -1,9 +1,8 @@
 #pragma once
 #include "cocos2d.h"
 
-USING_NS_CC;
-
 struct Colision
 {
-	bool operator()(Sprite & sp, TMXTiledMap & map, Size distance) const;	// “–‚½‚è”»’è(ŠÖ”µÌŞ¼Şª¸Ä)
+	// “–‚½‚è”»’è(ŠÖ”µÌŞ¼Şª¸Ä)
+	bool operator()(cocos2d::Sprite & sp, cocos2d::TMXTiledMap & map, cocos2d::Size distance) const;	
 };

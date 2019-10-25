@@ -2,9 +2,9 @@
 
 OPRT_key::OPRT_key(Node* sp)
 {
-	for (int i = 0; i < static_cast<int>(DIR::MAX); i++)
+	for (auto itr : DIR())
 	{
-		data[i] = false;
+		data[static_cast<int>(itr)] = false;
 	}
 
 	auto listener = EventListenerKeyboard::create();

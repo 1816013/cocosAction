@@ -2,8 +2,6 @@
 #include "cocos2d.h"
 #include <input/OPRT_state.h>
 
-USING_NS_CC;
-
 // ¦Œ»İg—p‚µ‚Ä‚¢‚È‚¢
 class Obj : public Scene
 {
