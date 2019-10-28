@@ -4,5 +4,5 @@
 struct Colision
 {
 	// “–‚½‚è”»’è(ŠÖ”µÌŞ¼Şª¸Ä)
-	bool operator()(cocos2d::Sprite & sp, cocos2d::TMXTiledMap & map, cocos2d::Size distance) const;	
+	bool operator()(cocos2d::Sprite & sp, cocos2d::Size distance) const;	
 };

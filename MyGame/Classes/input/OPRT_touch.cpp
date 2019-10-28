@@ -51,13 +51,10 @@ OPRT_touch::OPRT_touch(Node* sp)
 											data[static_cast<int>(DIR::UP)] = false;
 										}
 									}
-									if (start_p.x + 20 > pos.x && start_p.x - 20 < pos.x)
+									if (start_p + Vec2{ margin, margin } > pos && start_p - Vec2{ margin, margin } < pos)
 									{
 										data[static_cast<int>(DIR::RIGHT)] = false;
 										data[static_cast<int>(DIR::LEFT)] = false;
-									}
-									if (start_p.y + 20 > pos.y && start_p.y - 20 < pos.y)
-									{
 										data[static_cast<int>(DIR::UP)] = false;
 										data[static_cast<int>(DIR::DOWN)] = false;
 									}

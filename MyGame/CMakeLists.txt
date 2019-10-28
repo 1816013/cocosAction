@@ -56,6 +56,8 @@ list(APPEND GAME_SOURCE
 	    Classes/Unit/Player.cpp
 	    Classes/Unit/Obj.cpp
         Classes/AnimMng.cpp
+        Classes/Colision.cpp
+        Classes/_DebugDispOut.cpp
         )
 list(APPEND GAME_HEADER
         Classes/AppDelegate.h
@@ -66,6 +68,8 @@ list(APPEND GAME_HEADER
 	    Classes/Unit/Player.h
 	    Classes/Unit/Obj.h
         Classes/AnimMng.h
+        Classes/Colision.h
+        Classes/_DebugDispOut.h
      )
 
 if(ANDROID)

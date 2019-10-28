@@ -2,7 +2,6 @@
 //#include "Obj.h"
 #include <input/OPRT_state.h>
 
-
 #define intCast(tag) static_cast<int>(tag)
 
 enum class Tag
@@ -11,6 +10,7 @@ enum class Tag
 	ACT,		// ±¸¼®Ý(1ÌÚ°Ñ–ˆ‚É“®‚©‚·‚à‚Ì)
 	TRG_ACT		// ±¸¼®Ý(‚»‚ÌŽž‚¾‚¯“®‚©‚·‚à‚Ì)
 };
+
 
 class Player : public Sprite
 {

@@ -102,9 +102,9 @@ void Player::update(float delta)
 
 	auto G = 10;
 	// 重力
-	if (Colision()(*this, *map, { 0, -_size.height / 2 - G })						// 足元の中心
-	 && Colision()(*this, *map,{ -_size.width / 2, -_size.height / 2 - G })			// 足元の左
-	 && Colision()(*this, *map, { _size.width / 2, -_size.height / 2 - G }))		// 足元の右
+	if (Colision()(*this, { 0, -_size.height / 2 - G })						// 足元の中心
+	 && Colision()(*this,{ -_size.width / 2, -_size.height / 2 - G })			// 足元の左
+	 && Colision()(*this,{ _size.width / 2, -_size.height / 2 - G }))		// 足元の右
 	{
 		if (!_jumpFancFlag)
 		{
@@ -152,8 +152,8 @@ void Player::update(float delta)
 			animation = AnimationCache::getInstance()->getAnimation("run");
 			animeAct = RepeatForever::create(Animate::create(animation));
 		}
-		if (Colision()(*this, *map, { _size.width / 2 + speed, - _size.height / 2 })
-			&& Colision()(*this, *map, { _size.width / 2 + speed, + _size.height / 2}))
+		if (Colision()(*this, { _size.width / 2 + speed, - _size.height / 2 })
+			&& Colision()(*this, { _size.width / 2 + speed, + _size.height / 2}))
 		{
 			action = MoveBy::create(0, Vec2(speed, 0));
 			action->setTag(intCast(Tag::ACT));
@@ -168,8 +168,8 @@ void Player::update(float delta)
 			animation = AnimationCache::getInstance()->getAnimation("run");
 			animeAct = RepeatForever::create(Animate::create(animation));
 		}
-		if (Colision()(*this, *map, { -_size.width / 2 - speed, -_size.height / 2 })
-		 && Colision()(*this, *map, { -_size.width / 2 - speed, _size.height / 2 }))
+		if (Colision()(*this, { -_size.width / 2 - speed, -_size.height / 2 })
+		 && Colision()(*this, { -_size.width / 2 - speed, _size.height / 2 }))
 		{
 			action =  MoveBy::create(0, Vec2(-speed, 0));
 			action->setTag(intCast(Tag::ACT));
@@ -179,8 +179,8 @@ void Player::update(float delta)
 	// しゃがみ予定
 	if (_inputState->GetData(DIR::DOWN))
 	{
-		if (Colision()(*this, *map, { -_size.width / 2, -_size.height / 2 - speed })
-		 && Colision()(*this, *map, { _size.width / 2, -_size.height / 2 - speed }))
+		if (Colision()(*this, { -_size.width / 2, -_size.height / 2 - speed })
+		 && Colision()(*this, { _size.width / 2, -_size.height / 2 - speed }))
 		{
 			this->setPosition(this->getPosition().x, this->getPosition().y - speed);
 		}	

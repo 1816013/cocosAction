@@ -5,10 +5,12 @@
 USING_NS_CC;
 
 
-bool Colision::operator()(Sprite & sp, TMXTiledMap & map, Size distance) const // “–‚½‚è”»’è
+bool Colision::operator()(Sprite & sp, Size distance) const // “–‚½‚è”»’è
 {
-	auto col = map.getLayer("footing");
-	auto mapSize = map.getMapSize();
+	auto directer = Director::getInstance();
+	auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
+	auto col = map->getLayer("footing");
+	auto mapSize = map->getMapSize();
 	auto tileSize = col->getMapTileSize();
 	
 	Vec2 pos = sp.getPosition();
