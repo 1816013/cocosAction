@@ -1,6 +1,7 @@
 #pragma once
 //#include "Obj.h"
 #include <input/OPRT_state.h>
+#include <array>
 
 #define intCast(tag) static_cast<int>(tag)
 
@@ -21,6 +22,11 @@ public:
 
 	bool init()override;				// ‰Šú‰»@½Ìß×²Äì¬
 	void update(float delta)override;	// ÌßÚ²Ô°‚ÌˆÚ“®‚Æ±ÆÒ°¼®İˆ—
+	void MoveLR(Sprite& sp);
+
+	std::array<Vec2, static_cast<int>(DIR::MAX)>SpeedTbl;
+	std::array<Vec2, static_cast<int>(DIR::MAX)>SpeedTbl;
+	DIR dir;
 
 	CREATE_FUNC(Player);
 private:

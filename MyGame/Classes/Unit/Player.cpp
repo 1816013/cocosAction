@@ -43,11 +43,15 @@ bool Player::init()
 	_pos = Vec2(visibleSize.width / 2, visibleSize.height / 2);	// ﾌﾟﾚｲﾔｰ初期位置
 	_size = Size(60, 120);
 	this->setPosition(_pos);
+	auto speed = 5;					// ﾌﾟﾚｲﾔｰのｽﾋﾟｰﾄﾞ
+	SpeedTbl = { Vec2(0, speed), Vec2(speed, 0), Vec2(0, -speed), Vec2(-speed, 0) };
 	
 	_LRflag = false;						
 	_oldLRflag = _LRflag;					
 	_jumpFlag = false;						
-	_jumpFancFlag = false;					
+	_jumpFancFlag = false;		
+
+
 
 	this->scheduleUpdate();
 
@@ -117,7 +121,7 @@ void Player::update(float delta)
 	Action* animeAct = nullptr;		// ｱﾆﾒｰｼｮﾝ(リピートなど)
 	Action* action = nullptr;		// ｱｸｼｮﾝ
 	Action* jumpAct = nullptr;		// ｼﾞｬﾝﾌﾟ@ﾄﾘｶﾞｰ処理のｱｸｼｮﾝ	
-	auto speed = 5;					// ﾌﾟﾚｲﾔｰのｽﾋﾟｰﾄﾞ
+	
 	//_inputState->Update();
 
 	// ｼﾞｬﾝﾌﾟ 
@@ -141,48 +145,71 @@ void Player::update(float delta)
 			
 		}
 	}
-
+	
 	// 移動
 	// 右
+	for (auto itr : DIR())
+	{
+		if (_inputState->GetData(itr))
+		{
+			dir = itr;
+			MoveLR(*this);
+		}
+	}
+	
+	/*auto MoveLR = [](Sprite& sp)
+	{
+		if (!Colision()(sp, { 30 + 5, -60 }) && Colision()(sp, { 30 + 5, 60 }))
+		{
+			return;
+		}
+		auto action = MoveBy::create(0, SpeedTbl[static_cast<int>(dir)]);
+		action->setTag(intCast(Tag::ACT));
+		sp.runAction(action);
+	};
 	if (_inputState->GetData(DIR::RIGHT))
 	{
-		_LRflag = false;
-		if (!_jumpFancFlag)
-		{
-			animation = AnimationCache::getInstance()->getAnimation("run");
-			animeAct = RepeatForever::create(Animate::create(animation));
-		}
-		if (Colision()(*this, { _size.width / 2 + speed, - _size.height / 2 })
-			&& Colision()(*this, { _size.width / 2 + speed, + _size.height / 2}))
-		{
-			action = MoveBy::create(0, Vec2(speed, 0));
-			action->setTag(intCast(Tag::ACT));
-		}
-	}
-	// 左
-	if (_inputState->GetData(DIR::LEFT))
-	{
-		_LRflag = true;
-		if (!_jumpFancFlag)
-		{
-			animation = AnimationCache::getInstance()->getAnimation("run");
-			animeAct = RepeatForever::create(Animate::create(animation));
-		}
-		if (Colision()(*this, { -_size.width / 2 - speed, -_size.height / 2 })
-		 && Colision()(*this, { -_size.width / 2 - speed, _size.height / 2 }))
-		{
-			action =  MoveBy::create(0, Vec2(-speed, 0));
-			action->setTag(intCast(Tag::ACT));
-		}
-	}
+		MoveLR(*this);
+	};*/
+	//if (_inputState->GetData(DIR::RIGHT))
+	//{
+	//	_LRflag = false;
+	//	if (!_jumpFancFlag)
+	//	{
+	//		animation = AnimationCache::getInstance()->getAnimation("run");
+	//		animeAct = RepeatForever::create(Animate::create(animation));
+	//	}
+	//	if (Colision()(*this, { _size.width / 2 + speed, -_size.height / 2 })
+	//		&& Colision()(*this, { _size.width / 2 + speed, _size.height / 2}))
+	//	{
+	//		action = MoveBy::create(0, Vec2(speed, 0));
+	//		action->setTag(intCast(Tag::ACT));
+	//	}
+	//}
+	//// 左
+	//if (_inputState->GetData(DIR::LEFT))
+	//{
+	//	_LRflag = true;
+	//	if (!_jumpFancFlag)
+	//	{
+	//		animation = AnimationCache::getInstance()->getAnimation("run");
+	//		animeAct = RepeatForever::create(Animate::create(animation));
+	//	}
+	//	if (Colision()(*this, { -_size.width / 2 - speed, -_size.height / 2 })
+	//	 && Colision()(*this, { -_size.width / 2 - speed, _size.height / 2 }))
+	//	{
+	//		action =  MoveBy::create(0, Vec2(-speed, 0));
+	//		action->setTag(intCast(Tag::ACT));
+	//	}
+	//}
 
 	// しゃがみ予定
 	if (_inputState->GetData(DIR::DOWN))
 	{
-		if (Colision()(*this, { -_size.width / 2, -_size.height / 2 - speed })
-		 && Colision()(*this, { _size.width / 2, -_size.height / 2 - speed }))
+		if (Colision()(*this, { -_size.width / 2, -_size.height / 2 - SpeedTbl[static_cast<int>(DIR::DOWN)].y })
+		 && Colision()(*this, { _size.width / 2, -_size.height / 2 - SpeedTbl[static_cast<int>(DIR::DOWN)].y }))
 		{
-			this->setPosition(this->getPosition().x, this->getPosition().y - speed);
+			this->setPosition(this->getPosition().x, this->getPosition().y - SpeedTbl[static_cast<int>(DIR::DOWN)].y);
 		}	
 	}
 	
@@ -230,4 +257,21 @@ void Player::update(float delta)
 	// oldを設定
 	_oldLRflag = _LRflag;
 	_oldanim = animation;
+}
+
+void Player::MoveLR(Sprite & sp)
+{
+	
+	if (_inputState->GetData(DIR::LEFT) && _inputState->GetData(DIR::RIGHT))
+	{
+		return;
+	}
+	if (!Colision()(sp, { 30 + SpeedTbl[static_cast<int>(dir)].x, -60 })
+	 && Colision()(sp, { 30 + SpeedTbl[static_cast<int>(dir)].x, 60 }))
+	{
+		return;
+	}
+	auto action = MoveBy::create(0, SpeedTbl[static_cast<int>(dir)]);
+	action->setTag(intCast(Tag::ACT));
+	sp.runAction(action);
 }

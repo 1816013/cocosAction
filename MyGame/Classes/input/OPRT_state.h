@@ -13,7 +13,6 @@ enum class OPRT_TYPE	// ‘€ì•û–@
 
 enum class DIR	// •ûŒü
 {
-	CENTER,		// ’†‰›
 	UP,			// ã
 	RIGHT,		// ‰E
 	DOWN,		// ‰º
@@ -44,6 +43,7 @@ protected:
 	//bool data[static_cast<int>(DIR::MAX)];
 	std::array<bool, static_cast<int>(DIR::MAX)>data;
 };
+
 DIR begin(DIR);
 DIR end(DIR);
 DIR operator*(DIR key);

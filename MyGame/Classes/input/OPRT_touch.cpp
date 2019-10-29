@@ -16,7 +16,7 @@ OPRT_touch::OPRT_touch(Node* sp)
 								};
 	listener->onTouchMoved = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool
 								{
-									int margin = 30;
+									float margin = 30.0f;
 									Point pos = touch->getLocation();
 									auto start_p = _startTPos;
 									if (pos.x > start_p.x + margin)
