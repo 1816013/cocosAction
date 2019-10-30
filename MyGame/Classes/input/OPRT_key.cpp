@@ -1,4 +1,5 @@
 #include "OPRT_key.h"
+#include "_debug/_DebugConOut.h"
 
 OPRT_key::OPRT_key(Node* sp)
 {
@@ -14,7 +15,7 @@ OPRT_key::OPRT_key(Node* sp)
 									{
 										data[static_cast<int>(DIR::UP)] = true;
 									}
-									if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+									if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW )
 									{
 										data[static_cast<int>(DIR::RIGHT)] = true;
 									}
@@ -54,7 +55,10 @@ OPRT_key::OPRT_key(Node* sp)
 
 void OPRT_key::Update()
 {
-	
+	for (auto itr : DIR())
+	{
+		data[static_cast<int>(itr)] = false;
+	}
 }
 
 OPRT_TYPE OPRT_key::GetType(void)

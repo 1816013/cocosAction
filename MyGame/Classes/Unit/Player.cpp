@@ -3,8 +3,7 @@
 #include <input/OPRT_key.h>
 #include <input/OPRT_touch.h>
 #include <Colision.h>
-
-//#include "_DebugConOut.h"
+#include "_debug/_DebugConOut.h"
 
 USING_NS_CC;
 
@@ -41,15 +40,35 @@ bool Player::init()
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();		// ｳｲﾝﾄﾞｳｻｲｽﾞ	
 	_pos = Vec2(visibleSize.width / 2, visibleSize.height / 2);	// ﾌﾟﾚｲﾔｰ初期位置
-	_size = Size(60, 120);
-	this->setPosition(_pos);
+	_size = Size(60, 120);	
+	this->setPosition(_pos);	
+	this->setContentSize(_size);
 	auto speed = 5;					// ﾌﾟﾚｲﾔｰのｽﾋﾟｰﾄﾞ
-	SpeedTbl = { Vec2(0, speed), Vec2(speed, 0), Vec2(0, -speed), Vec2(-speed, 0) };
+	SpeedTbl = { Vec2(0, speed),		// 上
+				 Vec2(speed, 0),		// 右
+				 Vec2(0, -speed),		// 下
+				 Vec2(-speed, 0) };	 	// 左
+										
+	
+	auto setOffsetTbl = [](Sprite& sp)
+	{
+		auto size = sp.getContentSize();
+		size = size / 2;
+		DIRArrayPair offsetTbl = {
+		std::make_pair(Size(-size.width, size.height),Size(size.width, size.height)),		// 左上, 右上 ※ 上側
+		std::make_pair(Size(size.width, size.height),Size(size.width, -size.height) ),		// 右上, 右下 ※ 右側
+		std::make_pair(Size(-size.width, -size.height),Size(size.width, -size.height)),		// 左下, 右下 ※ 下側
+		std::make_pair( Size(-size.width, size.height),Size(-size.width, -size.height) ),	// 左上, 左下 ※ 左側
+		};	
+		return offsetTbl;
+	};
+	_offsetTbl = setOffsetTbl(*this);
 	
 	_LRflag = false;						
 	_oldLRflag = _LRflag;					
 	_jumpFlag = false;						
-	_jumpFancFlag = false;		
+	_jumpFancFlag = false;	
+	_dir = DIR::RIGHT;
 
 
 
@@ -67,47 +86,52 @@ bool Player::init()
 
 void Player::update(float delta)
 {
+	
 	_pos = this->getPosition();
-	auto directer = Director::getInstance();
-	auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
+	
 	//int* num = (int*)malloc(sizeof(int) * 10);
-
 	// ﾃﾞﾊﾞｯｸﾞ用 ※
 	// ﾌﾟﾚｲﾔｰが埋まっていたら上に一応上げる処理@ｼﾞｬﾝﾌﾟ次第で削除するかも※
-	TMXLayer* colLayer = map->getLayer("footing");
-	auto tileSize = Size(colLayer->getMapTileSize().width, colLayer->getMapTileSize().height);
-	auto mapTile = Size(map->getMapSize().width, map->getMapSize().height);
-	Vec2 pID;
-	pID = { _pos.x / tileSize.width,
-			mapTile.height - ((_pos.y - _size.height / 2) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標のID	
-	if (pID.x < mapTile.width && pID.y < mapTile.height && pID.x > 0 && pID.y > 0)
+	auto debugUp = [this]()
 	{
-		if (colLayer->getTileGIDAt({ pID.x, pID.y}) != 0)
+		auto directer = Director::getInstance();
+		auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
+		TMXLayer* colLayer = map->getLayer("footing");
+		auto tileSize = Size(colLayer->getMapTileSize().width, colLayer->getMapTileSize().height);
+		auto mapTile = Size(map->getMapSize().width, map->getMapSize().height);
+		Vec2 pID;
+		pID = { _pos.x / tileSize.width,
+				mapTile.height - ((_pos.y - _size.height / 2) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標のID	
+		if (pID.x < mapTile.width && pID.y < mapTile.height && pID.x > 0 && pID.y > 0)
 		{
-			this->setPosition(_pos.x, _pos.y + (_pos.y - ((mapTile.height - pID.y + 1 ) *  tileSize.height)));
-			//TRACE("HIT%d\n", hitc++);				
+			if (colLayer->getTileGIDAt({ pID.x, pID.y }) != 0)
+			{
+				this->setPosition(_pos.x, _pos.y + (_pos.y - ((mapTile.height - pID.y + 1) *  tileSize.height)));
+				TRACE("HIT");
+			}
 		}
-	}
-	Vec2 pNextID = { _pos.x / tileSize.width,
-					 mapTile.height - ((_pos.y - _size.height) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標のID
-	if (pNextID.y < 0)
-	{
-		this->setPosition(this->getPosition().x, this->getPosition().y - 10);
-		if (_inputState->GetData(DIR::RIGHT))
+		Vec2 pNextID = { _pos.x / tileSize.width,
+						 mapTile.height - ((_pos.y - _size.height) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標のID
+		/*if (pNextID.y < 0)
 		{
-			this->setPosition(this->getPosition().x + 5, this->getPosition().y);
-		}
-		if (_inputState->GetData(DIR::LEFT))
-		{
-			this->setPosition(this->getPosition().x - 5, this->getPosition().y);
-		}
-	}
+			this->setPosition(this->getPosition().x, this->getPosition().y - 10);
+			if (_inputState->GetData(DIR::RIGHT))
+			{
+				this->setPosition(this->getPosition().x + 5, this->getPosition().y);
+			}
+			if (_inputState->GetData(DIR::LEFT))
+			{
+				this->setPosition(this->getPosition().x - 5, this->getPosition().y);
+			}
+		}*/
+	};
+	debugUp();
 	//※
 
 	auto G = 10;
 	// 重力
 	if (Colision()(*this, { 0, -_size.height / 2 - G })						// 足元の中心
-	 && Colision()(*this,{ -_size.width / 2, -_size.height / 2 - G })			// 足元の左
+	 && Colision()(*this,{ -_size.width / 2, -_size.height / 2 - G })		// 足元の左
 	 && Colision()(*this,{ _size.width / 2, -_size.height / 2 - G }))		// 足元の右
 	{
 		if (!_jumpFancFlag)
@@ -119,7 +143,6 @@ void Player::update(float delta)
 	// ｱｸｼｮﾝとｱﾆﾒｰｼｮﾝ @関数分け予定
 	Animation* animation = nullptr;	// ｱﾆﾒｰｼｮﾝ
 	Action* animeAct = nullptr;		// ｱﾆﾒｰｼｮﾝ(リピートなど)
-	Action* action = nullptr;		// ｱｸｼｮﾝ
 	Action* jumpAct = nullptr;		// ｼﾞｬﾝﾌﾟ@ﾄﾘｶﾞｰ処理のｱｸｼｮﾝ	
 	
 	//_inputState->Update();
@@ -147,12 +170,11 @@ void Player::update(float delta)
 	}
 	
 	// 移動
-	// 右
 	for (auto itr : DIR())
 	{
 		if (_inputState->GetData(itr))
 		{
-			dir = itr;
+			_dir = itr;
 			MoveLR(*this);
 		}
 	}
@@ -186,7 +208,6 @@ void Player::update(float delta)
 	//		action->setTag(intCast(Tag::ACT));
 	//	}
 	//}
-	//// 左
 	//if (_inputState->GetData(DIR::LEFT))
 	//{
 	//	_LRflag = true;
@@ -209,7 +230,7 @@ void Player::update(float delta)
 		if (Colision()(*this, { -_size.width / 2, -_size.height / 2 - SpeedTbl[static_cast<int>(DIR::DOWN)].y })
 		 && Colision()(*this, { _size.width / 2, -_size.height / 2 - SpeedTbl[static_cast<int>(DIR::DOWN)].y }))
 		{
-			this->setPosition(this->getPosition().x, this->getPosition().y - SpeedTbl[static_cast<int>(DIR::DOWN)].y);
+			this->setPosition(this->getPosition().x, this->getPosition().y + SpeedTbl[static_cast<int>(DIR::DOWN)].y);
 		}	
 	}
 	
@@ -238,12 +259,12 @@ void Player::update(float delta)
 	{
 		this->runAction(FlipX::create(_LRflag));
 	}
-	// ｱｸｼｮﾝ
-	if (action != nullptr)
-	{
-		this->stopActionByTag(intCast(Tag::ACT));
-		this->runAction(action);
-	}
+	//// ｱｸｼｮﾝ
+	//if (action != nullptr)
+	//{
+	//	this->runAction(action);
+	//}
+
 	// ｼﾞｬﾝﾌﾟ
 	if (jumpAct != nullptr)
 	{
@@ -257,21 +278,21 @@ void Player::update(float delta)
 	// oldを設定
 	_oldLRflag = _LRflag;
 	_oldanim = animation;
+	_inputState->Update();
 }
 
 void Player::MoveLR(Sprite & sp)
-{
-	
-	if (_inputState->GetData(DIR::LEFT) && _inputState->GetData(DIR::RIGHT))
+{	
+	if (_dir != DIR::LEFT && _dir != DIR::RIGHT)
 	{
 		return;
 	}
-	if (!Colision()(sp, { 30 + SpeedTbl[static_cast<int>(dir)].x, -60 })
-	 && Colision()(sp, { 30 + SpeedTbl[static_cast<int>(dir)].x, 60 }))
+	if (!Colision()(sp, SpeedTbl[static_cast<int>(_dir)] + _offsetTbl[static_cast<int>(_dir)].first)
+	 || !Colision()(sp, SpeedTbl[static_cast<int>(_dir)] + _offsetTbl[static_cast<int>(_dir)].second))
 	{
 		return;
 	}
-	auto action = MoveBy::create(0, SpeedTbl[static_cast<int>(dir)]);
+	auto action = MoveBy::create(0, SpeedTbl[static_cast<int>(_dir)]);
 	action->setTag(intCast(Tag::ACT));
-	sp.runAction(action);
+	sp.runAction(action);	
 }

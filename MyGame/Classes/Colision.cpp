@@ -5,7 +5,7 @@
 USING_NS_CC;
 
 
-bool Colision::operator()(Sprite & sp, Size distance) const // ìñÇΩÇËîªíË
+bool Colision::operator()(Sprite & sp, Vec2 distance) const // ìñÇΩÇËîªíË
 {
 	auto directer = Director::getInstance();
 	auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
@@ -16,8 +16,8 @@ bool Colision::operator()(Sprite & sp, Size distance) const // ìñÇΩÇËîªíË
 	Vec2 pos = sp.getPosition();
 	Size size = { 60, 120 };
 	
-	Vec2 ID = { (pos.x + distance.width) / tileSize.width,
-				mapSize.height - ((pos.y + distance.height) / tileSize.height) };	// Ãﬂ⁄≤‘∞ç¿ïWÇÃID	
+	Vec2 ID = { (pos.x + distance.x) / tileSize.width,
+				mapSize.height - ((pos.y + distance.y) / tileSize.height) };	// Ãﬂ⁄≤‘∞ç¿ïWÇÃID	
 	/*std::array<Vec2, 3>IDarray;
 	IDarray = { ID ,Vec2{0, 0} , mapSize };
 	auto minMax = std::minmax_element(IDarray.begin(), IDarray.end());*/
