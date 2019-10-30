@@ -1,8 +1,17 @@
 #pragma once
 #include <cocos2d.h>
+#include <input/OPRT_state.h>
 #include <memory>
 
 #define lpAnimMng AnimMng::GetInstance()
+#define intCast(tag) static_cast<int>(tag)
+
+enum class Tag
+{
+	ANIM,		// ±ÆÒ°¼®İ
+	ACT,		// ±¸¼®İ(1ÌÚ°Ñ–ˆ‚É“®‚©‚·‚à‚Ì)
+	TRG_ACT		// ±¸¼®İ(‚»‚Ì‚¾‚¯“®‚©‚·‚à‚Ì)
+};
 
 class AnimMng
 {
@@ -15,11 +24,15 @@ public:
 
 	// ±ÆÒ°¼®İ‚Ìì¬(ˆø”:: ’N‚ª, key‚Ì–¼‘O, ‰æ‘œ‚Ì–‡”, ±ÆÒ°¼®İ‚ÌŠÔ)
 	bool AnimCreate(const std::string type, const std::string key, int num, float time); 
-
-	/*Action* setAnim(Animation* anim);							
-	Action* setAnim(Animation* anim, int repeatCnt);*/
+	void SetAnim(DIR dir, bool flag);
+	void runAnim(cocos2d::Sprite& sp,DIR dir);
 private:
 	AnimMng();
+
+	int repeatNum;
+
+	Animation* _anim;
+	Animation* _oldAnim;
 
 	static std::unique_ptr<AnimMng> s_Instance;
 };

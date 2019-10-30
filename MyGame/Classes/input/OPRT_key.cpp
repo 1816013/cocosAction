@@ -55,10 +55,10 @@ OPRT_key::OPRT_key(Node* sp)
 
 void OPRT_key::Update()
 {
-	for (auto itr : DIR())
+	/*for (auto itr : DIR())
 	{
 		data[static_cast<int>(itr)] = false;
-	}
+	}*/
 }
 
 OPRT_TYPE OPRT_key::GetType(void)

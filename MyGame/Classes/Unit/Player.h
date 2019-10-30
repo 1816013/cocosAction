@@ -3,18 +3,7 @@
 #include <input/OPRT_state.h>
 #include <array>
 
-
-#define intCast(tag) static_cast<int>(tag)
-
-enum class Tag
-{
-	ANIM,		// ±ÆÒ°¼®İ
-	ACT,		// ±¸¼®İ(1ÌÚ°Ñ–ˆ‚É“®‚©‚·‚à‚Ì)
-	TRG_ACT		// ±¸¼®İ(‚»‚Ì‚¾‚¯“®‚©‚·‚à‚Ì)
-};
-
 using DIRArrayPair = std::array<std::pair<Size, Size>, static_cast<int>(DIR::MAX)>;
-
 
 class Player : public Sprite
 {
@@ -25,7 +14,8 @@ public:
 
 	bool init()override;				// ‰Šú‰»@½Ìß×²Äì¬
 	void update(float delta)override;	// ÌßÚ²Ô°‚ÌˆÚ“®‚Æ±ÆÒ°¼®İˆ—
-	void MoveLR(Sprite& sp);
+	void MoveLR(Sprite& sp, DIR dir);
+	DIR GetDIR(void);
 
 	std::array<Vec2, static_cast<int>(DIR::MAX)>SpeedTbl;
 	DIRArrayPair _offsetTbl;

@@ -154,30 +154,65 @@ void Player::update(float delta)
 		_jumpFancFlag = false;
 	});
 
+	// ｱﾆﾒｰｼｮﾝ
 	if (_inputState->GetData(DIR::UP))
 	{
 		if (!_jumpFancFlag)
-		{			
+		{
 			animation = AnimationCache::getInstance()->getAnimation("jump");
 			animeAct = Repeat::create(Animate::create(animation), 1);
-
+		}
+	}
+	if (_inputState->GetData(DIR::UP))
+	{
+		if (!_jumpFancFlag)
+		{		
 			_jumpFlag = true;
 			_jumpFancFlag = true;
 			jumpAct = Sequence::create(JumpBy::create(1.0f, { 0,0 }, 200, 1), callback, nullptr);			
-			jumpAct->setTag(intCast(Tag::TRG_ACT));
-			
+			jumpAct->setTag(intCast(Tag::TRG_ACT));			
 		}
 	}
 	
 	// 移動
+	DIR dir;
 	for (auto itr : DIR())
 	{
 		if (_inputState->GetData(itr))
 		{
-			_dir = itr;
-			MoveLR(*this);
+			dir = itr;		
+			MoveLR(*this, itr);			
 		}
 	}
+	lpAnimMng.SetAnim(dir, _jumpFancFlag);
+	
+	if (_inputState->GetData(DIR::RIGHT))
+	{
+		_LRflag = false;
+	}
+	if (_inputState->GetData(DIR::LEFT))
+	{
+		_LRflag = true;
+	}
+
+	/*if (_inputState->GetData(DIR::RIGHT))
+	{
+		_LRflag = false;
+		if (!_jumpFancFlag)
+		{
+			animation = AnimationCache::getInstance()->getAnimation("run");
+			animeAct = RepeatForever::create(Animate::create(animation));
+		}
+	}
+	if (_inputState->GetData(DIR::LEFT))
+	{
+		_LRflag = true;
+		if (!_jumpFancFlag)
+		{
+			animation = AnimationCache::getInstance()->getAnimation("run");
+			animeAct = RepeatForever::create(Animate::create(animation));
+		}
+	}*/
 	
 	/*auto MoveLR = [](Sprite& sp)
 	{
@@ -193,58 +228,29 @@ void Player::update(float delta)
 	{
 		MoveLR(*this);
 	};*/
-	//if (_inputState->GetData(DIR::RIGHT))
-	//{
-	//	_LRflag = false;
-	//	if (!_jumpFancFlag)
-	//	{
-	//		animation = AnimationCache::getInstance()->getAnimation("run");
-	//		animeAct = RepeatForever::create(Animate::create(animation));
-	//	}
-	//	if (Colision()(*this, { _size.width / 2 + speed, -_size.height / 2 })
-	//		&& Colision()(*this, { _size.width / 2 + speed, _size.height / 2}))
-	//	{
-	//		action = MoveBy::create(0, Vec2(speed, 0));
-	//		action->setTag(intCast(Tag::ACT));
-	//	}
-	//}
-	//if (_inputState->GetData(DIR::LEFT))
-	//{
-	//	_LRflag = true;
-	//	if (!_jumpFancFlag)
-	//	{
-	//		animation = AnimationCache::getInstance()->getAnimation("run");
-	//		animeAct = RepeatForever::create(Animate::create(animation));
-	//	}
-	//	if (Colision()(*this, { -_size.width / 2 - speed, -_size.height / 2 })
-	//	 && Colision()(*this, { -_size.width / 2 - speed, _size.height / 2 }))
-	//	{
-	//		action =  MoveBy::create(0, Vec2(-speed, 0));
-	//		action->setTag(intCast(Tag::ACT));
-	//	}
-	//}
 
-	// しゃがみ予定
-	if (_inputState->GetData(DIR::DOWN))
-	{
-		if (Colision()(*this, { -_size.width / 2, -_size.height / 2 - SpeedTbl[static_cast<int>(DIR::DOWN)].y })
-		 && Colision()(*this, { _size.width / 2, -_size.height / 2 - SpeedTbl[static_cast<int>(DIR::DOWN)].y }))
-		{
-			this->setPosition(this->getPosition().x, this->getPosition().y + SpeedTbl[static_cast<int>(DIR::DOWN)].y);
-		}	
-	}
+	//// しゃがみ予定
+	//if (_inputState->GetData(DIR::DOWN))
+	//{
+	//	if (Colision()(*this, { -_size.width / 2, -_size.height / 2 - SpeedTbl[static_cast<int>(DIR::DOWN)].y })
+	//	 && Colision()(*this, { _size.width / 2, -_size.height / 2 - SpeedTbl[static_cast<int>(DIR::DOWN)].y }))
+	//	{
+	//		this->setPosition(this->getPosition().x, this->getPosition().y + SpeedTbl[static_cast<int>(DIR::DOWN)].y);
+	//	}	
+	//}
 	
 	// 待機
-	if (animation == nullptr)
+	/*if (animation == nullptr)
 	{
 		if (!_jumpFancFlag)
 		{
 			animation = AnimationCache::getInstance()->getAnimation("idle");
-			animeAct = RepeatForever::create(Animate::create(animation));
+			animeAct = RepeatForever::create(Animate::create(animation));			
 		}
-	}
+	}*/
 
 	// ｱﾆﾒｰｼｮﾝ
+	lpAnimMng.runAnim(*this,dir);
 	if (animation != nullptr)
 	{
 		animeAct->setTag(intCast(Tag::ANIM));
@@ -281,18 +287,23 @@ void Player::update(float delta)
 	_inputState->Update();
 }
 
-void Player::MoveLR(Sprite & sp)
+void Player::MoveLR(Sprite & sp, DIR dir)
 {	
-	if (_dir != DIR::LEFT && _dir != DIR::RIGHT)
+	if (dir != DIR::LEFT && dir != DIR::RIGHT)
 	{
 		return;
 	}
-	if (!Colision()(sp, SpeedTbl[static_cast<int>(_dir)] + _offsetTbl[static_cast<int>(_dir)].first)
-	 || !Colision()(sp, SpeedTbl[static_cast<int>(_dir)] + _offsetTbl[static_cast<int>(_dir)].second))
+	if (!Colision()(sp, SpeedTbl[static_cast<int>(dir)] + _offsetTbl[static_cast<int>(dir)].first)
+	 || !Colision()(sp, SpeedTbl[static_cast<int>(dir)] + _offsetTbl[static_cast<int>(dir)].second))
 	{
 		return;
 	}
-	auto action = MoveBy::create(0, SpeedTbl[static_cast<int>(_dir)]);
+	auto action = MoveBy::create(0, SpeedTbl[static_cast<int>(dir)]);
 	action->setTag(intCast(Tag::ACT));
 	sp.runAction(action);	
+}
+
+DIR Player::GetDIR(void)
+{
+	return _dir;
 }
