@@ -2,11 +2,6 @@
 
 OPRT_touch::OPRT_touch(Node* sp)
 {
-	for (auto itr : DIR())
-	{
-		data[static_cast<int>(itr)] = false;
-	}
-
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool
 								{
@@ -21,50 +16,50 @@ OPRT_touch::OPRT_touch(Node* sp)
 									auto start_p = _startTPos;
 									if (pos.x > start_p.x + margin)
 									{
-										data[static_cast<int>(DIR::RIGHT)] = true;
-										if (data[static_cast<int>(DIR::LEFT)])
+										data[static_cast<int>(DIR::RIGHT)].first = true;
+										if (data[static_cast<int>(DIR::LEFT)].first)
 										{
-											data[static_cast<int>(DIR::LEFT)] = false;
+											data[static_cast<int>(DIR::LEFT)].first = false;
 										}
 									}
 									if (pos.x < start_p.x - margin)
 									{
-										data[static_cast<int>(DIR::LEFT)] = true;
-										if (data[static_cast<int>(DIR::RIGHT)])
+										data[static_cast<int>(DIR::LEFT)].first = true;
+										if (data[static_cast<int>(DIR::RIGHT)].first)
 										{
-											data[static_cast<int>(DIR::RIGHT)] = false;
+											data[static_cast<int>(DIR::RIGHT)].first = false;
 										}
 									}
 									if (pos.y > start_p.y + margin)
 									{
-										data[static_cast<int>(DIR::UP)] = true;
-										if (data[static_cast<int>(DIR::DOWN)])
+										data[static_cast<int>(DIR::UP)].first = true;
+										if (data[static_cast<int>(DIR::DOWN)].first)
 										{
-											data[static_cast<int>(DIR::DOWN)] = false;
+											data[static_cast<int>(DIR::DOWN)].first = false;
 										}
 									}
 									if (pos.y < start_p.y - margin)
 									{
-										data[static_cast<int>(DIR::DOWN)] = true;
-										if (data[static_cast<int>(DIR::UP)])
+										data[static_cast<int>(DIR::DOWN)].first = true;
+										if (data[static_cast<int>(DIR::UP)].first)
 										{
-											data[static_cast<int>(DIR::UP)] = false;
+											data[static_cast<int>(DIR::UP)].first = false;
 										}
 									}
 									if (start_p + Vec2{ margin, margin } > pos && start_p - Vec2{ margin, margin } < pos)
 									{
-										data[static_cast<int>(DIR::RIGHT)] = false;
-										data[static_cast<int>(DIR::LEFT)] = false;
-										data[static_cast<int>(DIR::UP)] = false;
-										data[static_cast<int>(DIR::DOWN)] = false;
+										for (auto itr : DIR())
+										{
+											data[static_cast<int>(itr)].first = false;
+										}
 									}
 									return true;
 								};
 	listener->onTouchEnded = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool
 								{
-									for (int i = 0; i < static_cast<int>(DIR::MAX); i++)
+									for (auto itr : DIR())
 									{
-										data[i] = false;
+										data[static_cast<int>(itr)].first = false;
 									}
 									_startTPos = { -9999, -9999 };
 									return true;

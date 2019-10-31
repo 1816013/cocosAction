@@ -37,19 +37,18 @@ bool Player::init()
 	
 	// ﾌﾟﾚｲﾔｰ初期設定
 	this->Sprite::createWithSpriteFrameName("player-idle-1.png");	// ﾌﾟﾚｲﾔｰの初期画像
-
 	auto visibleSize = Director::getInstance()->getVisibleSize();		// ｳｲﾝﾄﾞｳｻｲｽﾞ	
 	_pos = Vec2(visibleSize.width / 2, visibleSize.height / 2);	// ﾌﾟﾚｲﾔｰ初期位置
 	_size = Size(60, 120);	
 	this->setPosition(_pos);	
 	this->setContentSize(_size);
+
 	auto speed = 5;					// ﾌﾟﾚｲﾔｰのｽﾋﾟｰﾄﾞ
 	SpeedTbl = { Vec2(0, speed),		// 上
 				 Vec2(speed, 0),		// 右
 				 Vec2(0, -speed),		// 下
 				 Vec2(-speed, 0) };	 	// 左
 										
-	
 	auto setOffsetTbl = [](Sprite& sp)
 	{
 		auto size = sp.getContentSize();
@@ -64,15 +63,8 @@ bool Player::init()
 	};
 	_offsetTbl = setOffsetTbl(*this);
 	
-	_LRflag = false;						
-	_oldLRflag = _LRflag;					
-	_jumpFlag = false;						
+	_LRflag = false;			
 	_jumpFancFlag = false;	
-	_dir = DIR::RIGHT;
-
-
-
-	this->scheduleUpdate();
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 	_inputState = std::make_unique<OPRT_key>(this);
@@ -80,16 +72,15 @@ bool Player::init()
 	_inputState.reset(new OPRT_touch(this));
 	//_inputState = std::make_unique<OPRT_touch>();
 #endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-	
+
+	this->scheduleUpdate();
 	return true;
 }
 
 void Player::update(float delta)
-{
-	
+{	
+	auto oldLRflag = _LRflag;
 	_pos = this->getPosition();
-	
-	//int* num = (int*)malloc(sizeof(int) * 10);
 	// ﾃﾞﾊﾞｯｸﾞ用 ※
 	// ﾌﾟﾚｲﾔｰが埋まっていたら上に一応上げる処理@ｼﾞｬﾝﾌﾟ次第で削除するかも※
 	auto debugUp = [this]()
@@ -112,24 +103,24 @@ void Player::update(float delta)
 		}
 		Vec2 pNextID = { _pos.x / tileSize.width,
 						 mapTile.height - ((_pos.y - _size.height) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標のID
-		/*if (pNextID.y < 0)
+		if (pNextID.y < 0)
 		{
 			this->setPosition(this->getPosition().x, this->getPosition().y - 10);
-			if (_inputState->GetData(DIR::RIGHT))
+			if (_inputState->GetData(DIR::RIGHT).first)
 			{
 				this->setPosition(this->getPosition().x + 5, this->getPosition().y);
 			}
-			if (_inputState->GetData(DIR::LEFT))
+			if (_inputState->GetData(DIR::LEFT).first)
 			{
 				this->setPosition(this->getPosition().x - 5, this->getPosition().y);
 			}
-		}*/
+		}
 	};
 	debugUp();
 	//※
-
-	auto G = 10;
+	
 	// 重力
+	auto G = 10;
 	if (Colision()(*this, { 0, -_size.height / 2 - G })						// 足元の中心
 	 && Colision()(*this,{ -_size.width / 2, -_size.height / 2 - G })		// 足元の左
 	 && Colision()(*this,{ _size.width / 2, -_size.height / 2 - G }))		// 足元の右
@@ -139,151 +130,38 @@ void Player::update(float delta)
 			this->setPosition(_pos.x, _pos.y - G);
 		}
 	}
-
 	// ｱｸｼｮﾝとｱﾆﾒｰｼｮﾝ @関数分け予定
-	Animation* animation = nullptr;	// ｱﾆﾒｰｼｮﾝ
-	Action* animeAct = nullptr;		// ｱﾆﾒｰｼｮﾝ(リピートなど)
-	Action* jumpAct = nullptr;		// ｼﾞｬﾝﾌﾟ@ﾄﾘｶﾞｰ処理のｱｸｼｮﾝ	
-	
-	//_inputState->Update();
-
-	// ｼﾞｬﾝﾌﾟ 
-	// ｺｰﾙﾊﾞｯｸ処理　ｼﾞｬﾝﾌﾟ中ﾌﾗｸﾞをfalseにする
-	auto callback = CallFunc::create([this]()
-	{
-		_jumpFancFlag = false;
-	});
-
-	// ｱﾆﾒｰｼｮﾝ
-	if (_inputState->GetData(DIR::UP))
-	{
-		if (!_jumpFancFlag)
-		{
-			animation = AnimationCache::getInstance()->getAnimation("jump");
-			animeAct = Repeat::create(Animate::create(animation), 1);
-		}
-	}
-	if (_inputState->GetData(DIR::UP))
-	{
-		if (!_jumpFancFlag)
-		{		
-			_jumpFlag = true;
-			_jumpFancFlag = true;
-			jumpAct = Sequence::create(JumpBy::create(1.0f, { 0,0 }, 200, 1), callback, nullptr);			
-			jumpAct->setTag(intCast(Tag::TRG_ACT));			
-		}
-	}
-	
 	// 移動
 	DIR dir;
 	for (auto itr : DIR())
 	{
-		if (_inputState->GetData(itr))
+		if (_inputState->GetData(itr).first)
 		{
-			dir = itr;		
-			MoveLR(*this, itr);			
-		}
+			dir = itr;
+			MoveLR(*this, itr);
+			Jump(*this, itr);
+			break;
+		}		
 	}
-	lpAnimMng.SetAnim(dir, _jumpFancFlag);
-	
-	if (_inputState->GetData(DIR::RIGHT))
-	{
-		_LRflag = false;
-	}
-	if (_inputState->GetData(DIR::LEFT))
-	{
-		_LRflag = true;
-	}
-
-	/*if (_inputState->GetData(DIR::RIGHT))
-	{
-		_LRflag = false;
-		if (!_jumpFancFlag)
-		{
-			animation = AnimationCache::getInstance()->getAnimation("run");
-			animeAct = RepeatForever::create(Animate::create(animation));
-		}
-	}
-	if (_inputState->GetData(DIR::LEFT))
-	{
-		_LRflag = true;
-		if (!_jumpFancFlag)
-		{
-			animation = AnimationCache::getInstance()->getAnimation("run");
-			animeAct = RepeatForever::create(Animate::create(animation));
-		}
-	}*/
-	
-	/*auto MoveLR = [](Sprite& sp)
-	{
-		if (!Colision()(sp, { 30 + 5, -60 }) && Colision()(sp, { 30 + 5, 60 }))
-		{
-			return;
-		}
-		auto action = MoveBy::create(0, SpeedTbl[static_cast<int>(dir)]);
-		action->setTag(intCast(Tag::ACT));
-		sp.runAction(action);
-	};
-	if (_inputState->GetData(DIR::RIGHT))
-	{
-		MoveLR(*this);
-	};*/
-
-	//// しゃがみ予定
-	//if (_inputState->GetData(DIR::DOWN))
-	//{
-	//	if (Colision()(*this, { -_size.width / 2, -_size.height / 2 - SpeedTbl[static_cast<int>(DIR::DOWN)].y })
-	//	 && Colision()(*this, { _size.width / 2, -_size.height / 2 - SpeedTbl[static_cast<int>(DIR::DOWN)].y }))
-	//	{
-	//		this->setPosition(this->getPosition().x, this->getPosition().y + SpeedTbl[static_cast<int>(DIR::DOWN)].y);
-	//	}	
-	//}
-	
-	// 待機
-	/*if (animation == nullptr)
-	{
-		if (!_jumpFancFlag)
-		{
-			animation = AnimationCache::getInstance()->getAnimation("idle");
-			animeAct = RepeatForever::create(Animate::create(animation));			
-		}
-	}*/
-
 	// ｱﾆﾒｰｼｮﾝ
-	lpAnimMng.runAnim(*this,dir);
-	if (animation != nullptr)
-	{
-		animeAct->setTag(intCast(Tag::ANIM));
-		if (_oldanim != animation)
-		{
-			this->stopActionByTag(intCast(Tag::ANIM));
-			this->runAction(animeAct);
-		}
-	}
+	auto anim = SetAnim(dir);
+	lpAnimMng.runAnim(*this, *anim, repeatNum);
+	
 	// 描画左右反転
-	if (_LRflag != _oldLRflag)
+	if (dir == DIR::RIGHT)
+	{
+		_LRflag = false;
+	}
+	if (dir == DIR::LEFT)
+	{
+		_LRflag = true;
+	}
+	
+	if (_LRflag != oldLRflag)
 	{
 		this->runAction(FlipX::create(_LRflag));
 	}
-	//// ｱｸｼｮﾝ
-	//if (action != nullptr)
-	//{
-	//	this->runAction(action);
-	//}
-
-	// ｼﾞｬﾝﾌﾟ
-	if (jumpAct != nullptr)
-	{
-		if (_jumpFlag)
-		{
-			this->runAction(jumpAct);
-			_jumpFlag = false;
-		}
-	}
-
-	// oldを設定
-	_oldLRflag = _LRflag;
-	_oldanim = animation;
+	// ﾄﾘｶﾞｰｷｰ用※ 1ﾌﾚｰﾑごとにｷｰﾌﾗｸﾞをfalseにする
 	_inputState->Update();
 }
 
@@ -303,7 +181,53 @@ void Player::MoveLR(Sprite & sp, DIR dir)
 	sp.runAction(action);	
 }
 
-DIR Player::GetDIR(void)
+void Player::Jump(Sprite & sp, DIR dir)
 {
-	return _dir;
+	if (dir != DIR::UP)
+	{
+		return;
+	}
+	/*auto pos = this->getPosition();
+	if (!_jumpFancFlag)
+	{
+		this->setPosition(pos.x, pos.y + 100);
+		_jumpFancFlag = true;
+	}*/
+	/*auto callback = CallFunc::create([this]()
+	{
+		_jumpFancFlag = false;
+	});
+	if (!_jumpFancFlag)
+	{
+		_jumpFancFlag = true;
+		auto jumpAct = Sequence::create(JumpBy::create(1.0f, { 0,0 }, 200, 1), callback, nullptr);
+		jumpAct->setTag(intCast(Tag::TRG_ACT));
+		this->runAction(jumpAct);
+	}*/
+}
+
+Animation* Player::SetAnim(DIR dir)
+{
+	Animation* anim = nullptr;
+	repeatNum = 0;
+	if (dir == DIR::UP)
+	{
+		anim = AnimationCache::getInstance()->getAnimation("jump");
+		repeatNum = 1;
+	}
+	if (!_jumpFancFlag)
+	{	
+		if (anim != AnimationCache::getInstance()->getAnimation("jump"))
+		{
+			if (dir == DIR::LEFT || dir == DIR::RIGHT)
+			{
+				anim = AnimationCache::getInstance()->getAnimation("run");
+			}
+			else if (anim == nullptr)
+			{
+				anim = AnimationCache::getInstance()->getAnimation("idle");
+			}
+		}
+	}
+	return anim;
 }

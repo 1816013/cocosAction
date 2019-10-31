@@ -24,12 +24,11 @@ public:
 
 	// ±ÆÒ°¼®İ‚Ìì¬(ˆø”:: ’N‚ª, key‚Ì–¼‘O, ‰æ‘œ‚Ì–‡”, ±ÆÒ°¼®İ‚ÌŠÔ)
 	bool AnimCreate(const std::string type, const std::string key, int num, float time); 
-	void SetAnim(DIR dir, bool flag);
-	void runAnim(cocos2d::Sprite& sp,DIR dir);
+	void runAnim(cocos2d::Sprite& sp, Animation& anim, int repeatNum);
 private:
 	AnimMng();
 
-	int repeatNum;
+	int _repeatNum;
 
 	Animation* _anim;
 	Animation* _oldAnim;

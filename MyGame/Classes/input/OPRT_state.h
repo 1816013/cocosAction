@@ -20,28 +20,27 @@ enum class DIR	// •ûŒü
 	MAX			
 };
 
-enum class TGR_KEY	// ÄØ¶Ş°”»’è—p
+enum class TRG_KEY	// ÄØ¶Ş°”»’è—p
 {
 	NEW,	// Œ»İ‚Ì“ü—Í
-	OLD,	// 1ÌÚ°Ñ‘O‚Ì“ü—Í
+	TRG,	// ÄØ¶Ş°“ü—Í
 	MAX
 };
 
+using keyPair = std::pair<bool, TRG_KEY>;
+
 struct OPRT_state
 {
-	OPRT_state(){};
+	OPRT_state();
 	virtual void Update() = 0;
 	virtual OPRT_TYPE GetType(void) = 0;
-
-	bool GetData(DIR dir) 
+	keyPair GetData(DIR dir)
 	{
 		return data[static_cast<int>(dir)];
 	};
-
-
 protected:
 	//bool data[static_cast<int>(DIR::MAX)];
-	std::array<bool, static_cast<int>(DIR::MAX)>data;
+	std::array<keyPair, static_cast<int>(DIR::MAX)>data;
 };
 
 DIR begin(DIR);
