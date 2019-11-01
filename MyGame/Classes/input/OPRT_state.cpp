@@ -5,7 +5,7 @@ OPRT_state::OPRT_state()
 	for (auto itr : DIR())
 	{
 		data[static_cast<int>(itr)].first = false;
-		data[static_cast<int>(DIR::UP)].second = TRG_KEY::NEW;
+		//data[static_cast<int>(DIR::UP)].second = TRG_KEY::NEW;
 	}
 }
 

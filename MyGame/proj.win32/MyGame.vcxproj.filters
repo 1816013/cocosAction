@@ -52,6 +52,7 @@
     <ClCompile Include="..\Classes\input\OPRT_state.cpp">
       <Filter>src\input</Filter>
     </ClCompile>
+    <ClCompile Include="ActionObj.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -85,6 +86,7 @@
     <ClInclude Include="_debug\_DebugConOut.h">
       <Filter>win32\_debug</Filter>
     </ClInclude>
+    <ClInclude Include="ActionObj.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

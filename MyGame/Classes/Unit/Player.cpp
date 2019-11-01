@@ -28,6 +28,17 @@ bool Player::init()
 	{
 		return false;
 	}
+
+	#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+		_inputState = std::make_unique<OPRT_key>(this);
+	#else
+		_inputState.reset(new OPRT_touch(this));
+		//_inputState = std::make_unique<OPRT_touch>();
+	#endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+
+	// ﾄﾘｶﾞｰ設定
+	_inputState->SetTrg(DIR::UP, KEY_MODE::TRG);
+
 	// ｱﾆﾒｰｼｮﾝ設定
 	lpAnimMng.AnimCreate("player", "idle", 4, 0.1f);	// 待機	
 	lpAnimMng.AnimCreate("player", "run", 10, 0.1f);	// 走る
@@ -62,29 +73,22 @@ bool Player::init()
 		return offsetTbl;
 	};
 	_offsetTbl = setOffsetTbl(*this);
-	
-	_LRflag = false;			
+			
 	_jumpFancFlag = false;	
-
-#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
-	_inputState = std::make_unique<OPRT_key>(this);
-#else
-	_inputState.reset(new OPRT_touch(this));
-	//_inputState = std::make_unique<OPRT_touch>();
-#endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 
 	this->scheduleUpdate();
 	return true;
 }
 
 void Player::update(float delta)
-{	
-	auto oldLRflag = _LRflag;
-	_pos = this->getPosition();
+{
+	// ﾄﾘｶﾞｰｷｰ用※ 1ﾌﾚｰﾑごとにｷｰﾌﾗｸﾞをfalseにする
+	_inputState->Update();
 	// ﾃﾞﾊﾞｯｸﾞ用 ※
 	// ﾌﾟﾚｲﾔｰが埋まっていたら上に一応上げる処理@ｼﾞｬﾝﾌﾟ次第で削除するかも※
 	auto debugUp = [this]()
 	{
+		_pos = this->getPosition();
 		auto directer = Director::getInstance();
 		auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
 		TMXLayer* colLayer = map->getLayer("footing");
@@ -106,11 +110,11 @@ void Player::update(float delta)
 		if (pNextID.y < 0)
 		{
 			this->setPosition(this->getPosition().x, this->getPosition().y - 10);
-			if (_inputState->GetData(DIR::RIGHT).first)
+			if (_inputState->GetInput(DIR::RIGHT).first)
 			{
 				this->setPosition(this->getPosition().x + 5, this->getPosition().y);
 			}
-			if (_inputState->GetData(DIR::LEFT).first)
+			if (_inputState->GetInput(DIR::LEFT).first)
 			{
 				this->setPosition(this->getPosition().x - 5, this->getPosition().y);
 			}
@@ -118,51 +122,40 @@ void Player::update(float delta)
 	};
 	debugUp();
 	//※
-	
-	// 重力
-	auto G = 10;
-	if (Colision()(*this, { 0, -_size.height / 2 - G })						// 足元の中心
-	 && Colision()(*this,{ -_size.width / 2, -_size.height / 2 - G })		// 足元の左
-	 && Colision()(*this,{ _size.width / 2, -_size.height / 2 - G }))		// 足元の右
-	{
-		if (!_jumpFancFlag)
-		{
-			this->setPosition(_pos.x, _pos.y - G);
-		}
-	}
-	// ｱｸｼｮﾝとｱﾆﾒｰｼｮﾝ @関数分け予定
+
+
+	// ｱｸｼｮﾝとｱﾆﾒｰｼｮﾝ
 	// 移動
+
+	Gravity(*this);	// 重力
 	DIR dir;
 	for (auto itr : DIR())
 	{
-		if (_inputState->GetData(itr).first)
+		if (!_inputState->GetInput(itr).first)
 		{
-			dir = itr;
-			MoveLR(*this, itr);
-			Jump(*this, itr);
-			break;
-		}		
+			TRACE("release\n");
+		}
 	}
+
+
+	
+	
+	//for (auto itr : DIR())
+	//{
+	//	if (_inputState->GetData(itr).first)
+	//	{			
+	//		MoveLR(*this, dir);		// 移動
+	//		ChangeLR(*this, dir);	// 左右切り替え
+	//		Jump(*this, dir);		// ｼﾞｬﾝﾌﾟ
+	//		dir = itr;			
+	//		break;
+	//	}		
+	//}
 	// ｱﾆﾒｰｼｮﾝ
-	auto anim = SetAnim(dir);
+	auto anim = SetAnim(dir);	// repeatNumの設定をSetAnimで設定しているため先読み必須@変更予定
 	lpAnimMng.runAnim(*this, *anim, repeatNum);
+		
 	
-	// 描画左右反転
-	if (dir == DIR::RIGHT)
-	{
-		_LRflag = false;
-	}
-	if (dir == DIR::LEFT)
-	{
-		_LRflag = true;
-	}
-	
-	if (_LRflag != oldLRflag)
-	{
-		this->runAction(FlipX::create(_LRflag));
-	}
-	// ﾄﾘｶﾞｰｷｰ用※ 1ﾌﾚｰﾑごとにｷｰﾌﾗｸﾞをfalseにする
-	_inputState->Update();
 }
 
 void Player::MoveLR(Sprite & sp, DIR dir)
@@ -193,7 +186,7 @@ void Player::Jump(Sprite & sp, DIR dir)
 		this->setPosition(pos.x, pos.y + 100);
 		_jumpFancFlag = true;
 	}*/
-	/*auto callback = CallFunc::create([this]()
+	auto callback = CallFunc::create([this]()
 	{
 		_jumpFancFlag = false;
 	});
@@ -203,7 +196,41 @@ void Player::Jump(Sprite & sp, DIR dir)
 		auto jumpAct = Sequence::create(JumpBy::create(1.0f, { 0,0 }, 200, 1), callback, nullptr);
 		jumpAct->setTag(intCast(Tag::TRG_ACT));
 		this->runAction(jumpAct);
+	}
+}
+
+void Player::Gravity(Sprite & sp)
+{
+	Vec2 G = { 0, -10 };
+	if (Colision()(*this, G + Vec2{ 0, -_size.height / 2  })						// 足元の中心
+		&& Colision()(*this, G + Vec2{ -_size.width / 2, -_size.height / 2 })		// 足元の左
+		&& Colision()(*this, G + Vec2{ _size.width / 2, -_size.height / 2 }))		// 足元の右
+	{
+		if (!_jumpFancFlag)
+		{
+			sp.setPosition(_pos + G);
+		}
+	}
+}
+
+void Player::ChangeLR(Sprite & sp, DIR dir)
+{
+	// 描画左右反転
+	/*if (dir == DIR::RIGHT)
+	{
+		_LRflag = false;
+	}
+	if (dir == DIR::LEFT)
+	{
+		_LRflag = true;
 	}*/
+	if (dir != DIR::LEFT && dir != DIR::RIGHT)
+	{
+		return;
+	}
+	bool flagLR = (dir == DIR::LEFT ? true : false);
+	this->runAction(FlipX::create(flagLR));
+	
 }
 
 Animation* Player::SetAnim(DIR dir)

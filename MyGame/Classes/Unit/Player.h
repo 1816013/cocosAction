@@ -23,7 +23,9 @@ public:
 	bool init()override;				// ‰Šú‰»@½Ìß×²Äì¬
 	void update(float delta)override;	// ÌßÚ²Ô°‚ÌˆÚ“®‚Æ±ÆÒ°¼®İˆ—
 	void MoveLR(Sprite& sp, DIR dir);	// ÌßÚ²Ô°‚Ì¶‰EˆÚ“®
-	void Jump(Sprite& sp, DIR dir);
+	void Jump(Sprite& sp, DIR dir);		// ¼Ş¬İÌß
+	void Gravity(Sprite& sp);
+	void ChangeLR(Sprite& sp, DIR dir);
 
 	CREATE_FUNC(Player);
 
