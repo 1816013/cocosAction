@@ -4,7 +4,7 @@
 #include <memory>
 
 #define lpAnimMng AnimMng::GetInstance()
-#define intCast(tag) static_cast<int>(tag)
+
 
 enum class Tag
 {

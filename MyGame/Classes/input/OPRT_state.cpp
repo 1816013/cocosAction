@@ -2,16 +2,26 @@
 
 OPRT_state::OPRT_state()
 {
-	for (auto itr : DIR())
+	_dirData = DIR::NEUTRAL;
+	for (int trg = 0; trg < static_cast<int>(TRG_STATE::MAX); trg++)
 	{
-		data[static_cast<int>(itr)].first = false;
-		//data[static_cast<int>(DIR::UP)].second = TRG_KEY::NEW;
+		_keyData[trg].first = false;
+		for (auto itr : DIR())
+		{
+			_touchData[static_cast<int>(trg)][static_cast<int>(itr)] = false;
+		}
 	}
+}
+
+void OPRT_state::update(void)
+{	
+	_keyData[intCast(TRG_STATE::OLD)] = _keyData[intCast(TRG_STATE::NOW)];
+	_keyData[intCast(TRG_STATE::NOW)] = _keyData[intCast(TRG_STATE::INPUT)];
 }
 
 DIR begin(DIR)
 {
-	return DIR::UP;
+	return DIR::NEUTRAL;
 }
 
 DIR end(DIR)

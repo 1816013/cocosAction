@@ -1,14 +1,10 @@
 #pragma once
 //#include "Obj.h"
-#include <input/OPRT_state.h>
 #include <array>
+#include <input/OPRT_state.h>
+#include <ActionMng.h>
 
-enum class Act
-{
-	run,
-	jump,
-	idle
-};
+
 
 using DIRArrayPair = std::array<std::pair<Size, Size>, static_cast<int>(DIR::MAX)>;
 
@@ -20,18 +16,19 @@ public:
 	Player();
 	~Player();
 
-	bool init()override;				// 初期化　ｽﾌﾟﾗｲﾄ作成
-	void update(float delta)override;	// ﾌﾟﾚｲﾔｰの移動とｱﾆﾒｰｼｮﾝ処理
-	void MoveLR(Sprite& sp, DIR dir);	// ﾌﾟﾚｲﾔｰの左右移動
-	void Jump(Sprite& sp, DIR dir);		// ｼﾞｬﾝﾌﾟ
-	void Gravity(Sprite& sp);
-	void ChangeLR(Sprite& sp, DIR dir);
+	bool init()override;					// 初期化　ｽﾌﾟﾗｲﾄ作成
+	void update(float delta)override;		// ﾌﾟﾚｲﾔｰの移動とｱﾆﾒｰｼｮﾝ処理
+	void MoveLR(Sprite& sp);		// ﾌﾟﾚｲﾔｰの左右移動
+	void Jump(Sprite& sp, DIR dir);			// ｼﾞｬﾝﾌﾟ
+	void Gravity(Sprite& sp);				// 重力
+	void ChangeLR(Sprite& sp, DIR dir);		// 左右切り替え
 
 	CREATE_FUNC(Player);
 
 	// 変数
 	std::array<Vec2, static_cast<int>(DIR::MAX)>SpeedTbl;	// ｽﾋﾟｰﾄﾞ格納用ﾃｰﾌﾞﾙ
 	DIRArrayPair _offsetTbl;								// 当たり判定用ｵﾌｾｯﾄﾃｰﾌﾞﾙ
+	std::shared_ptr<ActionMng>_actMng;
 private:
 	// 関数
 	Animation* SetAnim(DIR dir);	// 方向に応じたｱﾆﾒｰｼｮﾝの設定
@@ -40,11 +37,15 @@ private:
 	Vec2 _pos;				// ﾌﾟﾚｲﾔｰの座標	
 	Size _size;				// ﾌﾟﾚｲﾔｰの大きさ
 
-	bool _LRflag;			// 左右確認用　右:false 左:true
+	//bool _flagLR;			// 左右確認用　右:false 左:true
 	bool _jumpFancFlag;		// ｼﾞｬﾝﾌﾟ中:true	ｼﾞｬﾝﾌﾟしていない時:false
-
-	int repeatNum;
+	int _repeatNum;
 
 	std::unique_ptr<OPRT_state>_inputState;
+	// test
+	Vec2 _speed = { 0, 0 };
+	std::array<cocos2d::Size, 2>_colSize = { cocos2d::Size(0, 0), cocos2d::Size(0, 0)};
+
+	
 };
 

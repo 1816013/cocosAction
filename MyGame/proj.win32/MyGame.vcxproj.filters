@@ -19,6 +19,9 @@
     <Filter Include="win32\_debug">
       <UniqueIdentifier>{e6efdaba-b8e1-4b10-9530-e0fcb850ddaf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\action">
+      <UniqueIdentifier>{4f938f70-3856-4be3-86e6-1dbc903d1bbf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -32,9 +35,6 @@
     </ClCompile>
     <ClCompile Include="..\Classes\input\OPRT_touch.cpp">
       <Filter>src\input</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Unit\Player.cpp">
-      <Filter>src\unit</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Unit\Obj.cpp">
       <Filter>src\unit</Filter>
@@ -52,7 +52,12 @@
     <ClCompile Include="..\Classes\input\OPRT_state.cpp">
       <Filter>src\input</Filter>
     </ClCompile>
-    <ClCompile Include="ActionObj.cpp" />
+    <ClCompile Include="..\Classes\Unit\Player.cpp">
+      <Filter>src\unit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\CheckKey.cpp" />
+    <ClCompile Include="..\Classes\MoveLR.cpp" />
+    <ClCompile Include="..\Classes\ActionMng.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -86,7 +91,9 @@
     <ClInclude Include="_debug\_DebugConOut.h">
       <Filter>win32\_debug</Filter>
     </ClInclude>
-    <ClInclude Include="ActionObj.h" />
+    <ClInclude Include="..\Classes\ActionMng.h" />
+    <ClInclude Include="..\Classes\CheckKey.h" />
+    <ClInclude Include="..\Classes\MoveLR.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

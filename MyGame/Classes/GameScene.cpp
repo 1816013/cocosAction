@@ -143,20 +143,20 @@ bool GameScene::init()
 	backS2->setPosition(backS2->getContentSize().width / 2 + backS2->getContentSize().width, backS2->getContentSize().height / 2);
 
 	// Ï¯Ìß
-	auto mapS = TMXTiledMap::create("map2.tmx");
+	auto mapS = TMXTiledMap::create("map.tmx");
 	mapS->setName("mapData");
 	//mapS->setPosition({ -16, 0 });
-	auto waterL = mapS->getLayer("water");	// …
-	waterL->setGlobalZOrder(ZorderFlont);
-	auto plantL = mapS->getLayer("plant");	// A•¨
-	plantL->setGlobalZOrder(ZorderFlont);
-	auto caveL = mapS->getLayer("cave1");
-	caveL->setGlobalZOrder(ZorderFlont);
+	//auto waterL = mapS->getLayer("water");	// …
+	//waterL->setGlobalZOrder(ZorderFlont);
+	//auto plantL = mapS->getLayer("plant");	// A•¨
+	//plantL->setGlobalZOrder(ZorderFlont);
+	//auto caveL = mapS->getLayer("cave1");
+	//caveL->setGlobalZOrder(ZorderFlont);
 	
 
 	// ¹Þ°Ä
-	auto gateS = Sprite::create("image/Environment/Props/gate-01.png");
-	gateS->setPosition(gateS->getContentSize().width / 2, gateS->getContentSize().height / 2 + 48);
+	/*auto gateS = Sprite::create("image/Environment/Props/gate-01.png");
+	gateS->setPosition(gateS->getContentSize().width / 2, gateS->getContentSize().height / 2 + 48);*/
 	
 	// ÌßÚ²Ô°
 	auto player = Player::createSprite();
@@ -168,7 +168,7 @@ bool GameScene::init()
 	backbglayer->addChild(backS2, 0);
 	backbglayer->addChild(mapS, 0);
 
-	flontbglayer->addChild(gateS, 0);
+	//flontbglayer->addChild(gateS, 0);
 
 	// ¼°Ý‚É‚Ô‚ç‰º‚°‚é
 	this->addChild(backbglayer, ZorderBack);

@@ -9,7 +9,7 @@ bool Colision::operator()(Sprite & sp, Vec2 distance) const // “–‚½‚è”»’è
 {
 	auto directer = Director::getInstance();
 	auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
-	auto col = map->getLayer("footing");
+	auto col = map->getLayer("layer");
 	auto mapSize = map->getMapSize();
 	auto tileSize = col->getMapTileSize();
 	

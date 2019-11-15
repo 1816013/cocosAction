@@ -1,8 +1,11 @@
 #pragma once
 #include "cocos2d.h"
 #include <array>
+#include <map>
 
 USING_NS_CC;
+
+#define intCast(tag) static_cast<int>(tag)
 
 enum class OPRT_TYPE	// 操作方法
 {
@@ -13,6 +16,7 @@ enum class OPRT_TYPE	// 操作方法
 
 enum class DIR	// 方向
 {
+	NEUTRAL,	// 何もしていない
 	UP,			// 上
 	RIGHT,		// 右
 	DOWN,		// 下
@@ -20,33 +24,54 @@ enum class DIR	// 方向
 	MAX			
 };
 
-enum class KEY_MODE	// ﾄﾘｶﾞｰ判定用
+enum class Timing
 {
-	NEW,	// 現在の入力
-	TRG,	// ﾄﾘｶﾞｰ入力
+	ON,
+	ON_MOM,
+	OFF,
+	OFFMOM
+};
+
+enum class TRG_STATE	// ﾄﾘｶﾞｰ判定用
+{
+	NOW,	// 現在の入力
+	OLD,	// ﾄﾘｶﾞｰ入力
+	INPUT,	//
 	MAX
 };
 
-using keyPair = std::pair<bool, bool>;
+using DIR_ArrayTouch =  std::array<bool, intCast(DIR::MAX)>;
+using TRG_ArrayTouch = std::array<DIR_ArrayTouch, intCast(TRG_STATE::MAX)>;
+
+using KeyPair = std::pair<bool, cocos2d::EventKeyboard::KeyCode>;
+//using DIR_ArrayKey = std::array<KeyPair, intCast(DIR::MAX)>;
+using TRG_ArrayKey = std::array<KeyPair, intCast(TRG_STATE::MAX)>;
 
 struct OPRT_state
 {
 	OPRT_state();
-	virtual void Update() = 0;
 	virtual OPRT_TYPE GetType(void) = 0;
-	virtual void SetTrg(DIR dir, KEY_MODE trg) = 0;			// ﾄﾘｶﾞｰの設定
-	keyPair GetInput(DIR dir)
+
+	void update(void);
+	
+	KeyPair GetInput(TRG_STATE trg)
 	{
-		return data[static_cast<int>(dir)];
+		return _keyData[intCast(trg)];
+	};
+	bool GetInput(TRG_STATE trg, DIR dir)
+	{
+		return _touchData[intCast(trg)][intCast(dir)];
 	};
 	DIR GetDIR(void)
 	{
-		return dirData;
+		return _dirData;
 	}
 protected:
 	//bool data[static_cast<int>(DIR::MAX)];
-	std::array<keyPair, static_cast<int>(DIR::MAX)>data;
-	DIR dirData;
+	TRG_ArrayKey _keyData;
+	TRG_ArrayTouch _touchData;
+
+	DIR _dirData;
 	//std::array<std::pair<DIR, TRG_KEY>, static_cast<int>(DIR::MAX)>data;
 };
 

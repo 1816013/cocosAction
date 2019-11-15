@@ -3,7 +3,10 @@
 #include <input/OPRT_key.h>
 #include <input/OPRT_touch.h>
 #include <Colision.h>
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 #include "_debug/_DebugConOut.h"
+#endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+
 
 USING_NS_CC;
 
@@ -23,58 +26,72 @@ Player::~Player()
 
 bool Player::init()
 {
-	// ï½½ï¾Œï¾Ÿï¾—ï½²ï¾„ï½¸ï¾—ï½½ã®åˆæœŸåŒ–@initã‚’è‡ªä½œã—ãŸãŸã‚å¿…è¦
+	// ½Ìß×²Ä¸×½‚Ì‰Šú‰»@init‚ğ©ì‚µ‚½‚½‚ß•K—v
 	if (!Sprite::init())
 	{
 		return false;
 	}
 
-	#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
-		_inputState = std::make_unique<OPRT_key>(this);
-	#else
-		_inputState.reset(new OPRT_touch(this));
-		//_inputState = std::make_unique<OPRT_touch>();
-	#endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+	_inputState = std::make_unique<OPRT_key>(this);
+#else
+	_inputState.reset(new OPRT_touch(this));
+	//_inputState = std::make_unique<OPRT_touch>();
+#endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 
-	// ï¾„ï¾˜ï½¶ï¾ï½°è¨­å®š
-	_inputState->SetTrg(DIR::UP, KEY_MODE::TRG);
+// ±ÆÒ°¼®İİ’è
+	lpAnimMng.AnimCreate("player", "idle", 4, 0.1f);	// ‘Ò‹@	
+	lpAnimMng.AnimCreate("player", "run", 10, 0.1f);	// ‘–‚é
+	lpAnimMng.AnimCreate("player", "jump", 6, 0.1f);		// ¼Ş¬İÌß
+	lpAnimMng.AnimCreate("player", "duck", 1, 0.1f);	// ‚µ‚á‚ª‚İ
 
-	// ï½±ï¾†ï¾’ï½°ï½¼ï½®ï¾è¨­å®š
-	lpAnimMng.AnimCreate("player", "idle", 4, 0.1f);	// å¾…æ©Ÿ	
-	lpAnimMng.AnimCreate("player", "run", 10, 0.1f);	// èµ°ã‚‹
-	lpAnimMng.AnimCreate("player","jump", 6, 0.1f);		// ï½¼ï¾ï½¬ï¾ï¾Œï¾Ÿ
-	lpAnimMng.AnimCreate("player", "duck", 1, 0.1f);	// ã—ã‚ƒãŒã¿
 
-	
-	// ï¾Œï¾Ÿï¾šï½²ï¾”ï½°åˆæœŸè¨­å®š
-	this->Sprite::createWithSpriteFrameName("player-idle-1.png");	// ï¾Œï¾Ÿï¾šï½²ï¾”ï½°ã®åˆæœŸç”»åƒ
-	auto visibleSize = Director::getInstance()->getVisibleSize();		// ï½³ï½²ï¾ï¾„ï¾ï½³ï½»ï½²ï½½ï¾	
-	_pos = Vec2(visibleSize.width / 2, visibleSize.height / 2);	// ï¾Œï¾Ÿï¾šï½²ï¾”ï½°åˆæœŸä½ç½®
-	_size = Size(60, 120);	
-	this->setPosition(_pos);	
+	// ÌßÚ²Ô°‰Šúİ’è
+	this->Sprite::createWithSpriteFrameName("player-idle-1.png");	// ÌßÚ²Ô°‚Ì‰Šú‰æ‘œ
+	auto visibleSize = Director::getInstance()->getVisibleSize();		// ³²İÄŞ³»²½Ş	
+	_pos = Vec2(visibleSize.width / 2, visibleSize.height / 2 + 200);	// ÌßÚ²Ô°‰ŠúˆÊ’u
+	_size = Size(60, 120);
+	this->setPosition(_pos);
 	this->setContentSize(_size);
 
-	auto speed = 5;					// ï¾Œï¾Ÿï¾šï½²ï¾”ï½°ã®ï½½ï¾‹ï¾Ÿï½°ï¾„ï¾
-	SpeedTbl = { Vec2(0, speed),		// ä¸Š
-				 Vec2(speed, 0),		// å³
-				 Vec2(0, -speed),		// ä¸‹
-				 Vec2(-speed, 0) };	 	// å·¦
-										
+	//auto speed = 5;					// ÌßÚ²Ô°‚Ì½Ëß°ÄŞ
+	//SpeedTbl = { Vec2(0, 0),			// ‰½‚à‚µ‚Ä‚¢‚È‚¢
+	//			 Vec2(0, speed),		// ã
+	//			 Vec2(speed, 0),		// ‰E
+	//			 Vec2(0, -speed),		// ‰º
+	//			 Vec2(-speed, 0) };	 	// ¶
+
 	auto setOffsetTbl = [](Sprite& sp)
 	{
 		auto size = sp.getContentSize();
 		size = size / 2;
 		DIRArrayPair offsetTbl = {
-		std::make_pair(Size(-size.width, size.height),Size(size.width, size.height)),		// å·¦ä¸Š, å³ä¸Š â€» ä¸Šå´
-		std::make_pair(Size(size.width, size.height),Size(size.width, -size.height) ),		// å³ä¸Š, å³ä¸‹ â€» å³å´
-		std::make_pair(Size(-size.width, -size.height),Size(size.width, -size.height)),		// å·¦ä¸‹, å³ä¸‹ â€» ä¸‹å´
-		std::make_pair( Size(-size.width, size.height),Size(-size.width, -size.height) ),	// å·¦ä¸Š, å·¦ä¸‹ â€» å·¦å´
-		};	
+		std::make_pair(Size(0, 0),Size(0, 0)),											// ‰½‚à‚µ‚Ä‚¢‚È‚¢
+		std::make_pair(Size(-size.width, size.height),Size(size.width, size.height)),		// ¶ã, ‰Eã ¦ ã‘¤
+		std::make_pair(Size(size.width, size.height),Size(size.width, -size.height)),		// ‰Eã, ‰E‰º ¦ ‰E‘¤
+		std::make_pair(Size(-size.width, -size.height),Size(size.width, -size.height)),		// ¶‰º, ‰E‰º ¦ ‰º‘¤
+		std::make_pair(Size(-size.width, size.height),Size(-size.width, -size.height)),	// ¶ã, ¶‰º ¦ ¶‘¤
+		};
 		return offsetTbl;
 	};
 	_offsetTbl = setOffsetTbl(*this);
-			
-	_jumpFancFlag = false;	
+
+	_jumpFancFlag = false;
+	
+	_actMng = std::make_shared<ActionMng>();
+
+	// ¶ˆÚ“®
+	{
+		actModule module;
+		module.actID = eAct::run;
+		module.speed = Vec2(-5, 0);
+		module.colSize = { Size(-_size.width / 2, _size.height / 2), Size(-_size.width / 2, -_size.height / 2) };
+		module.keyCode = EventKeyboard::KeyCode::KEY_LEFT_ARROW;
+		module.keyMode = TRG_STATE::NOW;
+		_actMng->AddActModule("¶ˆÚ“®", module);
+	}
+
+
 
 	this->scheduleUpdate();
 	return true;
@@ -82,110 +99,98 @@ bool Player::init()
 
 void Player::update(float delta)
 {
-	// ï¾„ï¾˜ï½¶ï¾ï½°ï½·ï½°ç”¨â€» 1ï¾Œï¾šï½°ï¾‘ã”ã¨ã«ï½·ï½°ï¾Œï¾—ï½¸ï¾ã‚’falseã«ã™ã‚‹
-	_inputState->Update();
-	// ï¾ƒï¾ï¾Šï¾ï½¯ï½¸ï¾ç”¨ â€»
-	// ï¾Œï¾Ÿï¾šï½²ï¾”ï½°ãŒåŸ‹ã¾ã£ã¦ã„ãŸã‚‰ä¸Šã«ä¸€å¿œä¸Šã’ã‚‹å‡¦ç†@ï½¼ï¾ï½¬ï¾ï¾Œï¾Ÿæ¬¡ç¬¬ã§å‰Šé™¤ã™ã‚‹ã‹ã‚‚â€»
+	// ÄØ¶Ş°·°—p¦ 1ÌÚ°Ñ‚²‚Æ‚É·°Ì×¸Ş‚ğfalse‚É‚·‚é
+	_inputState->update();
+	_actMng->update();
+	_pos = this->getPosition();
+	
+	// ÃŞÊŞ¯¸Ş—p ¦
+	// ÌßÚ²Ô°‚ª–„‚Ü‚Á‚Ä‚¢‚½‚çã‚Éˆê‰ã‚°‚éˆ—@¼Ş¬İÌßŸ‘æ‚Åíœ‚·‚é‚©‚à¦
 	auto debugUp = [this]()
 	{
-		_pos = this->getPosition();
+
 		auto directer = Director::getInstance();
 		auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
-		TMXLayer* colLayer = map->getLayer("footing");
+		TMXLayer* colLayer = map->getLayer("layer");
 		auto tileSize = Size(colLayer->getMapTileSize().width, colLayer->getMapTileSize().height);
 		auto mapTile = Size(map->getMapSize().width, map->getMapSize().height);
 		Vec2 pID;
 		pID = { _pos.x / tileSize.width,
-				mapTile.height - ((_pos.y - _size.height / 2) / tileSize.height) };	// ï¾Œï¾Ÿï¾šï½²ï¾”ï½°åº§æ¨™ã®ID	
+				mapTile.height - ((_pos.y - _size.height / 2) / tileSize.height) };	// ÌßÚ²Ô°À•W‚ÌID	
 		if (pID.x < mapTile.width && pID.y < mapTile.height && pID.x > 0 && pID.y > 0)
 		{
 			if (colLayer->getTileGIDAt({ pID.x, pID.y }) != 0)
 			{
 				this->setPosition(_pos.x, _pos.y + (_pos.y - ((mapTile.height - pID.y + 1) *  tileSize.height)));
-				TRACE("HIT");
 			}
 		}
 		Vec2 pNextID = { _pos.x / tileSize.width,
-						 mapTile.height - ((_pos.y - _size.height) / tileSize.height) };	// ï¾Œï¾Ÿï¾šï½²ï¾”ï½°åº§æ¨™ã®ID
+						 mapTile.height - ((_pos.y - _size.height) / tileSize.height) };	// ÌßÚ²Ô°À•W‚ÌID
 		if (pNextID.y < 0)
 		{
 			this->setPosition(this->getPosition().x, this->getPosition().y - 10);
-			if (_inputState->GetInput(DIR::RIGHT).first)
+			if (_inputState->GetInput(TRG_STATE::NOW, DIR::RIGHT))
 			{
 				this->setPosition(this->getPosition().x + 5, this->getPosition().y);
 			}
-			if (_inputState->GetInput(DIR::LEFT).first)
+			if (_inputState->GetInput(TRG_STATE::NOW, DIR::LEFT))
 			{
 				this->setPosition(this->getPosition().x - 5, this->getPosition().y);
 			}
 		}
 	};
-	debugUp();
-	//â€»
+	//debugUp();
+	//¦
 
 
-	// ï½±ï½¸ï½¼ï½®ï¾ã¨ï½±ï¾†ï¾’ï½°ï½¼ï½®ï¾
-	// ç§»å‹•
-
-	Gravity(*this);	// é‡åŠ›
-	DIR dir;
-	for (auto itr : DIR())
+	// ±¸¼®İ‚Æ±ÆÒ°¼®İ
+	// ˆÚ“®
+	//Gravity(*this);	// d—Í
+	DIR dir = _inputState->GetDIR();
+	if (_inputState->GetInput(TRG_STATE::NOW).first)
 	{
-		if (!_inputState->GetInput(itr).first)
+
+		if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW)
 		{
-			TRACE("release\n");
+			_speed = { -5, 0 };
+			_colSize[0] = { Size(-_size.width / 2, _size.height / 2) };
+			_colSize[1] = { Size(-_size.width / 2, -_size.height / 2) };
+		}
+		if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+		{
+			_speed = { 5, 0 };
+			_colSize[0] = { Size(_size.width / 2, _size.height / 2) };
+			_colSize[1] = { Size(_size.width / 2, -_size.height / 2) };
+		}
+
+		if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW
+			|| _inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+		{
+			//MoveLR(*this);		// ˆÚ“®
+			ChangeLR(*this, dir);	// ¶‰EØ‚è‘Ö‚¦		
 		}
 	}
+	// ±ÆÒ°¼®İ
+	auto anim = AnimationCache::getInstance()->getAnimation("idle");	// repeatNum‚Ìİ’è‚ğSetAnim‚Åİ’è‚µ‚Ä‚¢‚é‚½‚ßæ“Ç‚İ•K{@•ÏX—\’è
+	lpAnimMng.runAnim(*this, *anim, _repeatNum);
 
-
-	
-	
-	//for (auto itr : DIR())
-	//{
-	//	if (_inputState->GetData(itr).first)
-	//	{			
-	//		MoveLR(*this, dir);		// ç§»å‹•
-	//		ChangeLR(*this, dir);	// å·¦å³åˆ‡ã‚Šæ›¿ãˆ
-	//		Jump(*this, dir);		// ï½¼ï¾ï½¬ï¾ï¾Œï¾Ÿ
-	//		dir = itr;			
-	//		break;
-	//	}		
-	//}
-	// ï½±ï¾†ï¾’ï½°ï½¼ï½®ï¾
-	auto anim = SetAnim(dir);	// repeatNumã®è¨­å®šã‚’SetAnimã§è¨­å®šã—ã¦ã„ã‚‹ãŸã‚å…ˆèª­ã¿å¿…é ˆ@å¤‰æ›´äºˆå®š
-	lpAnimMng.runAnim(*this, *anim, repeatNum);
-		
-	
 }
 
-void Player::MoveLR(Sprite & sp, DIR dir)
-{	
-	if (dir != DIR::LEFT && dir != DIR::RIGHT)
+void Player::MoveLR(Sprite & sp)
+{
+	if (!Colision()(sp, _speed + _colSize[0])
+		|| !Colision()(sp, _speed + _colSize[1]))
 	{
 		return;
 	}
-	if (!Colision()(sp, SpeedTbl[static_cast<int>(dir)] + _offsetTbl[static_cast<int>(dir)].first)
-	 || !Colision()(sp, SpeedTbl[static_cast<int>(dir)] + _offsetTbl[static_cast<int>(dir)].second))
-	{
-		return;
-	}
-	auto action = MoveBy::create(0, SpeedTbl[static_cast<int>(dir)]);
+	sp.setPositionX(sp.getPositionX() + _speed.x);
+	/*auto action = MoveBy::create(0, SpeedTbl[static_cast<int>(dir)]);
 	action->setTag(intCast(Tag::ACT));
-	sp.runAction(action);	
+	sp.runAction(action);*/
 }
 
 void Player::Jump(Sprite & sp, DIR dir)
 {
-	if (dir != DIR::UP)
-	{
-		return;
-	}
-	/*auto pos = this->getPosition();
-	if (!_jumpFancFlag)
-	{
-		this->setPosition(pos.x, pos.y + 100);
-		_jumpFancFlag = true;
-	}*/
 	auto callback = CallFunc::create([this]()
 	{
 		_jumpFancFlag = false;
@@ -201,49 +206,45 @@ void Player::Jump(Sprite & sp, DIR dir)
 
 void Player::Gravity(Sprite & sp)
 {
-	Vec2 G = { 0, -10 };
-	if (Colision()(*this, G + Vec2{ 0, -_size.height / 2  })						// è¶³å…ƒã®ä¸­å¿ƒ
-		&& Colision()(*this, G + Vec2{ -_size.width / 2, -_size.height / 2 })		// è¶³å…ƒã®å·¦
-		&& Colision()(*this, G + Vec2{ _size.width / 2, -_size.height / 2 }))		// è¶³å…ƒã®å³
+	Vec2 gravity = { 0, -10 };
+	if (Colision()(*this, gravity + Vec2{ 0, -_size.height / 2 })						// ‘«Œ³‚Ì’†S
+		&& Colision()(*this, gravity + Vec2{ -_size.width / 2, -_size.height / 2 })		// ‘«Œ³‚Ì¶
+		&& Colision()(*this, gravity + Vec2{ _size.width / 2, -_size.height / 2 }))		// ‘«Œ³‚Ì‰E
 	{
 		if (!_jumpFancFlag)
 		{
-			sp.setPosition(_pos + G);
+			sp.setPosition(sp.getPosition() + gravity);
 		}
 	}
 }
 
 void Player::ChangeLR(Sprite & sp, DIR dir)
 {
-	// æç”»å·¦å³åè»¢
-	/*if (dir == DIR::RIGHT)
+	// •`‰æ¶‰E”½“]
+	bool flagLR;
+	if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
 	{
-		_LRflag = false;
+		flagLR = false;
 	}
-	if (dir == DIR::LEFT)
+	else
 	{
-		_LRflag = true;
-	}*/
-	if (dir != DIR::LEFT && dir != DIR::RIGHT)
-	{
-		return;
+		flagLR = true;
 	}
-	bool flagLR = (dir == DIR::LEFT ? true : false);
 	this->runAction(FlipX::create(flagLR));
-	
+
 }
 
 Animation* Player::SetAnim(DIR dir)
 {
 	Animation* anim = nullptr;
-	repeatNum = 0;
+	_repeatNum = 0;
 	if (dir == DIR::UP)
 	{
 		anim = AnimationCache::getInstance()->getAnimation("jump");
-		repeatNum = 1;
+		_repeatNum = 1;
 	}
 	if (!_jumpFancFlag)
-	{	
+	{
 		if (anim != AnimationCache::getInstance()->getAnimation("jump"))
 		{
 			if (dir == DIR::LEFT || dir == DIR::RIGHT)
