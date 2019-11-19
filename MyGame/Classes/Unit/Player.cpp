@@ -103,22 +103,29 @@ bool Player::init()
 		_actMng->AddActModule("右移動", module);
 	}
 
+	// 落下
+	{
+		actModule module;
+		module.actID = eAct::fall;
+		module.speed = Vec2(0, -5);
+		module.colSize = { Size(_size.width / 2, -_size.height / 2), Size(-_size.width / 2, -_size.height / 2) };
+		_actMng->AddActModule("落下", module);
+	}
+
 	this->scheduleUpdate();
 	return true;
 }
 
 void Player::update(float delta)
 {
-	// ﾄﾘｶﾞｰｷｰ用※ 1ﾌﾚｰﾑごとにｷｰﾌﾗｸﾞをfalseにする
 	_inputState->update();
 	_actMng->update(*this);
-	_pos = this->getPosition();
 	
 	// ﾃﾞﾊﾞｯｸﾞ用 ※
 	// ﾌﾟﾚｲﾔｰが埋まっていたら上に一応上げる処理@ｼﾞｬﾝﾌﾟ次第で削除するかも※
 	auto debugUp = [this]()
 	{
-
+		_pos = this->getPosition();
 		auto directer = Director::getInstance();
 		auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
 		TMXLayer* colLayer = map->getLayer("layer");
@@ -151,36 +158,6 @@ void Player::update(float delta)
 	};
 	//debugUp();
 	//※
-
-
-	// ｱｸｼｮﾝとｱﾆﾒｰｼｮﾝ
-	// 移動
-	//Gravity(*this);	// 重力
-	//DIR dir = _inputState->GetDIR();
-	//if (_inputState->GetInput(TRG_STATE::NOW).first)
-	//{
-
-	//	if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW)
-	//	{
-	//		_speed = { -5, 0 };
-	//		_colSize[0] = { Size(-_size.width / 2, _size.height / 2) };
-	//		_colSize[1] = { Size(-_size.width / 2, -_size.height / 2) };
-	//	}
-	//	if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
-	//	{
-	//		_speed = { 5, 0 };
-	//		_colSize[0] = { Size(_size.width / 2, _size.height / 2) };
-	//		_colSize[1] = { Size(_size.width / 2, -_size.height / 2) };
-	//	}
-
-	//	if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW
-	//		|| _inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
-	//	{
-	//		//MoveLR(*this);		// 移動
-	//		ChangeLR(*this, dir);	// 左右切り替え		
-	//	}
-	//}
-	// ｱﾆﾒｰｼｮﾝ
 	auto anim = AnimationCache::getInstance()->getAnimation("idle");	// repeatNumの設定をSetAnimで設定しているため先読み必須@変更予定
 	lpAnimMng.runAnim(*this, *anim, _repeatNum);
 
@@ -201,19 +178,19 @@ void Player::Jump(Sprite & sp, DIR dir)
 	}
 }
 
-void Player::Gravity(Sprite & sp)
-{
-	Vec2 gravity = { 0, -10 };
-	if (Colision()(*this, gravity + Vec2{ 0, -_size.height / 2 })						// 足元の中心
-		&& Colision()(*this, gravity + Vec2{ -_size.width / 2, -_size.height / 2 })		// 足元の左
-		&& Colision()(*this, gravity + Vec2{ _size.width / 2, -_size.height / 2 }))		// 足元の右
-	{
-		if (!_jumpFancFlag)
-		{
-			sp.setPosition(sp.getPosition() + gravity);
-		}
-	}
-}
+//void Player::Gravity(Sprite & sp)
+//{
+//	Vec2 gravity = { 0, -10 };
+//	if (Colision()(*this, gravity + Vec2{ 0, -_size.height / 2 })						// 足元の中心
+//		&& Colision()(*this, gravity + Vec2{ -_size.width / 2, -_size.height / 2 })		// 足元の左
+//		&& Colision()(*this, gravity + Vec2{ _size.width / 2, -_size.height / 2 }))		// 足元の右
+//	{
+//		if (!_jumpFancFlag)
+//		{
+//			sp.setPosition(sp.getPosition() + gravity);
+//		}
+//	}
+//}
 
 void Player::ChangeLR(Sprite & sp, DIR dir)
 {

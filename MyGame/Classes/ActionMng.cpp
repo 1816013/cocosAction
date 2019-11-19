@@ -1,11 +1,8 @@
 #include "ActionMng.h"
 
-
-
 ActionMng::ActionMng()
 {
 }
-
 
 ActionMng::~ActionMng()
 {
@@ -20,25 +17,26 @@ void ActionMng::AddActModule(const std::string & actName, actModule & module)
 		_moduleMap[actName].act.emplace_back(Colision());
 		_moduleMap[actName].runAction = MoveLR();
 	}
+	if (actName == "—Ž‰º")
+	{
+		_moduleMap.try_emplace(actName, std::move(module));
+		_moduleMap[actName].act.emplace_back(Colision());
+		_moduleMap[actName].runAction = Fall();
+	}
 }
 
 void ActionMng::update(cocos2d::Sprite& sp)
 {
 	auto check = [this](Sprite& sp, actModule& module)
 	{
-		int count = 0;
 		for (auto listModule : module.act/*= module.act.begin(); listModule == module.act.end(); ++listModule*/)
 		{
-			if (listModule(sp, module))
+			if (!listModule(sp, module))
 			{	
-				count++;
+				return false;
 			}		
 		}
-		if (count >= module.act.size())
-		{
-			return true;
-		}
-		return false;
+		return true;
 	};
 
 	for (auto mapModule : _moduleMap)

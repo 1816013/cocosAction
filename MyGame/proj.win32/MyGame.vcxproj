@@ -164,6 +164,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Unit\Obj.cpp" />
     <ClCompile Include="..\Classes\Unit\Player.cpp" />
     <ClCompile Include="Fall.cpp" />
+    <ClCompile Include="Jump.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="_debug\_DebugConOut.cpp" />
   </ItemGroup>
@@ -181,6 +182,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Unit\Obj.h" />
     <ClInclude Include="..\Classes\Unit\Player.h" />
     <ClInclude Include="Fall.h" />
+    <ClInclude Include="Jump.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="_debug\_DebugConOut.h" />
   </ItemGroup>

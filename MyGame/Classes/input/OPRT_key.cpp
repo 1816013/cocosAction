@@ -68,6 +68,7 @@ OPRT_key::OPRT_key(Node* sp)
 		{
 			_keyData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::LEFT)]= false;
 		}*/
+
 		return true;
 	};
 	sp->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, sp);

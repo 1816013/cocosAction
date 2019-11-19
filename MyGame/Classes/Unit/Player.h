@@ -19,7 +19,7 @@ public:
 	bool init()override;					// 初期化　ｽﾌﾟﾗｲﾄ作成
 	void update(float delta)override;		// ﾌﾟﾚｲﾔｰの移動とｱﾆﾒｰｼｮﾝ処理
 	void Jump(Sprite& sp, DIR dir);			// ｼﾞｬﾝﾌﾟ
-	void Gravity(Sprite& sp);				// 重力
+	//void Gravity(Sprite& sp);				// 重力
 	void ChangeLR(Sprite& sp, DIR dir);		// 左右切り替え
 
 	CREATE_FUNC(Player);

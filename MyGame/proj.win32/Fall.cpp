@@ -2,5 +2,6 @@
 
 bool Fall::operator()(cocos2d::Sprite & sp, actModule & module)
 {
-	return false;
+	sp.setPositionY(sp.getPositionY() + module.speed.y);
+	return true;
 }
