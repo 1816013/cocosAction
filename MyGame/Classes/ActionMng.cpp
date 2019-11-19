@@ -11,39 +11,41 @@ ActionMng::~ActionMng()
 {
 }
 
-void ActionMng::SetActModule(void)
-{
-}
-
 void ActionMng::AddActModule(const std::string & actName, actModule & module)
 {
-	if (actName == "¶ˆÚ“®")
+	if (actName == "¶ˆÚ“®" || actName == "‰EˆÚ“®")
 	{
 		_moduleMap.try_emplace(actName, std::move(module));
 		_moduleMap[actName].act.emplace_back(CheckKey());
-		_moduleMap[actName].act.emplace_back(MoveLR());
+		_moduleMap[actName].act.emplace_back(Colision());
+		_moduleMap[actName].runAction = MoveLR();
 	}
 }
 
-void ActionMng::update()
+void ActionMng::update(cocos2d::Sprite& sp)
 {
-	auto check = [this]()
+	auto check = [this](Sprite& sp, actModule& module)
 	{
-		for (auto itr : _moduleMap)
+		int count = 0;
+		for (auto listModule = module.act.begin(); listModule == module.act.end(); ++listModule)
 		{
-			if (itr.second.runAction)
-			{
-				return false;
-			}
+			if ((*listModule)(sp, module))
+			{	
+				count++;
+			}		
 		}
-		return true;
+		if (count >= module.act.size())
+		{
+			return true;
+		}
+		return false;
 	};
 
-	for (auto itr : _moduleMap)
+	for (auto mapModule : _moduleMap)
 	{
-		if (check())
+		if (check(sp, mapModule.second))
 		{
-
+			mapModule.second.runAction(sp, mapModule.second);
 		}
 	}
 }

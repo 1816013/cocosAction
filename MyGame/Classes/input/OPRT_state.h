@@ -16,7 +16,6 @@ enum class OPRT_TYPE	// ‘€ì•û–@
 
 enum class DIR	// •ûŒü
 {
-	NEUTRAL,	// ‰½‚à‚µ‚Ä‚¢‚È‚¢
 	UP,			// ã
 	RIGHT,		// ‰E
 	DOWN,		// ‰º
@@ -29,7 +28,7 @@ enum class Timing
 	ON,
 	ON_MOM,
 	OFF,
-	OFFMOM
+	OFF_MOM
 };
 
 enum class TRG_STATE	// ÄØ¶Ş°”»’è—p
@@ -44,8 +43,9 @@ using DIR_ArrayTouch =  std::array<bool, intCast(DIR::MAX)>;
 using TRG_ArrayTouch = std::array<DIR_ArrayTouch, intCast(TRG_STATE::MAX)>;
 
 using KeyPair = std::pair<bool, cocos2d::EventKeyboard::KeyCode>;
+using KeyMap = std::map<cocos2d::EventKeyboard::KeyCode, bool>;
 //using DIR_ArrayKey = std::array<KeyPair, intCast(DIR::MAX)>;
-using TRG_ArrayKey = std::array<KeyPair, intCast(TRG_STATE::MAX)>;
+using TRG_ArrayKey = std::array<KeyMap, intCast(TRG_STATE::MAX)>;
 
 struct OPRT_state
 {
@@ -54,9 +54,9 @@ struct OPRT_state
 
 	void update(void);
 	
-	KeyPair GetInput(TRG_STATE trg)
+	bool GetInput(TRG_STATE trg, cocos2d::EventKeyboard::KeyCode keyCode)
 	{
-		return _keyData[intCast(trg)];
+		return _keyData[intCast(trg)][keyCode];
 	};
 	bool GetInput(TRG_STATE trg, DIR dir)
 	{

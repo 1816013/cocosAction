@@ -5,7 +5,7 @@
 USING_NS_CC;
 
 
-bool Colision::operator()(Sprite & sp, Vec2 distance) const // “–‚½‚è”»’è
+bool Colision::operator()(Sprite & sp, actModule& module) const // “–‚½‚è”»’è
 {
 	auto directer = Director::getInstance();
 	auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
@@ -15,19 +15,29 @@ bool Colision::operator()(Sprite & sp, Vec2 distance) const // “–‚½‚è”»’è
 	
 	Vec2 pos = sp.getPosition();
 	Size size = { 60, 120 };
-	
-	Vec2 ID = { (pos.x + distance.x) / tileSize.width,
-				mapSize.height - ((pos.y + distance.y) / tileSize.height) };	// ÌßÚ²Ô°À•W‚ÌID	
+	std::array<Vec2, 2>IDarray;
 	/*std::array<Vec2, 3>IDarray;
 	IDarray = { ID ,Vec2{0, 0} , mapSize };
 	auto minMax = std::minmax_element(IDarray.begin(), IDarray.end());*/
-	if (ID.x < mapSize.width && ID.y < mapSize.height && ID.x > 0 && ID.y > 0)
 	//if(*minMax.first == Vec2(0, 0) && *minMax.second == mapSize)
+	int count = 0;
+	for (int i = 0; i < 2; i++)
 	{
-		if (col->getTileGIDAt({ ID.x, ID.y }) == 0)	// mapTile‚Í0‚ª‹ó”’
+		IDarray[i] = { (pos.x + module.speed.x + module.colSize[i].width) / tileSize.width,
+					mapSize.height - ((pos.y + module.speed.x + module.colSize[i].width) / tileSize.height) };	// ÌßÚ²Ô°À•W‚ÌID	
+
+		if (IDarray[i].x < mapSize.width && IDarray[i].y < mapSize.height && IDarray[i].x > 0 && IDarray[i].y > 0)			
 		{
-			return true;
+			if (col->getTileGIDAt({ IDarray[i].x, IDarray[i].y }) != 0)	// mapTile‚Í0‚ª‹ó”’
+			{
+				count++;
+			}
 		}
+	}
+	if (count >= 2)
+	{
+		count = 0;
+		return true;
 	}
 	return false;
 }

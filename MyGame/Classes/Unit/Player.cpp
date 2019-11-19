@@ -66,7 +66,6 @@ bool Player::init()
 		auto size = sp.getContentSize();
 		size = size / 2;
 		DIRArrayPair offsetTbl = {
-		std::make_pair(Size(0, 0),Size(0, 0)),											// 何もしていない
 		std::make_pair(Size(-size.width, size.height),Size(size.width, size.height)),		// 左上, 右上 ※ 上側
 		std::make_pair(Size(size.width, size.height),Size(size.width, -size.height)),		// 右上, 右下 ※ 右側
 		std::make_pair(Size(-size.width, -size.height),Size(size.width, -size.height)),		// 左下, 右下 ※ 下側
@@ -88,10 +87,21 @@ bool Player::init()
 		module.colSize = { Size(-_size.width / 2, _size.height / 2), Size(-_size.width / 2, -_size.height / 2) };
 		module.keyCode = EventKeyboard::KeyCode::KEY_LEFT_ARROW;
 		module.keyMode = TRG_STATE::NOW;
+		module.keyTiming = Timing::ON;
 		_actMng->AddActModule("左移動", module);
 	}
 
-
+	// 右移動
+	{
+		actModule module;
+		module.actID = eAct::run;
+		module.speed = Vec2(5, 0);
+		module.colSize = { Size(_size.width / 2, _size.height / 2), Size(_size.width / 2, -_size.height / 2) };
+		module.keyCode = EventKeyboard::KeyCode::KEY_RIGHT_ARROW;
+		module.keyMode = TRG_STATE::NOW;
+		module.keyTiming = Timing::ON;
+		_actMng->AddActModule("右移動", module);
+	}
 
 	this->scheduleUpdate();
 	return true;
@@ -101,7 +111,7 @@ void Player::update(float delta)
 {
 	// ﾄﾘｶﾞｰｷｰ用※ 1ﾌﾚｰﾑごとにｷｰﾌﾗｸﾞをfalseにする
 	_inputState->update();
-	_actMng->update();
+	_actMng->update(*this);
 	_pos = this->getPosition();
 	
 	// ﾃﾞﾊﾞｯｸﾞ用 ※
@@ -146,47 +156,34 @@ void Player::update(float delta)
 	// ｱｸｼｮﾝとｱﾆﾒｰｼｮﾝ
 	// 移動
 	//Gravity(*this);	// 重力
-	DIR dir = _inputState->GetDIR();
-	if (_inputState->GetInput(TRG_STATE::NOW).first)
-	{
+	//DIR dir = _inputState->GetDIR();
+	//if (_inputState->GetInput(TRG_STATE::NOW).first)
+	//{
 
-		if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW)
-		{
-			_speed = { -5, 0 };
-			_colSize[0] = { Size(-_size.width / 2, _size.height / 2) };
-			_colSize[1] = { Size(-_size.width / 2, -_size.height / 2) };
-		}
-		if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
-		{
-			_speed = { 5, 0 };
-			_colSize[0] = { Size(_size.width / 2, _size.height / 2) };
-			_colSize[1] = { Size(_size.width / 2, -_size.height / 2) };
-		}
+	//	if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW)
+	//	{
+	//		_speed = { -5, 0 };
+	//		_colSize[0] = { Size(-_size.width / 2, _size.height / 2) };
+	//		_colSize[1] = { Size(-_size.width / 2, -_size.height / 2) };
+	//	}
+	//	if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+	//	{
+	//		_speed = { 5, 0 };
+	//		_colSize[0] = { Size(_size.width / 2, _size.height / 2) };
+	//		_colSize[1] = { Size(_size.width / 2, -_size.height / 2) };
+	//	}
 
-		if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW
-			|| _inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
-		{
-			//MoveLR(*this);		// 移動
-			ChangeLR(*this, dir);	// 左右切り替え		
-		}
-	}
+	//	if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW
+	//		|| _inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+	//	{
+	//		//MoveLR(*this);		// 移動
+	//		ChangeLR(*this, dir);	// 左右切り替え		
+	//	}
+	//}
 	// ｱﾆﾒｰｼｮﾝ
 	auto anim = AnimationCache::getInstance()->getAnimation("idle");	// repeatNumの設定をSetAnimで設定しているため先読み必須@変更予定
 	lpAnimMng.runAnim(*this, *anim, _repeatNum);
 
-}
-
-void Player::MoveLR(Sprite & sp)
-{
-	if (!Colision()(sp, _speed + _colSize[0])
-		|| !Colision()(sp, _speed + _colSize[1]))
-	{
-		return;
-	}
-	sp.setPositionX(sp.getPositionX() + _speed.x);
-	/*auto action = MoveBy::create(0, SpeedTbl[static_cast<int>(dir)]);
-	action->setTag(intCast(Tag::ACT));
-	sp.runAction(action);*/
 }
 
 void Player::Jump(Sprite & sp, DIR dir)
@@ -204,32 +201,32 @@ void Player::Jump(Sprite & sp, DIR dir)
 	}
 }
 
-void Player::Gravity(Sprite & sp)
-{
-	Vec2 gravity = { 0, -10 };
-	if (Colision()(*this, gravity + Vec2{ 0, -_size.height / 2 })						// 足元の中心
-		&& Colision()(*this, gravity + Vec2{ -_size.width / 2, -_size.height / 2 })		// 足元の左
-		&& Colision()(*this, gravity + Vec2{ _size.width / 2, -_size.height / 2 }))		// 足元の右
-	{
-		if (!_jumpFancFlag)
-		{
-			sp.setPosition(sp.getPosition() + gravity);
-		}
-	}
-}
+//void Player::Gravity(Sprite & sp)
+//{
+//	Vec2 gravity = { 0, -10 };
+//	if (Colision()(*this, gravity + Vec2{ 0, -_size.height / 2 })						// 足元の中心
+//		&& Colision()(*this, gravity + Vec2{ -_size.width / 2, -_size.height / 2 })		// 足元の左
+//		&& Colision()(*this, gravity + Vec2{ _size.width / 2, -_size.height / 2 }))		// 足元の右
+//	{
+//		if (!_jumpFancFlag)
+//		{
+//			sp.setPosition(sp.getPosition() + gravity);
+//		}
+//	}
+//}
 
 void Player::ChangeLR(Sprite & sp, DIR dir)
 {
 	// 描画左右反転
 	bool flagLR;
-	if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+	/*if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
 	{
 		flagLR = false;
 	}
 	else
 	{
 		flagLR = true;
-	}
+	}*/
 	this->runAction(FlipX::create(flagLR));
 
 }

@@ -18,12 +18,12 @@ public:
 
 	bool init()override;					// 初期化　ｽﾌﾟﾗｲﾄ作成
 	void update(float delta)override;		// ﾌﾟﾚｲﾔｰの移動とｱﾆﾒｰｼｮﾝ処理
-	void MoveLR(Sprite& sp);		// ﾌﾟﾚｲﾔｰの左右移動
 	void Jump(Sprite& sp, DIR dir);			// ｼﾞｬﾝﾌﾟ
 	void Gravity(Sprite& sp);				// 重力
 	void ChangeLR(Sprite& sp, DIR dir);		// 左右切り替え
 
 	CREATE_FUNC(Player);
+	std::unique_ptr<OPRT_state>_inputState;
 
 	// 変数
 	std::array<Vec2, static_cast<int>(DIR::MAX)>SpeedTbl;	// ｽﾋﾟｰﾄﾞ格納用ﾃｰﾌﾞﾙ
@@ -41,7 +41,7 @@ private:
 	bool _jumpFancFlag;		// ｼﾞｬﾝﾌﾟ中:true	ｼﾞｬﾝﾌﾟしていない時:false
 	int _repeatNum;
 
-	std::unique_ptr<OPRT_state>_inputState;
+	
 	// test
 	Vec2 _speed = { 0, 0 };
 	std::array<cocos2d::Size, 2>_colSize = { cocos2d::Size(0, 0), cocos2d::Size(0, 0)};

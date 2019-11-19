@@ -2,10 +2,10 @@
 
 OPRT_state::OPRT_state()
 {
-	_dirData = DIR::NEUTRAL;
+	_dirData = DIR::UP;
 	for (int trg = 0; trg < static_cast<int>(TRG_STATE::MAX); trg++)
 	{
-		_keyData[trg].first = false;
+		//_keyData[trg][] = false;
 		for (auto itr : DIR())
 		{
 			_touchData[static_cast<int>(trg)][static_cast<int>(itr)] = false;
@@ -21,7 +21,7 @@ void OPRT_state::update(void)
 
 DIR begin(DIR)
 {
-	return DIR::NEUTRAL;
+	return DIR::UP;
 }
 
 DIR end(DIR)

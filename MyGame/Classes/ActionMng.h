@@ -5,6 +5,7 @@
 #include <input/OPRT_state.h>
 #include <MoveLR.h>
 #include <CheckKey.h>
+#include <Colision.h>
 
 enum class eAct
 {
@@ -26,6 +27,7 @@ struct actModule
 	cocos2d::Vec2 speed;
 	std::array<cocos2d::Size, 2> colSize;
 	TRG_STATE keyMode;
+	Timing keyTiming;
 	cocos2d::EventKeyboard::KeyCode keyCode;
 };
 
@@ -34,17 +36,10 @@ class ActionMng
 public:
 	ActionMng();
 	~ActionMng();
-	void SetActModule(void);
 	void AddActModule(const std::string& actName, actModule& module);
-	void update();
+	void update(cocos2d::Sprite& sp);
 
 
 	std::map<std::string, actModule>_moduleMap;
 };
 
-//class ActionCtl()
-//{
-//	Set	// player
-//		Add
-//		Update
-//}

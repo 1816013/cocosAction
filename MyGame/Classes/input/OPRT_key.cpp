@@ -5,11 +5,31 @@
 
 OPRT_key::OPRT_key(Node* sp)
 {
+	cocos2d::EventKeyboard::KeyCode dirTbl[static_cast<int>(DIR::MAX)] =
+	{
+		cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW,
+		cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW,
+		cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW,
+		cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW
+	};
+
+	for (auto dir : DIR())
+	{
+		_keyData[static_cast<int>(TRG_STATE::INPUT)].emplace(dirTbl[static_cast<int>(dir)], false);
+	};
+	
 	auto listener = EventListenerKeyboard::create();
 	listener->onKeyPressed = [this](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)->bool
 	{
-		_keyData[static_cast<int>(TRG_STATE::INPUT)].first = true;
-		_keyData[static_cast<int>(TRG_STATE::INPUT)].second = keyCode;
+		if (_keyData[static_cast<int>(TRG_STATE::INPUT)].find(keyCode) == _keyData[static_cast<int>(TRG_STATE::INPUT)].end())
+		{
+			return false;
+		}
+		else
+		{
+			_keyData[static_cast<int>(TRG_STATE::INPUT)][keyCode] = true;
+		}
+		//_keyData[static_cast<int>(TRG_STATE::INPUT)].second = keyCode;
 
 		/*if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW)
 		{
@@ -32,7 +52,7 @@ OPRT_key::OPRT_key(Node* sp)
 
 	listener->onKeyReleased = [this](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)->bool
 	{
-		_keyData[static_cast<int>(TRG_STATE::INPUT)].first = false;
+		_keyData[static_cast<int>(TRG_STATE::INPUT)][keyCode] = false;
 		/*if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW)
 		{
 			_keyData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::UP)] = false;

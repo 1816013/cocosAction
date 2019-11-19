@@ -1,20 +1,37 @@
 #include "CheckKey.h"
+#include "Unit/Player.h"
 
 USING_NS_CC;
 
 bool CheckKey::operator()(cocos2d::Sprite & sp, actModule & module)
 {
-	bool startF = false;
-	OPRT_state* input = new OPRT_key(&sp);
-	if (input->GetInput(module.keyMode).first)
+	if (((Player&)sp)._inputState->GetInput(module.keyMode, module.keyCode))
+	{	
+		if (module.keyTiming == Timing::ON)
+		{
+			return true;
+		}
+		if (module.keyTiming == Timing::ON_MOM)
+		{
+			if (((Player&)sp)._inputState->GetInput(module.keyMode, module.keyCode) &~ ((Player&)sp)._inputState->GetInput(TRG_STATE::OLD, module.keyCode))
+			{
+				return true;
+			}
+		}
+	}	
+	else
 	{
-		startF = true;
+		if (module.keyTiming == Timing::OFF)
+		{
+			return true;
+		}
+		if (module.keyTiming == Timing::OFF_MOM)
+		{
+			if (!((Player&)sp)._inputState->GetInput(module.keyMode, module.keyCode) &~ !((Player&)sp)._inputState->GetInput(TRG_STATE::OLD, module.keyCode))
+			{
+				return true;
+			}
+		}
 	}
-
-	if (input->GetInput(module.keyMode).second == module.keyCode)
-	{
-		return true;
-	}
-		
 	return false;
 }
