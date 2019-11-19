@@ -58,6 +58,7 @@
     <ClCompile Include="..\Classes\CheckKey.cpp" />
     <ClCompile Include="..\Classes\MoveLR.cpp" />
     <ClCompile Include="..\Classes\ActionMng.cpp" />
+    <ClCompile Include="Fall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -94,6 +95,7 @@
     <ClInclude Include="..\Classes\ActionMng.h" />
     <ClInclude Include="..\Classes\CheckKey.h" />
     <ClInclude Include="..\Classes\MoveLR.h" />
+    <ClInclude Include="Fall.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

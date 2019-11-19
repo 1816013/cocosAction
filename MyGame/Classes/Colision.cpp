@@ -37,8 +37,8 @@ bool Colision::operator()(Sprite & sp, actModule& module) const // “–‚½‚è”»’è
 	if (count >= 2)
 	{
 		count = 0;
-		return true;
+		return false;
 	}
-	return false;
+	return true;
 }
 

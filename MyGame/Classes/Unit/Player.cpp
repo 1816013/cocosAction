@@ -201,19 +201,19 @@ void Player::Jump(Sprite & sp, DIR dir)
 	}
 }
 
-//void Player::Gravity(Sprite & sp)
-//{
-//	Vec2 gravity = { 0, -10 };
-//	if (Colision()(*this, gravity + Vec2{ 0, -_size.height / 2 })						// 足元の中心
-//		&& Colision()(*this, gravity + Vec2{ -_size.width / 2, -_size.height / 2 })		// 足元の左
-//		&& Colision()(*this, gravity + Vec2{ _size.width / 2, -_size.height / 2 }))		// 足元の右
-//	{
-//		if (!_jumpFancFlag)
-//		{
-//			sp.setPosition(sp.getPosition() + gravity);
-//		}
-//	}
-//}
+void Player::Gravity(Sprite & sp)
+{
+	Vec2 gravity = { 0, -10 };
+	if (Colision()(*this, gravity + Vec2{ 0, -_size.height / 2 })						// 足元の中心
+		&& Colision()(*this, gravity + Vec2{ -_size.width / 2, -_size.height / 2 })		// 足元の左
+		&& Colision()(*this, gravity + Vec2{ _size.width / 2, -_size.height / 2 }))		// 足元の右
+	{
+		if (!_jumpFancFlag)
+		{
+			sp.setPosition(sp.getPosition() + gravity);
+		}
+	}
+}
 
 void Player::ChangeLR(Sprite & sp, DIR dir)
 {

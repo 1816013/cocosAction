@@ -27,9 +27,9 @@ void ActionMng::update(cocos2d::Sprite& sp)
 	auto check = [this](Sprite& sp, actModule& module)
 	{
 		int count = 0;
-		for (auto listModule = module.act.begin(); listModule == module.act.end(); ++listModule)
+		for (auto listModule : module.act/*= module.act.begin(); listModule == module.act.end(); ++listModule*/)
 		{
-			if ((*listModule)(sp, module))
+			if (listModule(sp, module))
 			{	
 				count++;
 			}		

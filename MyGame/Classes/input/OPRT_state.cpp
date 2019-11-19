@@ -15,8 +15,8 @@ OPRT_state::OPRT_state()
 
 void OPRT_state::update(void)
 {	
-	_keyData[intCast(TRG_STATE::OLD)] = _keyData[intCast(TRG_STATE::NOW)];
-	_keyData[intCast(TRG_STATE::NOW)] = _keyData[intCast(TRG_STATE::INPUT)];
+	_keyData[static_cast<int>(TRG_STATE::OLD)] = _keyData[static_cast<int>(TRG_STATE::NOW)];
+	_keyData[static_cast<int>(TRG_STATE::NOW)] = _keyData[static_cast<int>(TRG_STATE::INPUT)];
 }
 
 DIR begin(DIR)
