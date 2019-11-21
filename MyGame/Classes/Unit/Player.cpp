@@ -2,7 +2,7 @@
 #include "AnimMng.h"
 #include <input/OPRT_key.h>
 #include <input/OPRT_touch.h>
-#include <Colision.h>
+#include <action/Colision.h>
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 #include "_debug/_DebugConOut.h"
 #endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
@@ -165,21 +165,6 @@ void Player::update(float delta)
 
 }
 
-void Player::Jump(Sprite & sp, DIR dir)
-{
-	auto callback = CallFunc::create([this]()
-	{
-		_jumpFancFlag = false;
-	});
-	if (!_jumpFancFlag)
-	{
-		_jumpFancFlag = true;
-		auto jumpAct = Sequence::create(JumpBy::create(1.0f, { 0,0 }, 200, 1), callback, nullptr);
-		jumpAct->setTag(intCast(Tag::TRG_ACT));
-		this->runAction(jumpAct);
-	}
-}
-
 void Player::ChangeLR(Sprite & sp, DIR dir)
 {
 	// •`‰æ¶‰E”½“]
@@ -216,19 +201,18 @@ Animation* Player::SetAnim(DIR dir)
 		anim = animCache->getAnimation("jump");
 		_repeatNum = 1;
 	}
-	if (!_jumpFancFlag)
+
+	if (anim != animCache->getAnimation("jump"))
 	{
-		if (anim != animCache->getAnimation("jump"))
+		if (dir == DIR::LEFT || dir == DIR::RIGHT)
 		{
-			if (dir == DIR::LEFT || dir == DIR::RIGHT)
-			{
-				anim = animCache->getAnimation("run");
-			}
-			else if (anim == nullptr)
-			{
-				anim = animCache->getAnimation("idle");
-			}
+			anim = animCache->getAnimation("run");
+		}
+		else if (anim == nullptr)
+		{
+			anim = animCache->getAnimation("idle");
 		}
 	}
+	
 	return anim;
 }

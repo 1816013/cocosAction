@@ -1,4 +1,9 @@
 #include "ActionMng.h"
+#include "MoveLR.h"
+#include "CheckKey.h"
+#include "Colision.h"
+#include "Fall.h"
+#include "Jump.h"
 
 USING_NS_CC;
 

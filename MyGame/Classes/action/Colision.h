@@ -1,6 +1,6 @@
 #pragma once
-#include "cocos2d.h"
-#include "ActionMng.h"
+#include <cocos2d.h>
+#include "action/ActionMng.h"
 
 struct actModule;
 

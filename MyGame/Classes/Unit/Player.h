@@ -1,8 +1,8 @@
 #pragma once
 //#include "Obj.h"
 #include <array>
-#include <input/OPRT_state.h>
-#include <ActionMng.h>
+#include "input/OPRT_state.h"
+#include "action/ActionMng.h"
 
 using DIRArrayPair = std::array<std::pair<cocos2d::Size, cocos2d::Size>, static_cast<int>(DIR::MAX)>;
 
@@ -26,7 +26,7 @@ public:
 
 	// 変数
 	std::shared_ptr<ActionMng>_actMng;
-	float _jumpSpeed;
+	
 private:
 	// 関数
 	cocos2d::Animation* SetAnim(DIR dir);	// 方向に応じたｱﾆﾒｰｼｮﾝの設定
@@ -35,10 +35,10 @@ private:
 	cocos2d::Vec2 _pos;				// ﾌﾟﾚｲﾔｰの座標	
 	cocos2d::Size _size;				// ﾌﾟﾚｲﾔｰの大きさ
 
-	//bool _flagLR;			// 左右確認用　右:false 左:true
-	bool _jumpFancFlag;		// ｼﾞｬﾝﾌﾟ中:true	ｼﾞｬﾝﾌﾟしていない時:false
 	int _repeatNum;
 
+	float _jumpSpeed;
+	ACT_STATE _nowState;
 
 	
 };

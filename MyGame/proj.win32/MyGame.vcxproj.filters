@@ -54,28 +54,31 @@
     <ClCompile Include="..\Classes\Unit\Player.cpp">
       <Filter>src\unit</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\ActionMng.cpp">
-      <Filter>src\action</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\MoveLR.cpp">
-      <Filter>src\action</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\CheckKey.cpp">
-      <Filter>src\action\check</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Colision.cpp">
-      <Filter>src\action\check</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\AnimMng.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Fall.cpp">
+    <ClCompile Include="..\Classes\action\Fall.cpp">
       <Filter>src\action</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Jump.cpp">
+    <ClCompile Include="..\Classes\action\Jump.cpp">
       <Filter>src\action</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\CheckList.cpp">
+    <ClCompile Include="..\Classes\action\MoveLR.cpp">
+      <Filter>src\action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\action\ActionMng.cpp">
+      <Filter>src\action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\action\ChangeLR.cpp">
+      <Filter>src\action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\action\CheckKey.cpp">
+      <Filter>src\action\check</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\action\CheckList.cpp">
+      <Filter>src\action\check</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\action\Colision.cpp">
       <Filter>src\action\check</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,28 +110,31 @@
     <ClInclude Include="_debug\_DebugConOut.h">
       <Filter>win32\_debug</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\ActionMng.h">
-      <Filter>src\action</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\MoveLR.h">
-      <Filter>src\action</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\CheckKey.h">
-      <Filter>src\action\check</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\AnimMng.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Colision.h">
+    <ClInclude Include="..\Classes\action\Fall.h">
+      <Filter>src\action</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\action\Jump.h">
+      <Filter>src\action</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\action\MoveLR.h">
+      <Filter>src\action</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\action\ActionMng.h">
+      <Filter>src\action</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\action\ChangeLR.h">
+      <Filter>src\action</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\action\CheckKey.h">
       <Filter>src\action\check</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Fall.h">
-      <Filter>src\action</Filter>
+    <ClInclude Include="..\Classes\action\CheckList.h">
+      <Filter>src\action\check</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Jump.h">
-      <Filter>src\action</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\CheckList.h">
+    <ClInclude Include="..\Classes\action\Colision.h">
       <Filter>src\action\check</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,11 +3,7 @@
 #include <map>
 #include <functional>
 #include <input/OPRT_state.h>
-#include <MoveLR.h>
-#include <CheckKey.h>
-#include <Colision.h>
-#include <Fall.h>
-#include <Jump.h>
+
 
 enum class ACT_STATE
 {
@@ -19,8 +15,9 @@ enum class ACT_STATE
 	IDLE
 };
 
-//struct actModule;
+struct actModule;
 using funcActModule = std::function<bool(cocos2d::Sprite&, actModule&)>;
+
 struct actModule
 {
 	ACT_STATE actID;
