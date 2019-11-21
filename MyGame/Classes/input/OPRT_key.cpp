@@ -27,24 +27,6 @@ OPRT_key::OPRT_key(Node* sp)
 		{
 			_keyData[static_cast<int>(TRG_STATE::INPUT)][keyCode] = true;
 		}
-		//_keyData[static_cast<int>(TRG_STATE::INPUT)].second = keyCode;
-
-		/*if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW)
-		{
-			_keyData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::UP)] = true;
-		}
-		if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW )
-		{
-			_keyData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::RIGHT)] = true;
-		}
-		if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW)
-		{
-			_keyData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::DOWN)] = true;
-		}
-		if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW)
-		{
-			_keyData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::LEFT)] = true;
-		}*/
 		return true;
 	};
 
@@ -54,23 +36,6 @@ OPRT_key::OPRT_key(Node* sp)
 		{
 			_keyData[static_cast<int>(TRG_STATE::INPUT)][keyCode] = false;
 		}
-		/*if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW)
-		{
-			_keyData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::UP)] = false;
-		}
-		if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
-		{
-			_keyData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::RIGHT)] = false;
-		}
-		if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW)
-		{
-			_keyData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::DOWN)] = false;
-		}
-		if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW)
-		{
-			_keyData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::LEFT)]= false;
-		}*/
-
 		return true;
 	};
 	sp->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, sp);

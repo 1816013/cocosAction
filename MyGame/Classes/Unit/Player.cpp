@@ -56,7 +56,7 @@ bool Player::init()
 	this->setPosition(_pos);
 	this->setContentSize(_size);
 	_jumpSpeed = 0.0f;
-
+	_nowState = ACT_STATE::IDLE;
 	// 左移動
 	{
 		actModule module;
@@ -112,6 +112,22 @@ bool Player::init()
 		module.speed = Vec2(0, -5);
 		module.colSize = { Size(30, -60), Size(-30, -60) };
 		_actMng->AddActModule("落下", module);
+	}
+	// 向き変更左
+	{
+		actModule module;
+		module.keyCode = EventKeyboard::KeyCode::KEY_LEFT_ARROW;
+		module.keyMode = TRG_STATE::NOW;
+		module.keyTiming = Timing::ON;
+		_actMng->AddActModule("左向き", module);
+	}
+	// 向き変更右
+	{
+		actModule module;
+		module.keyCode = EventKeyboard::KeyCode::KEY_RIGHT_ARROW;
+		module.keyMode = TRG_STATE::NOW;
+		module.keyTiming = Timing::ON;
+		_actMng->AddActModule("右向き", module);
 	}
 
 	this->scheduleUpdate();
@@ -189,6 +205,16 @@ void Player::JumpSpeed(float speed)
 float Player::JumpSpeed(void)
 {
 	return _jumpSpeed;
+}
+
+void Player::ActState(ACT_STATE state)
+{
+	_nowState = state;
+}
+
+ACT_STATE Player::ActState(void)
+{
+	return _nowState;
 }
 
 Animation* Player::SetAnim(DIR dir)

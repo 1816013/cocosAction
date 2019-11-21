@@ -1,9 +1,11 @@
 #include "ActionMng.h"
+#include <Unit/Player.h>
 #include "MoveLR.h"
 #include "CheckKey.h"
 #include "Colision.h"
 #include "Fall.h"
 #include "Jump.h"
+#include "ChangeLR.h"
 
 USING_NS_CC;
 
@@ -43,6 +45,13 @@ void ActionMng::AddActModule(const std::string & actName, actModule & module)
 		_moduleMap[actName].act.emplace_back(Colision());
 		_moduleMap[actName].runAction = Fall();
 	}
+	if (actName == "âEå¸Ç´" || actName == "ç∂å¸Ç´")
+	{
+		/*_moduleMap.try_emplace(actName, std::move(module));
+		_moduleMap[actName].act.emplace_back(CheckKey());
+		_moduleMap[actName].act.emplace_back(Colision());*/
+		//_moduleMap[actName].runAction = ChangeLR();
+	}
 	/*if (actName == "óéâ∫íÜ")
 	{
 		_moduleMap.try_emplace(actName, std::move(module));
@@ -69,7 +78,12 @@ void ActionMng::update(cocos2d::Sprite& sp)
 	{
 		if (check(sp, mapModule.second))
 		{
+			((Player&)sp).ActState(mapModule.second.actID);
 			mapModule.second.runAction(sp, mapModule.second);
+		}
+		else
+		{
+			((Player&)sp).ActState(ACT_STATE::IDLE);
 		}
 	}
 }

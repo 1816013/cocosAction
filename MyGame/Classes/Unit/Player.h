@@ -19,8 +19,13 @@ public:
 	void Jump(cocos2d::Sprite& sp, DIR dir);			// ¼Ş¬İÌß
 	//void Gravity(Sprite& sp);							// d—Í
 	void ChangeLR(cocos2d::Sprite& sp, DIR dir);		// ¶‰EØ‚è‘Ö‚¦
+
 	void JumpSpeed(float speed);						// ¼Ş¬İÌß‚Ì½Ëß°ÄŞ‚ğæ“¾‚·‚é
 	float JumpSpeed(void);								// ¼Ş¬İÌß‚Ì½Ëß°ÄŞ‚ğ¾¯Ä‚·‚é
+
+	void ActState(ACT_STATE state);
+	ACT_STATE ActState(void);
+
 	CREATE_FUNC(Player);
 	std::unique_ptr<OPRT_state>_inputState;
 
