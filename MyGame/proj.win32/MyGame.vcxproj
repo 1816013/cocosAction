@@ -155,16 +155,17 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\AnimMng.cpp" />
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\CheckKey.cpp" />
+    <ClCompile Include="..\Classes\CheckList.cpp" />
     <ClCompile Include="..\Classes\Colision.cpp" />
+    <ClCompile Include="..\Classes\Fall.cpp" />
     <ClCompile Include="..\Classes\GameScene.cpp" />
     <ClCompile Include="..\Classes\input\OPRT_key.cpp" />
     <ClCompile Include="..\Classes\input\OPRT_state.cpp" />
     <ClCompile Include="..\Classes\input\OPRT_touch.cpp" />
+    <ClCompile Include="..\Classes\Jump.cpp" />
     <ClCompile Include="..\Classes\MoveLR.cpp" />
     <ClCompile Include="..\Classes\Unit\Obj.cpp" />
     <ClCompile Include="..\Classes\Unit\Player.cpp" />
-    <ClCompile Include="Fall.cpp" />
-    <ClCompile Include="Jump.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="_debug\_DebugConOut.cpp" />
   </ItemGroup>
@@ -173,16 +174,17 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\AnimMng.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\CheckKey.h" />
+    <ClInclude Include="..\Classes\CheckList.h" />
     <ClInclude Include="..\Classes\Colision.h" />
+    <ClInclude Include="..\Classes\Fall.h" />
     <ClInclude Include="..\Classes\GameScene.h" />
     <ClInclude Include="..\Classes\input\OPRT_key.h" />
     <ClInclude Include="..\Classes\input\OPRT_state.h" />
     <ClInclude Include="..\Classes\input\OPRT_touch.h" />
+    <ClInclude Include="..\Classes\Jump.h" />
     <ClInclude Include="..\Classes\MoveLR.h" />
     <ClInclude Include="..\Classes\Unit\Obj.h" />
     <ClInclude Include="..\Classes\Unit\Player.h" />
-    <ClInclude Include="Fall.h" />
-    <ClInclude Include="Jump.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="_debug\_DebugConOut.h" />
   </ItemGroup>

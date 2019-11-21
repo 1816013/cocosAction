@@ -22,6 +22,9 @@
     <Filter Include="src\action">
       <UniqueIdentifier>{4f938f70-3856-4be3-86e6-1dbc903d1bbf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\action\check">
+      <UniqueIdentifier>{3a2e8722-53a6-4653-94ca-ca6aa2412957}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -39,15 +42,11 @@
     <ClCompile Include="..\Classes\Unit\Obj.cpp">
       <Filter>src\unit</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\AnimMng.cpp" />
     <ClCompile Include="..\Classes\GameScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="_debug\_DebugConOut.cpp">
       <Filter>win32\_debug</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Colision.cpp">
-      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\input\OPRT_state.cpp">
       <Filter>src\input</Filter>
@@ -55,11 +54,30 @@
     <ClCompile Include="..\Classes\Unit\Player.cpp">
       <Filter>src\unit</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\CheckKey.cpp" />
-    <ClCompile Include="..\Classes\MoveLR.cpp" />
-    <ClCompile Include="..\Classes\ActionMng.cpp" />
-    <ClCompile Include="Fall.cpp" />
-    <ClCompile Include="Jump.cpp" />
+    <ClCompile Include="..\Classes\ActionMng.cpp">
+      <Filter>src\action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MoveLR.cpp">
+      <Filter>src\action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\CheckKey.cpp">
+      <Filter>src\action\check</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Colision.cpp">
+      <Filter>src\action\check</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AnimMng.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Fall.cpp">
+      <Filter>src\action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Jump.cpp">
+      <Filter>src\action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\CheckList.cpp">
+      <Filter>src\action\check</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -83,21 +101,36 @@
     <ClInclude Include="..\Classes\Unit\Player.h">
       <Filter>src\unit</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\AnimMng.h" />
     <ClInclude Include="..\Classes\GameScene.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Colision.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="_debug\_DebugConOut.h">
       <Filter>win32\_debug</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\ActionMng.h" />
-    <ClInclude Include="..\Classes\CheckKey.h" />
-    <ClInclude Include="..\Classes\MoveLR.h" />
-    <ClInclude Include="Fall.h" />
-    <ClInclude Include="Jump.h" />
+    <ClInclude Include="..\Classes\ActionMng.h">
+      <Filter>src\action</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MoveLR.h">
+      <Filter>src\action</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\CheckKey.h">
+      <Filter>src\action\check</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AnimMng.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Colision.h">
+      <Filter>src\action\check</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Fall.h">
+      <Filter>src\action</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Jump.h">
+      <Filter>src\action</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\CheckList.h">
+      <Filter>src\action\check</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

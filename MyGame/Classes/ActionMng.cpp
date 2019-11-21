@@ -1,8 +1,11 @@
 #include "ActionMng.h"
 
+USING_NS_CC;
+
 ActionMng::ActionMng()
 {
 }
+
 
 ActionMng::~ActionMng()
 {
@@ -17,12 +20,30 @@ void ActionMng::AddActModule(const std::string & actName, actModule & module)
 		_moduleMap[actName].act.emplace_back(Colision());
 		_moduleMap[actName].runAction = MoveLR();
 	}
+	if (actName == "¼Þ¬ÝÌß")
+	{
+		_moduleMap.try_emplace(actName, std::move(module));
+		_moduleMap[actName].act.emplace_back(CheckKey());
+		_moduleMap[actName].runAction = Jump();
+	}
+	if (actName == "¼Þ¬ÝÌß’†")
+	{
+		_moduleMap.try_emplace(actName, std::move(module));
+		_moduleMap[actName].act.emplace_back(Colision());
+		_moduleMap[actName].runAction = Jumping();
+	}
 	if (actName == "—Ž‰º")
 	{
 		_moduleMap.try_emplace(actName, std::move(module));
 		_moduleMap[actName].act.emplace_back(Colision());
 		_moduleMap[actName].runAction = Fall();
 	}
+	/*if (actName == "—Ž‰º’†")
+	{
+		_moduleMap.try_emplace(actName, std::move(module));
+		
+		_moduleMap[actName].runAction = Falling();
+	}*/
 }
 
 void ActionMng::update(cocos2d::Sprite& sp)

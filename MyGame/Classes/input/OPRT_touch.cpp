@@ -1,5 +1,7 @@
 #include "OPRT_touch.h"
 
+USING_NS_CC;
+
 OPRT_touch::OPRT_touch(Node* sp)
 {
 	auto listener = EventListenerTouchOneByOne::create();

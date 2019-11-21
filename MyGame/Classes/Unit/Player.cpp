@@ -34,8 +34,10 @@ bool Player::init()
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 	_inputState = std::make_unique<OPRT_key>(this);
+	_actMng = std::make_shared<ActionMng>();
 #else
 	_inputState.reset(new OPRT_touch(this));
+	_actMng.reset(new ActionMng());
 	//_inputState = std::make_unique<OPRT_touch>();
 #endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 
@@ -53,38 +55,14 @@ bool Player::init()
 	_size = Size(60, 120);
 	this->setPosition(_pos);
 	this->setContentSize(_size);
-
-	//auto speed = 5;					// ﾌﾟﾚｲﾔｰのｽﾋﾟｰﾄﾞ
-	//SpeedTbl = { Vec2(0, 0),			// 何もしていない
-	//			 Vec2(0, speed),		// 上
-	//			 Vec2(speed, 0),		// 右
-	//			 Vec2(0, -speed),		// 下
-	//			 Vec2(-speed, 0) };	 	// 左
-
-	auto setOffsetTbl = [](Sprite& sp)
-	{
-		auto size = sp.getContentSize();
-		size = size / 2;
-		DIRArrayPair offsetTbl = {
-		std::make_pair(Size(-size.width, size.height),Size(size.width, size.height)),		// 左上, 右上 ※ 上側
-		std::make_pair(Size(size.width, size.height),Size(size.width, -size.height)),		// 右上, 右下 ※ 右側
-		std::make_pair(Size(-size.width, -size.height),Size(size.width, -size.height)),		// 左下, 右下 ※ 下側
-		std::make_pair(Size(-size.width, size.height),Size(-size.width, -size.height)),	// 左上, 左下 ※ 左側
-		};
-		return offsetTbl;
-	};
-	_offsetTbl = setOffsetTbl(*this);
-
-	_jumpFancFlag = false;
-	
-	_actMng = std::make_shared<ActionMng>();
+	_jumpSpeed = 0.0f;
 
 	// 左移動
 	{
 		actModule module;
-		module.actID = eAct::run;
+		module.actID = ACT_STATE::RUN;
 		module.speed = Vec2(-5, 0);
-		module.colSize = { Size(-_size.width / 2, _size.height / 2), Size(-_size.width / 2, -_size.height / 2) };
+		module.colSize = { Size(-30, 45), Size(-30, -60) };
 		module.keyCode = EventKeyboard::KeyCode::KEY_LEFT_ARROW;
 		module.keyMode = TRG_STATE::NOW;
 		module.keyTiming = Timing::ON;
@@ -94,21 +72,45 @@ bool Player::init()
 	// 右移動
 	{
 		actModule module;
-		module.actID = eAct::run;
+		module.actID = ACT_STATE::RUN;
 		module.speed = Vec2(5, 0);
-		module.colSize = { Size(_size.width / 2, _size.height / 2), Size(_size.width / 2, -_size.height / 2) };
+		module.colSize = { Size(30, 45), Size(30, -60) };
 		module.keyCode = EventKeyboard::KeyCode::KEY_RIGHT_ARROW;
 		module.keyMode = TRG_STATE::NOW;
 		module.keyTiming = Timing::ON;
 		_actMng->AddActModule("右移動", module);
 	}
-
+	// ｼﾞｬﾝﾌﾟ
+	{
+		actModule module;
+		module.actID = ACT_STATE::JUMP;
+		module.keyCode = EventKeyboard::KeyCode::KEY_UP_ARROW;
+		module.keyMode = TRG_STATE::NOW;
+		module.keyTiming = Timing::ON_MOM;
+		_actMng->AddActModule("ｼﾞｬﾝﾌﾟ", module);
+	}
+	// ｼﾞｬﾝﾌﾟ中
+	{
+		actModule module;
+		module.actID = ACT_STATE::JUMPING;
+		module.speed = Vec2(0, _jumpSpeed);
+		module.colSize = { Size(30, 45), Size(-30, 40) };
+		_actMng->AddActModule("ｼﾞｬﾝﾌﾟ中", module);
+	}
 	// 落下
 	{
 		actModule module;
-		module.actID = eAct::fall;
+		module.actID = ACT_STATE::FALL;
 		module.speed = Vec2(0, -5);
-		module.colSize = { Size(_size.width / 2, -_size.height / 2), Size(-_size.width / 2, -_size.height / 2) };
+		module.colSize = { Size(30, -60), Size(-30, -60) };
+		_actMng->AddActModule("落下", module);
+	}
+	// 落下中
+	{
+		actModule module;
+		module.actID = ACT_STATE::FALLING;
+		module.speed = Vec2(0, -5);
+		module.colSize = { Size(30, -60), Size(-30, -60) };
 		_actMng->AddActModule("落下", module);
 	}
 
@@ -178,56 +180,53 @@ void Player::Jump(Sprite & sp, DIR dir)
 	}
 }
 
-//void Player::Gravity(Sprite & sp)
-//{
-//	Vec2 gravity = { 0, -10 };
-//	if (Colision()(*this, gravity + Vec2{ 0, -_size.height / 2 })						// 足元の中心
-//		&& Colision()(*this, gravity + Vec2{ -_size.width / 2, -_size.height / 2 })		// 足元の左
-//		&& Colision()(*this, gravity + Vec2{ _size.width / 2, -_size.height / 2 }))		// 足元の右
-//	{
-//		if (!_jumpFancFlag)
-//		{
-//			sp.setPosition(sp.getPosition() + gravity);
-//		}
-//	}
-//}
-
 void Player::ChangeLR(Sprite & sp, DIR dir)
 {
 	// 描画左右反転
 	bool flagLR;
-	/*if (_inputState->GetInput(TRG_STATE::NOW).second == cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+	if (_inputState->GetInput(TRG_STATE::NOW, cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW))
 	{
 		flagLR = false;
 	}
 	else
 	{
 		flagLR = true;
-	}*/
+	}
 	this->runAction(FlipX::create(flagLR));
 
 }
 
+void Player::JumpSpeed(float speed)
+{
+	_jumpSpeed = speed;
+}
+
+float Player::JumpSpeed(void)
+{
+	return _jumpSpeed;
+}
+
 Animation* Player::SetAnim(DIR dir)
 {
+	auto animCache = AnimationCache::getInstance();
 	Animation* anim = nullptr;
 	_repeatNum = 0;
 	if (dir == DIR::UP)
 	{
-		anim = AnimationCache::getInstance()->getAnimation("jump");
+		anim = animCache->getAnimation("jump");
 		_repeatNum = 1;
 	}
 	if (!_jumpFancFlag)
 	{
-		if (anim != AnimationCache::getInstance()->getAnimation("jump"))
+		if (anim != animCache->getAnimation("jump"))
 		{
 			if (dir == DIR::LEFT || dir == DIR::RIGHT)
 			{
-				anim = AnimationCache::getInstance()->getAnimation("run");
+				anim = animCache->getAnimation("run");
 			}
 			else if (anim == nullptr)
 			{
-				anim = AnimationCache::getInstance()->getAnimation("idle");
+				anim = animCache->getAnimation("idle");
 			}
 		}
 	}

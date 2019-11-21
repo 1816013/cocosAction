@@ -3,6 +3,8 @@
 #include "_debug/_DebugConOut.h"
 #endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 
+USING_NS_CC;
+
 OPRT_key::OPRT_key(Node* sp)
 {
 	cocos2d::EventKeyboard::KeyCode dirTbl[static_cast<int>(DIR::MAX)] =

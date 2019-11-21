@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <array>
 #include <_debug/_DebugConOut.h>
+#include <Unit/Player.h>
 
 USING_NS_CC;
 
@@ -15,21 +16,30 @@ bool Colision::operator()(Sprite & sp, actModule& module) const // ìñÇΩÇËîªíË
 	auto tileSize = col->getMapTileSize();
 	
 	Vec2 pos = sp.getPosition();
-	std::array<Vec2, 2>IDarray;
+	std::array<Vec2, 2>arrayID;
+	auto jumpSpeed = ((Player&)sp).JumpSpeed();
+	
 	/*std::array<Vec2, 3>IDarray;
 	IDarray = { ID ,Vec2{0, 0} , mapSize };
 	auto minMax = std::minmax_element(IDarray.begin(), IDarray.end());*/
 	//if(*minMax.first == Vec2(0, 0) && *minMax.second == mapSize)
-	int count = 0;
 	for (int i = 0; i < 2; i++)
 	{
-		IDarray[i] = { (pos.x + module.speed.x + module.colSize[i].width) / tileSize.width,
-					mapSize.height - ((pos.y + module.speed.y + module.colSize[i].height) / tileSize.height) };	// Ãﬂ⁄≤‘∞ç¿ïWÇÃID	
+		// ∫ÿºﬁÆ›µÃæØƒ
+		Vec2 colOffset = { Vec2(module.speed.x + module.colSize[i].width, 
+							  module.speed.y + jumpSpeed + module.colSize[i].height) };
 
-		if (IDarray[i].x < mapSize.width && IDarray[i].y < mapSize.height && IDarray[i].x > 0 && IDarray[i].y > 0)			
+		arrayID[i] = { (pos.x + colOffset.x) / tileSize.width,
+					mapSize.height - ((pos.y + colOffset.y) / tileSize.height) };	// Ãﬂ⁄≤‘∞ç¿ïWÇÃID	
+
+		if (arrayID[i].x < mapSize.width && arrayID[i].y < mapSize.height && arrayID[i].x > 0 && arrayID[i].y > 0)			
 		{
-			if (col->getTileGIDAt({ IDarray[i].x, IDarray[i].y }) != 0)	// mapTileÇÕ0Ç™ãÛîí
+			if (col->getTileGIDAt({ arrayID[i].x, arrayID[i].y }) != 0)	// mapTileÇÕ0Ç™ãÛîí
 			{
+				if (module.actID == ACT_STATE::JUMPING || module.actID == ACT_STATE::FALL)
+				{
+					((Player&)sp).JumpSpeed(0.0f);
+				}
 				return false;
 			}
 		}

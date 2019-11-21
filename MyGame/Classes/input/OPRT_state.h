@@ -3,8 +3,6 @@
 #include <array>
 #include <map>
 
-USING_NS_CC;
-
 #define intCast(tag) static_cast<int>(tag)
 
 enum class OPRT_TYPE	// ‘€ì•û–@

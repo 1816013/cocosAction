@@ -24,14 +24,14 @@ public:
 
 	// ±ÆÒ°¼®İ‚Ìì¬(ˆø”:: ’N‚ª, key‚Ì–¼‘O, ‰æ‘œ‚Ì–‡”, ±ÆÒ°¼®İ‚ÌŠÔ)
 	bool AnimCreate(const std::string type, const std::string key, int num, float time); 
-	void runAnim(cocos2d::Sprite& sp, Animation& anim, int repeatNum);
+	void runAnim(cocos2d::Sprite& sp, cocos2d::Animation& anim, int repeatNum);
 private:
 	AnimMng();
 
 	int _repeatNum;
 
-	Animation* _anim;
-	Animation* _oldAnim;
+	cocos2d::Animation* _anim;
+	cocos2d::Animation* _oldAnim;
 
 	static std::unique_ptr<AnimMng> s_Instance;
 };

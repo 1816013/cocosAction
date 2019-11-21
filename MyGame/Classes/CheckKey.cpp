@@ -13,7 +13,7 @@ bool CheckKey::operator()(cocos2d::Sprite & sp, actModule & module)
 		}
 		if (module.keyTiming == Timing::ON_MOM)
 		{
-			if (((Player&)sp)._inputState->GetInput(module.keyMode, module.keyCode) &~ ((Player&)sp)._inputState->GetInput(TRG_STATE::OLD, module.keyCode))
+			if (((Player&)sp)._inputState->GetInput(module.keyMode, module.keyCode) && !((Player&)sp)._inputState->GetInput(TRG_STATE::OLD, module.keyCode))
 			{
 				return true;
 			}
@@ -27,7 +27,7 @@ bool CheckKey::operator()(cocos2d::Sprite & sp, actModule & module)
 		}
 		if (module.keyTiming == Timing::OFF_MOM)
 		{
-			if (!((Player&)sp)._inputState->GetInput(module.keyMode, module.keyCode) &~ !((Player&)sp)._inputState->GetInput(TRG_STATE::OLD, module.keyCode))
+			if (!((Player&)sp)._inputState->GetInput(module.keyMode, module.keyCode) && !((Player&)sp)._inputState->GetInput(TRG_STATE::OLD, module.keyCode))
 			{
 				return true;
 			}
