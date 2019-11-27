@@ -4,6 +4,16 @@
 bool Fall::operator()(cocos2d::Sprite & sp, actModule & module)
 {
 	auto jumpSpeed = ((Player&)sp).JumpSpeed();
+	if (jumpSpeed <= 0)
+	{	
+		return true;
+	}
+	return false;
+}
+
+bool Falling::operator()(cocos2d::Sprite & sp, actModule & module)
+{
+	auto jumpSpeed = ((Player&)sp).JumpSpeed();
 	if (jumpSpeed > 0)
 	{
 		return false;
@@ -11,11 +21,5 @@ bool Fall::operator()(cocos2d::Sprite & sp, actModule & module)
 	sp.setPositionY(sp.getPositionY() + jumpSpeed);
 	jumpSpeed--;
 	((Player&)sp).JumpSpeed(jumpSpeed);
-	return true;
-}
-
-bool Falling::operator()(cocos2d::Sprite & sp, actModule & module)
-{
-	//((Player&)sp)._jumpSpeed = 0;
 	return true;
 }

@@ -29,6 +29,8 @@
 #include <vector>
 #include <memory>
 #include <Unit/Obj.h>
+#include "Effekseer/Effekseer.h"
+
 
 enum class ActionType
 {
@@ -53,14 +55,20 @@ public:
     virtual bool init();
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
+	virtual void visit(cocos2d::Renderer *renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags) override;
     
     // implement the "static create()" method manually
     CREATE_FUNC(GameScene);
 	OPRT_state* state;
 private:
+
+	std::unique_ptr<efk::EffectManager>effecMng;
+
+
 	int ZorderBack;		// ˆê”ÔŒã‚ë‚Ìzorder
 	int ZorderChar;		// ·¬×‚Ìzorder
 	int ZorderFlont;	// ˆê”Ô‘O‚Ìzorder
+	int count;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

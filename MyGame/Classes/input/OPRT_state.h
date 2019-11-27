@@ -60,17 +60,9 @@ struct OPRT_state
 	{
 		return _touchData[intCast(trg)][intCast(dir)];
 	};
-	DIR GetDIR(void)
-	{
-		return _dirData;
-	}
 protected:
-	//bool data[static_cast<int>(DIR::MAX)];
 	TRG_ArrayKey _keyData;
 	TRG_ArrayTouch _touchData;
-
-	DIR _dirData;
-	//std::array<std::pair<DIR, TRG_KEY>, static_cast<int>(DIR::MAX)>data;
 };
 
 DIR begin(DIR);

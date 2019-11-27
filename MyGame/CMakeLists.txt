@@ -56,7 +56,15 @@ list(APPEND GAME_SOURCE
 	    Classes/Unit/Player.cpp
 	    Classes/Unit/Obj.cpp
         Classes/AnimMng.cpp
-        Classes/Colision.cpp
+        Classes/action/ActionMng.cpp
+        Classes/action/ChangeLR.cpp
+        Classes/action/CheckKey.cpp
+        Classes/action/CheckList.cpp
+        Classes/action/Colision.cpp
+        Classes/action/Fall.cpp
+        Classes/action/Jump.cpp
+        Classes/action/MoveLR.cpp
+
 
         )
 list(APPEND GAME_HEADER
@@ -68,7 +76,14 @@ list(APPEND GAME_HEADER
 	    Classes/Unit/Player.h
 	    Classes/Unit/Obj.h
         Classes/AnimMng.h
-        Classes/Colision.h
+        Classes/action/ActionMng.h
+        Classes/action/ChangeLR.h
+        Classes/action/CheckKey.h
+        Classes/action/CheckList.h
+        Classes/action/Colision.h
+        Classes/action/Fall.h
+        Classes/action/Jump.h
+        Classes/action/MoveLR.h
      )
 
 if(ANDROID)

@@ -12,7 +12,9 @@ enum class ACT_STATE
 	JUMPING,
 	FALL,
 	FALLING,
-	IDLE
+	IDLE,
+	CHANGE_RIGHT,
+	CHANGE_LEFT
 };
 
 struct actModule;

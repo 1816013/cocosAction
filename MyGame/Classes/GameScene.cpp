@@ -25,6 +25,7 @@
 #include "GameScene.h"
 #include "SimpleAudioEngine.h"
 #include <Unit/Player.h>
+#include <input/OPRT_key.h>
 
 USING_NS_CC;
 
@@ -49,8 +50,6 @@ bool GameScene::init()
     {
         return false;
     }
-	
-
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -104,22 +103,6 @@ bool GameScene::init()
         this->addChild(label, 5);
     }
 
-    //// add "HelloWorld" splash screen"
-	//sprite = Sprite::create("HelloWorld.png");
-	//if (sprite == nullptr)
-	//{
-	//	problemLoading("'HelloWorld.png'");
-	//}
-	//else
-	//{
-	//	// position the sprite on the center of the screen
-	//	sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-	//	// add the sprite as a child to this layer
-	//	this->addChild(sprite, 1);
-	//}
-
-
-
 	auto pos = Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2);
 
 	ZorderBack = static_cast<int>(Zorder_ID::BACK);
@@ -169,12 +152,22 @@ bool GameScene::init()
 	backbglayer->addChild(mapS, 0);
 
 	//flontbglayer->addChild(gateS, 0);
+	effecMng.reset(efk::EffectManager::create(visibleSize));
+	//(*effecMng).create(visibleSize);
+	auto effect = efk::Effect::create("Laser01.efk", 13.0f);
+	auto emitter = efk::EffectEmitter::create(effecMng.get());
+	emitter->setEffect(effect);
+	emitter->setPlayOnEnter(true);
+
+	emitter->setRotation3D(cocos2d::Vec3(0, 90, 0));
+	emitter->setPosition(Vec2(300, 120));
+
+	flontbglayer->addChild(emitter,0);
 
 	// ¼°Ý‚É‚Ô‚ç‰º‚°‚é
 	this->addChild(backbglayer, ZorderBack);
 	this->addChild(charbglayer, ZorderChar);
 	this->addChild(flontbglayer, ZorderFlont);
-	
 
 	this->scheduleUpdate();
     return true;
@@ -182,9 +175,9 @@ bool GameScene::init()
 }
 
 void GameScene::update(float delta)
-{
-	
-	//sprite->runAction(RepeatForever sequence);
+{	
+	(*effecMng).update();
+	count++;
 }
 
 
@@ -199,5 +192,12 @@ void GameScene::menuCloseCallback(Ref* pSender)
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 
 
+}
+
+void GameScene::visit(cocos2d::Renderer * renderer, const cocos2d::Mat4 & parentTransform, uint32_t parentFlags)
+{
+	(*effecMng).begin(renderer, _globalZOrder);
+	cocos2d::Scene::visit(renderer, parentTransform, parentFlags);
+	(*effecMng).end(renderer, _globalZOrder);
 }
 

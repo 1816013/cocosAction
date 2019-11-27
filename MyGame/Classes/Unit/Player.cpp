@@ -44,14 +44,17 @@ bool Player::init()
 // ｱﾆﾒｰｼｮﾝ設定
 	lpAnimMng.AnimCreate("player", "idle", 4, 0.1f);	// 待機	
 	lpAnimMng.AnimCreate("player", "run", 10, 0.1f);	// 走る
-	lpAnimMng.AnimCreate("player", "jump", 6, 0.1f);		// ｼﾞｬﾝﾌﾟ
+	lpAnimMng.AnimCreate("player", "jump", 6, 0.05f);	// ｼﾞｬﾝﾌﾟ
 	lpAnimMng.AnimCreate("player", "duck", 1, 0.1f);	// しゃがみ
+	lpAnimMng.AnimCreate("player", "stand", 3, 0.1f);	// 落下(立ち上がり)
 
+	// エフェクト
+	auto visibleSize = Director::getInstance()->getVisibleSize();		// ｳｲﾝﾄﾞｳｻｲｽﾞ	
+	
 
 	// ﾌﾟﾚｲﾔｰ初期設定
 	this->Sprite::createWithSpriteFrameName("player-idle-1.png");	// ﾌﾟﾚｲﾔｰの初期画像
-	auto visibleSize = Director::getInstance()->getVisibleSize();		// ｳｲﾝﾄﾞｳｻｲｽﾞ	
-	_pos = Vec2(visibleSize.width / 2, visibleSize.height / 2 + 200);	// ﾌﾟﾚｲﾔｰ初期位置
+	_pos = Vec2(visibleSize.width / 2, visibleSize.height / 2 +50);	// ﾌﾟﾚｲﾔｰ初期位置
 	_size = Size(60, 120);
 	this->setPosition(_pos);
 	this->setContentSize(_size);
@@ -84,6 +87,9 @@ bool Player::init()
 	{
 		actModule module;
 		module.actID = ACT_STATE::JUMP;
+		module.black.emplace_back(ACT_STATE::JUMPING);
+		module.black.emplace_back(ACT_STATE::FALLING);
+		module.black.emplace_back(ACT_STATE::JUMP);
 		module.keyCode = EventKeyboard::KeyCode::KEY_UP_ARROW;
 		module.keyMode = TRG_STATE::NOW;
 		module.keyTiming = Timing::ON_MOM;
@@ -93,6 +99,8 @@ bool Player::init()
 	{
 		actModule module;
 		module.actID = ACT_STATE::JUMPING;
+		module.black.emplace_back(ACT_STATE::FALLING);
+		module.black.emplace_back(ACT_STATE::FALL);
 		module.speed = Vec2(0, _jumpSpeed);
 		module.colSize = { Size(30, 45), Size(-30, 40) };
 		_actMng->AddActModule("ｼﾞｬﾝﾌﾟ中", module);
@@ -101,21 +109,27 @@ bool Player::init()
 	{
 		actModule module;
 		module.actID = ACT_STATE::FALL;
-		module.speed = Vec2(0, -5);
+		module.black.emplace_back(ACT_STATE::IDLE);
+		module.black.emplace_back(ACT_STATE::FALLING);
+		module.black.emplace_back(ACT_STATE::JUMPING);
+		module.black.emplace_back(ACT_STATE::JUMP);
 		module.colSize = { Size(30, -60), Size(-30, -60) };
+		module.speed = Vec2(0, -5);
 		_actMng->AddActModule("落下", module);
 	}
 	// 落下中
 	{
 		actModule module;
 		module.actID = ACT_STATE::FALLING;
+		module.black.emplace_back(ACT_STATE::JUMPING);
 		module.speed = Vec2(0, -5);
 		module.colSize = { Size(30, -60), Size(-30, -60) };
-		_actMng->AddActModule("落下", module);
+		_actMng->AddActModule("落下中", module);
 	}
 	// 向き変更左
 	{
 		actModule module;
+		module.actID = ACT_STATE::CHANGE_LEFT;
 		module.keyCode = EventKeyboard::KeyCode::KEY_LEFT_ARROW;
 		module.keyMode = TRG_STATE::NOW;
 		module.keyTiming = Timing::ON;
@@ -124,6 +138,7 @@ bool Player::init()
 	// 向き変更右
 	{
 		actModule module;
+		module.actID = ACT_STATE::CHANGE_RIGHT;
 		module.keyCode = EventKeyboard::KeyCode::KEY_RIGHT_ARROW;
 		module.keyMode = TRG_STATE::NOW;
 		module.keyTiming = Timing::ON;
@@ -139,62 +154,10 @@ void Player::update(float delta)
 	_inputState->update();
 	_actMng->update(*this);
 	
-	// ﾃﾞﾊﾞｯｸﾞ用 ※
-	// ﾌﾟﾚｲﾔｰが埋まっていたら上に一応上げる処理@ｼﾞｬﾝﾌﾟ次第で削除するかも※
-	auto debugUp = [this]()
-	{
-		_pos = this->getPosition();
-		auto directer = Director::getInstance();
-		auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
-		TMXLayer* colLayer = map->getLayer("layer");
-		auto tileSize = Size(colLayer->getMapTileSize().width, colLayer->getMapTileSize().height);
-		auto mapTile = Size(map->getMapSize().width, map->getMapSize().height);
-		Vec2 pID;
-		pID = { _pos.x / tileSize.width,
-				mapTile.height - ((_pos.y - _size.height / 2) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標のID	
-		if (pID.x < mapTile.width && pID.y < mapTile.height && pID.x > 0 && pID.y > 0)
-		{
-			if (colLayer->getTileGIDAt({ pID.x, pID.y }) != 0)
-			{
-				this->setPosition(_pos.x, _pos.y + (_pos.y - ((mapTile.height - pID.y + 1) *  tileSize.height)));
-			}
-		}
-		Vec2 pNextID = { _pos.x / tileSize.width,
-						 mapTile.height - ((_pos.y - _size.height) / tileSize.height) };	// ﾌﾟﾚｲﾔｰ座標のID
-		if (pNextID.y < 0)
-		{
-			this->setPosition(this->getPosition().x, this->getPosition().y - 10);
-			if (_inputState->GetInput(TRG_STATE::NOW, DIR::RIGHT))
-			{
-				this->setPosition(this->getPosition().x + 5, this->getPosition().y);
-			}
-			if (_inputState->GetInput(TRG_STATE::NOW, DIR::LEFT))
-			{
-				this->setPosition(this->getPosition().x - 5, this->getPosition().y);
-			}
-		}
-	};
-	//debugUp();
-	//※
-	auto anim = AnimationCache::getInstance()->getAnimation("idle");	// repeatNumの設定をSetAnimで設定しているため先読み必須@変更予定
+	auto anim = SetAnim(_nowState);	// repeatNumの設定をSetAnimで設定しているため先読み必須@変更予定
 	lpAnimMng.runAnim(*this, *anim, _repeatNum);
 
-}
-
-void Player::ChangeLR(Sprite & sp, DIR dir)
-{
-	// 描画左右反転
-	bool flagLR;
-	if (_inputState->GetInput(TRG_STATE::NOW, cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW))
-	{
-		flagLR = false;
-	}
-	else
-	{
-		flagLR = true;
-	}
-	this->runAction(FlipX::create(flagLR));
-
+	
 }
 
 void Player::JumpSpeed(float speed)
@@ -217,12 +180,12 @@ ACT_STATE Player::ActState(void)
 	return _nowState;
 }
 
-Animation* Player::SetAnim(DIR dir)
+Animation* Player::SetAnim(ACT_STATE state)
 {
 	auto animCache = AnimationCache::getInstance();
 	Animation* anim = nullptr;
 	_repeatNum = 0;
-	if (dir == DIR::UP)
+	if (state == ACT_STATE::JUMP || state == ACT_STATE::JUMPING)
 	{
 		anim = animCache->getAnimation("jump");
 		_repeatNum = 1;
@@ -230,11 +193,15 @@ Animation* Player::SetAnim(DIR dir)
 
 	if (anim != animCache->getAnimation("jump"))
 	{
-		if (dir == DIR::LEFT || dir == DIR::RIGHT)
+		if (state == ACT_STATE::RUN)
 		{
 			anim = animCache->getAnimation("run");
 		}
-		else if (anim == nullptr)
+		if (state == ACT_STATE::FALL || state == ACT_STATE::FALLING)
+		{
+			anim = animCache->getAnimation("stand");
+		}
+		if (anim == nullptr && state == ACT_STATE::IDLE)
 		{
 			anim = animCache->getAnimation("idle");
 		}

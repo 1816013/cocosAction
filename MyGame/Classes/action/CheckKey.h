@@ -9,6 +9,4 @@ struct actModule;
 struct CheckKey
 {
 	bool operator()(cocos2d::Sprite& sp, actModule& module);
-	//OPRT_key input;
 };
-

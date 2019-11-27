@@ -6,7 +6,6 @@ std::unique_ptr<AnimMng>AnimMng::s_Instance(new AnimMng);
 
 AnimMng::AnimMng()
 {
-	_repeatNum = 0;
 }
 
 AnimMng::~AnimMng()
@@ -61,10 +60,9 @@ void AnimMng::runAnim(Sprite& sp, Animation& anim, int repeatNum)
 	{
 		animAct = Repeat::create(Animate::create(&anim), repeatNum);
 	}
-	animAct->setTag(intCast(Tag::ANIM));
 	if (_oldAnim != &anim)
 	{
-		sp.stopActionByTag(intCast(Tag::ANIM));
+		sp.stopAllActions();
 		sp.runAction(animAct);
 		_oldAnim = &anim;
 	}

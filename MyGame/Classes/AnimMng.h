@@ -28,8 +28,6 @@ public:
 private:
 	AnimMng();
 
-	int _repeatNum;
-
 	cocos2d::Animation* _anim;
 	cocos2d::Animation* _oldAnim;
 

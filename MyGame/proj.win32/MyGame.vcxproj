@@ -161,6 +161,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\action\MoveLR.cpp" />
     <ClCompile Include="..\Classes\AnimMng.cpp" />
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="..\Classes\Effekseer\Effekseer.cpp" />
+    <ClCompile Include="..\Classes\Effekseer\EffekseerNative.cpp" />
+    <ClCompile Include="..\Classes\Effekseer\EffekseerRendererNative.cpp" />
     <ClCompile Include="..\Classes\GameScene.cpp" />
     <ClCompile Include="..\Classes\input\OPRT_key.cpp" />
     <ClCompile Include="..\Classes\input\OPRT_state.cpp" />
@@ -169,6 +172,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Unit\Player.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="_debug\_DebugConOut.cpp" />
+    <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\action\ActionMng.h" />
@@ -181,6 +185,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\action\MoveLR.h" />
     <ClInclude Include="..\Classes\AnimMng.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
+    <ClInclude Include="..\Classes\Effekseer\Effekseer.h" />
+    <ClInclude Include="..\Classes\Effekseer\EffekseerNative.h" />
+    <ClInclude Include="..\Classes\Effekseer\EffekseerRendererNative.h" />
     <ClInclude Include="..\Classes\GameScene.h" />
     <ClInclude Include="..\Classes\input\OPRT_key.h" />
     <ClInclude Include="..\Classes\input\OPRT_state.h" />
@@ -189,6 +196,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Unit\Player.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="_debug\_DebugConOut.h" />
+    <ClInclude Include="_debug\_DebugDispOut.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d\cocos\2d\libcocos2d.vcxproj">

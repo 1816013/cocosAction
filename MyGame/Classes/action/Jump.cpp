@@ -3,6 +3,11 @@
 
 bool Jump::operator()(cocos2d::Sprite & sp, actModule & module)
 {
+	auto jumpSpeed = ((Player&)sp).JumpSpeed();
+	/*if (jumpSpeed > 0)
+	{
+		return false;
+	}*/
 	((Player&)sp).JumpSpeed(20.0f);
 	return true;
 }

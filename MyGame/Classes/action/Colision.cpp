@@ -1,11 +1,10 @@
 #include "Colision.h"
 #include <algorithm>
 #include <array>
-#include <_debug/_DebugConOut.h>
 #include <Unit/Player.h>
 
-USING_NS_CC;
 
+USING_NS_CC;
 
 bool Colision::operator()(Sprite & sp, actModule& module) const // ìñÇΩÇËîªíË
 {
@@ -17,7 +16,7 @@ bool Colision::operator()(Sprite & sp, actModule& module) const // ìñÇΩÇËîªíË
 	
 	Vec2 pos = sp.getPosition();
 	std::array<Vec2, 2>arrayID;
-	auto jumpSpeed = ((Player&)sp).JumpSpeed();
+	auto jumpSpeed = 0.0f;
 	
 	/*std::array<Vec2, 3>IDarray;
 	IDarray = { ID ,Vec2{0, 0} , mapSize };
@@ -36,9 +35,10 @@ bool Colision::operator()(Sprite & sp, actModule& module) const // ìñÇΩÇËîªíË
 		{
 			if (col->getTileGIDAt({ arrayID[i].x, arrayID[i].y }) != 0)	// mapTileÇÕ0Ç™ãÛîí
 			{
-				if (module.actID == ACT_STATE::JUMPING || module.actID == ACT_STATE::FALL)
-				{
-					((Player&)sp).JumpSpeed(0.0f);
+				if (module.actID == ACT_STATE::JUMPING || module.actID == ACT_STATE::FALLING)	// @ïœçXÇ∑ÇÈÇ©Ç‡
+				{	
+					((Player&)sp).JumpSpeed(0.0f);	
+					//sp.setPosition(pos.x, pos.y + module.speed.y + module.colSize[0].height);
 				}
 				return false;
 			}

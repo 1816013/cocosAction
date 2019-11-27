@@ -66,9 +66,6 @@
     <ClCompile Include="..\Classes\action\MoveLR.cpp">
       <Filter>src\action</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\action\ActionMng.cpp">
-      <Filter>src\action</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\action\ChangeLR.cpp">
       <Filter>src\action</Filter>
     </ClCompile>
@@ -80,6 +77,21 @@
     </ClCompile>
     <ClCompile Include="..\Classes\action\Colision.cpp">
       <Filter>src\action\check</Filter>
+    </ClCompile>
+    <ClCompile Include="_debug\_DebugDispOut.cpp">
+      <Filter>win32\_debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\action\ActionMng.cpp">
+      <Filter>src\action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Effekseer\EffekseerNative.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Effekseer\EffekseerRendererNative.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Effekseer\Effekseer.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +148,18 @@
     </ClInclude>
     <ClInclude Include="..\Classes\action\Colision.h">
       <Filter>src\action\check</Filter>
+    </ClInclude>
+    <ClInclude Include="_debug\_DebugDispOut.h">
+      <Filter>win32\_debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Effekseer\EffekseerNative.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Effekseer\EffekseerRendererNative.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Effekseer\Effekseer.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

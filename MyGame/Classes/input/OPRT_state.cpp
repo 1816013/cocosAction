@@ -2,7 +2,18 @@
 
 OPRT_state::OPRT_state()
 {
-	_dirData = DIR::UP;
+	cocos2d::EventKeyboard::KeyCode dirTbl[static_cast<int>(DIR::MAX)] =
+	{
+		cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW,
+		cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW,
+		cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW,
+		cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW
+	};
+
+	for (auto dir : DIR())
+	{
+		_keyData[static_cast<int>(TRG_STATE::INPUT)].emplace(dirTbl[static_cast<int>(dir)], false);
+	};
 	for (int trg = 0; trg < static_cast<int>(TRG_STATE::MAX); trg++)
 	{
 		//_keyData[trg][] = false;

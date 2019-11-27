@@ -1,8 +1,9 @@
 #include "ActionMng.h"
 #include <Unit/Player.h>
-#include "MoveLR.h"
+#include "CheckList.h"
 #include "CheckKey.h"
 #include "Colision.h"
+#include "MoveLR.h"
 #include "Fall.h"
 #include "Jump.h"
 #include "ChangeLR.h"
@@ -20,37 +21,51 @@ ActionMng::~ActionMng()
 
 void ActionMng::AddActModule(const std::string & actName, actModule & module)
 {
-	if (actName == "左移動" || actName == "右移動")
+	if (_moduleMap.find(actName) == _moduleMap.end())
 	{
-		_moduleMap.try_emplace(actName, std::move(module));
-		_moduleMap[actName].act.emplace_back(CheckKey());
-		_moduleMap[actName].act.emplace_back(Colision());
-		_moduleMap[actName].runAction = MoveLR();
-	}
-	if (actName == "ｼﾞｬﾝﾌﾟ")
-	{
-		_moduleMap.try_emplace(actName, std::move(module));
-		_moduleMap[actName].act.emplace_back(CheckKey());
-		_moduleMap[actName].runAction = Jump();
-	}
-	if (actName == "ｼﾞｬﾝﾌﾟ中")
-	{
-		_moduleMap.try_emplace(actName, std::move(module));
-		_moduleMap[actName].act.emplace_back(Colision());
-		_moduleMap[actName].runAction = Jumping();
-	}
-	if (actName == "落下")
-	{
-		_moduleMap.try_emplace(actName, std::move(module));
-		_moduleMap[actName].act.emplace_back(Colision());
-		_moduleMap[actName].runAction = Fall();
-	}
-	if (actName == "右向き" || actName == "左向き")
-	{
-		/*_moduleMap.try_emplace(actName, std::move(module));
-		_moduleMap[actName].act.emplace_back(CheckKey());
-		_moduleMap[actName].act.emplace_back(Colision());*/
-		//_moduleMap[actName].runAction = ChangeLR();
+		if (actName == "左移動" || actName == "右移動")
+		{
+			_moduleMap.emplace(actName, std::move(module));
+			_moduleMap[actName].act.emplace_back(CheckList());
+			_moduleMap[actName].act.emplace_back(CheckKey());
+			_moduleMap[actName].act.emplace_back(Colision());
+			_moduleMap[actName].runAction = MoveLR();
+		}
+		if (actName == "ｼﾞｬﾝﾌﾟ")
+		{
+			_moduleMap.emplace(actName, std::move(module));
+			_moduleMap[actName].act.emplace_back(CheckList());
+			_moduleMap[actName].act.emplace_back(CheckKey());
+			_moduleMap[actName].runAction = Jump();
+		}
+		if (actName == "ｼﾞｬﾝﾌﾟ中")
+		{
+			_moduleMap.emplace(actName, std::move(module));
+			_moduleMap[actName].act.emplace_back(CheckList());
+			_moduleMap[actName].act.emplace_back(Colision());
+			_moduleMap[actName].runAction = Jumping();
+		}
+		if (actName == "落下")
+		{
+			_moduleMap.emplace(actName, std::move(module));
+			_moduleMap[actName].act.emplace_back(CheckList());
+			_moduleMap[actName].act.emplace_back(Colision());
+			_moduleMap[actName].runAction = Fall();
+		}
+		if (actName == "落下中")
+		{
+			_moduleMap.emplace(actName, std::move(module));
+			_moduleMap[actName].act.emplace_back(CheckList());
+			_moduleMap[actName].act.emplace_back(Colision());
+			_moduleMap[actName].runAction = Falling();
+		}
+		if (actName == "右向き" || actName == "左向き")
+		{
+			_moduleMap.emplace(actName, std::move(module));
+			_moduleMap[actName].act.emplace_back(CheckList());
+			_moduleMap[actName].act.emplace_back(CheckKey());
+			_moduleMap[actName].runAction = ChangeLR();
+		}
 	}
 	/*if (actName == "落下中")
 	{
@@ -74,16 +89,28 @@ void ActionMng::update(cocos2d::Sprite& sp)
 		return true;
 	};
 
+	int count = 0;
 	for (auto mapModule : _moduleMap)
 	{
 		if (check(sp, mapModule.second))
 		{
-			((Player&)sp).ActState(mapModule.second.actID);
-			mapModule.second.runAction(sp, mapModule.second);
+			if (mapModule.second.runAction(sp, mapModule.second))
+			{
+				((Player&)sp).ActState(mapModule.second.actID);		
+			}
+			else
+			{
+				count++;
+			}
 		}
-		else
+		else 
 		{
-			((Player&)sp).ActState(ACT_STATE::IDLE);
+			count++;
 		}
 	}
+	if (count >= _moduleMap.size())
+	{
+		((Player&)sp).ActState(ACT_STATE::IDLE);
+	}
+	
 }

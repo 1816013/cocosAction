@@ -1,8 +1,6 @@
 #pragma once
 #include <cocos2d.h>
-#include "action/ActionMng.h"
-
-struct actModule;
+#include "ActionMng.h"
 
 struct MoveLR
 {
