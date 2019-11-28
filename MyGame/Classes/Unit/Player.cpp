@@ -47,8 +47,8 @@ bool Player::init()
 	lpAnimMng.AnimCreate("player", "jump", 6, 0.05f);	// ｼﾞｬﾝﾌﾟ
 	lpAnimMng.AnimCreate("player", "duck", 1, 0.1f);	// しゃがみ
 	lpAnimMng.AnimCreate("player", "stand", 3, 0.1f);	// 落下(立ち上がり)
-
-	// エフェクト
+	
+	// ｴﾌｪｸﾄ
 	auto visibleSize = Director::getInstance()->getVisibleSize();		// ｳｲﾝﾄﾞｳｻｲｽﾞ	
 	
 

@@ -64,8 +64,11 @@ list(APPEND GAME_SOURCE
         Classes/action/Fall.cpp
         Classes/action/Jump.cpp
         Classes/action/MoveLR.cpp
-
-
+        Classes/Effekseer/Effekseer.cpp
+        Classes/Effekseer/EffekseerNative.cpp
+        Classes/Effekseer/EffekseerRendererNative.cpp
+        Classes/EffectMng.cpp
+        Classes/SoundMng.cpp
         )
 list(APPEND GAME_HEADER
         Classes/AppDelegate.h
@@ -84,6 +87,11 @@ list(APPEND GAME_HEADER
         Classes/action/Fall.h
         Classes/action/Jump.h
         Classes/action/MoveLR.h
+        Classes/Effekseer/Effekseer.h
+        Classes/Effekseer/EffekseerNative.h
+        Classes/Effekseer/EffekseerRendererNative.h
+        Classes/EffectMng.h
+        Classes/SoundMng.h
      )
 
 if(ANDROID)

@@ -175,6 +175,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Unit\Player.cpp" />
     <ClCompile Include="EffectMng.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SoundMng.cpp" />
     <ClCompile Include="_debug\_DebugConOut.cpp" />
     <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
@@ -200,6 +201,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Unit\Player.h" />
     <ClInclude Include="EffectMng.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="SoundMng.h" />
     <ClInclude Include="_debug\_DebugConOut.h" />
     <ClInclude Include="_debug\_DebugDispOut.h" />
   </ItemGroup>

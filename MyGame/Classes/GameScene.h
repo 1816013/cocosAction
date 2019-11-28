@@ -71,7 +71,7 @@ private:
 
 	std::unique_ptr<efk::EffectManager>effecMng;
 
-	efk::EffectEmitter* emitter;
+	efk::EffectEmitter* emitter2;
 	int ZorderBack;		// ˆê”ÔŒã‚ë‚Ìzorder
 	int ZorderChar;		// ·¬×‚Ìzorder
 	int ZorderFlont;	// ˆê”Ô‘O‚Ìzorder

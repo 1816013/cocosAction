@@ -97,6 +97,7 @@
     <ClCompile Include="..\Classes\Effekseer\EffekseerRendererNative.cpp">
       <Filter>src\effeckseer</Filter>
     </ClCompile>
+    <ClCompile Include="SoundMng.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -166,6 +167,7 @@
     <ClInclude Include="..\Classes\Effekseer\EffekseerRendererNative.h">
       <Filter>src\effeckseer</Filter>
     </ClInclude>
+    <ClInclude Include="SoundMng.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

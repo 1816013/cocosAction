@@ -28,6 +28,7 @@
 #include <input/OPRT_key.h>
 #include <ck/ck.h>
 #include <ck/config.h>
+#include <EffectMng.h>
 
 USING_NS_CC;
 
@@ -99,7 +100,7 @@ bool GameScene::init()
     // add a label shows "Hello World"
     // create and initialize a label
 
-    auto label = Label::createWithTTF("Game Scene", "fonts/Marker Felt.ttf", 24);
+    auto label = Label::createWithTTF("1816013 木村陸", "fonts/Marker Felt.ttf", 24);
     if (label == nullptr)
     {
         problemLoading("'fonts/Marker Felt.ttf'");
@@ -116,11 +117,25 @@ bool GameScene::init()
 
 	auto pos = Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2);
 
+	// サウンド
+
+#if CK_PLATFORM_ANDROID
+	CkConfig config(env, activity);
+#else
+	CkConfig config;
+#endif
+	CkInit(&config);
+
+	bank = CkBank::newBank("dsptouch.ckb", kCkPathType_FileSystem);
+	sound = CkSound::newBankSound(bank, 1);
+	sound->setLoop(0, sound->getLength());
+	sound->setLoopCount(-1);
+
+
+	// ﾚｲﾔｰ作成
 	ZorderBack = static_cast<int>(Zorder_ID::BACK);
 	ZorderChar = static_cast<int>(Zorder_ID::CHAR);
 	ZorderFlont = static_cast<int>(Zorder_ID::FLONT);
-	// ﾚｲﾔｰ作成
-	//auto bglayer = Layer::create();
 	
 	auto charbglayer = Layer::create();
 	charbglayer->setName("charLayer");
@@ -147,7 +162,6 @@ bool GameScene::init()
 	//auto caveL = mapS->getLayer("cave1");
 	//caveL->setGlobalZOrder(ZorderFlont);
 	
-
 	// ｹﾞｰﾄ
 	/*auto gateS = Sprite::create("image/Environment/Props/gate-01.png");
 	gateS->setPosition(gateS->getContentSize().width / 2, gateS->getContentSize().height / 2 + 48);*/
@@ -166,16 +180,15 @@ bool GameScene::init()
 
 	// エフェクト
 	effecMng.reset(efk::EffectManager::create(visibleSize));
-	//(*effecMng).create(visibleSize);
-	auto effect = efk::Effect::create("Laser01.efk", 13.0f);
-	emitter = efk::EffectEmitter::create(effecMng.get());
-	emitter->setEffect(effect);
-	emitter->setPlayOnEnter(false);
+	/*auto effect = efk::Effect::create("Laser01.efk", 13.0f);
+	emitter2 = efk::EffectEmitter::create(effecMng.get());
+	emitter2->setEffect(effect);
+	emitter2->setPlayOnEnter(false);
+	emitter2->setRotation3D(cocos2d::Vec3(0, 90, 0));
+	emitter2->setPosition(Vec2(300, 120));*/
+	lpEffectMng.AddEffect("Laser01.efk", 13.0f, { 300, 120 }, { 0, 90, 0 }, effecMng.get());
 
-	emitter->setRotation3D(cocos2d::Vec3(0, 90, 0));
-	emitter->setPosition(Vec2(300, 120));
-
-	flontbglayer->addChild(emitter,0);
+	flontbglayer->addChild(lpEffectMng.GetEmitter("Laser01.efk"),0);
 
 	// ｼｰﾝにぶら下げる
 	this->addChild(backbglayer, ZorderBack);
@@ -183,18 +196,7 @@ bool GameScene::init()
 	this->addChild(flontbglayer, ZorderFlont);
 
 	this->scheduleUpdate();
-	// サウンド
 
-#if CK_PLATFORM_ANDROID
-	CkConfig config(env, activity);
-#else
-	CkConfig config;
-#endif
-	CkInit(&config);
-	bank = CkBank::newBank("D:/test/MyGame/Resources/dsptouch.ckb", kCkPathType_FileSystem);
-	sound = CkSound::newBankSound(bank, 1);
-	sound->setLoop(0, sound->getLength());
-	sound->setLoopCount(-1);
     return true;
 	
 }
@@ -210,7 +212,10 @@ void GameScene::update(float delta)
 		
 	if (count == 60)
 	{
-		emitter->play();
+		lpEffectMng.GetEmitter("Laser01.efk")->play();
+		//sound->destroy();
+		sound = CkSound::newBankSound(bank, 0);
+		sound->play();
 	}
 	count++;
 }
