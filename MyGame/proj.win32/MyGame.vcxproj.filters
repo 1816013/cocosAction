@@ -25,6 +25,9 @@
     <Filter Include="src\action\check">
       <UniqueIdentifier>{3a2e8722-53a6-4653-94ca-ca6aa2412957}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\effeckseer">
+      <UniqueIdentifier>{7f1a7843-8c7d-402c-9acb-f1734e55174f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -84,14 +87,15 @@
     <ClCompile Include="..\Classes\action\ActionMng.cpp">
       <Filter>src\action</Filter>
     </ClCompile>
+    <ClCompile Include="EffectMng.cpp" />
+    <ClCompile Include="..\Classes\Effekseer\Effekseer.cpp">
+      <Filter>src\effeckseer</Filter>
+    </ClCompile>
     <ClCompile Include="..\Classes\Effekseer\EffekseerNative.cpp">
-      <Filter>src</Filter>
+      <Filter>src\effeckseer</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Effekseer\EffekseerRendererNative.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Effekseer\Effekseer.cpp">
-      <Filter>src</Filter>
+      <Filter>src\effeckseer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,14 +156,15 @@
     <ClInclude Include="_debug\_DebugDispOut.h">
       <Filter>win32\_debug</Filter>
     </ClInclude>
+    <ClInclude Include="EffectMng.h" />
+    <ClInclude Include="..\Classes\Effekseer\Effekseer.h">
+      <Filter>src\effeckseer</Filter>
+    </ClInclude>
     <ClInclude Include="..\Classes\Effekseer\EffekseerNative.h">
-      <Filter>src</Filter>
+      <Filter>src\effeckseer</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Effekseer\EffekseerRendererNative.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Effekseer\Effekseer.h">
-      <Filter>src</Filter>
+      <Filter>src\effeckseer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -30,6 +30,9 @@
 #include <memory>
 #include <Unit/Obj.h>
 #include "Effekseer/Effekseer.h"
+#include <ck/bank.h>
+#include <ck/sound.h>
+
 
 
 enum class ActionType
@@ -50,6 +53,7 @@ class GameScene : public cocos2d::Scene
 {
 public:
     static cocos2d::Scene* createScene();
+	~GameScene();
 	void update(float delta)override;
 
     virtual bool init();
@@ -62,9 +66,12 @@ public:
 	OPRT_state* state;
 private:
 
+	CkBank* bank;
+	CkSound* sound;
+
 	std::unique_ptr<efk::EffectManager>effecMng;
 
-
+	efk::EffectEmitter* emitter;
 	int ZorderBack;		// ˆê”ÔŒã‚ë‚Ìzorder
 	int ZorderChar;		// ·¬×‚Ìzorder
 	int ZorderFlont;	// ˆê”Ô‘O‚Ìzorder

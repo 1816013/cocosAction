@@ -26,12 +26,23 @@
 #include "SimpleAudioEngine.h"
 #include <Unit/Player.h>
 #include <input/OPRT_key.h>
+#include <ck/ck.h>
+#include <ck/config.h>
 
 USING_NS_CC;
 
 Scene* GameScene::createScene()
 {
     return GameScene::create();
+}
+
+GameScene::~GameScene()
+{
+	sound->releaseLoop();
+	sound->destroy();
+	bank->destroy();
+
+	CkShutdown();
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -152,12 +163,14 @@ bool GameScene::init()
 	backbglayer->addChild(mapS, 0);
 
 	//flontbglayer->addChild(gateS, 0);
+
+	// エフェクト
 	effecMng.reset(efk::EffectManager::create(visibleSize));
 	//(*effecMng).create(visibleSize);
 	auto effect = efk::Effect::create("Laser01.efk", 13.0f);
-	auto emitter = efk::EffectEmitter::create(effecMng.get());
+	emitter = efk::EffectEmitter::create(effecMng.get());
 	emitter->setEffect(effect);
-	emitter->setPlayOnEnter(true);
+	emitter->setPlayOnEnter(false);
 
 	emitter->setRotation3D(cocos2d::Vec3(0, 90, 0));
 	emitter->setPosition(Vec2(300, 120));
@@ -170,6 +183,18 @@ bool GameScene::init()
 	this->addChild(flontbglayer, ZorderFlont);
 
 	this->scheduleUpdate();
+	// サウンド
+
+#if CK_PLATFORM_ANDROID
+	CkConfig config(env, activity);
+#else
+	CkConfig config;
+#endif
+	CkInit(&config);
+	bank = CkBank::newBank("D:/test/MyGame/Resources/dsptouch.ckb", kCkPathType_FileSystem);
+	sound = CkSound::newBankSound(bank, 1);
+	sound->setLoop(0, sound->getLength());
+	sound->setLoopCount(-1);
     return true;
 	
 }
@@ -177,6 +202,16 @@ bool GameScene::init()
 void GameScene::update(float delta)
 {	
 	(*effecMng).update();
+	CkUpdate();
+	if (count == 0)
+	{
+		sound->play();
+	}
+		
+	if (count == 60)
+	{
+		emitter->play();
+	}
 	count++;
 }
 
@@ -185,6 +220,7 @@ void GameScene::menuCloseCallback(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
     Director::getInstance()->end();
+
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 

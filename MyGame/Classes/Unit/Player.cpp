@@ -41,7 +41,7 @@ bool Player::init()
 	//_inputState = std::make_unique<OPRT_touch>();
 #endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 
-// ±∆“∞ºÆ›ê›íË
+	// ±∆“∞ºÆ›ê›íË
 	lpAnimMng.AnimCreate("player", "idle", 4, 0.1f);	// ë“ã@	
 	lpAnimMng.AnimCreate("player", "run", 10, 0.1f);	// ëñÇÈ
 	lpAnimMng.AnimCreate("player", "jump", 6, 0.05f);	// ºﬁ¨›Ãﬂ
@@ -111,7 +111,6 @@ bool Player::init()
 		module.actID = ACT_STATE::FALL;
 		module.black.emplace_back(ACT_STATE::IDLE);
 		module.black.emplace_back(ACT_STATE::FALLING);
-		module.black.emplace_back(ACT_STATE::JUMPING);
 		module.black.emplace_back(ACT_STATE::JUMP);
 		module.colSize = { Size(30, -60), Size(-30, -60) };
 		module.speed = Vec2(0, -5);

@@ -1,0 +1,10 @@
+_modle[].act
+struct actmodule{
+actID
+list<funcActModule>act
+}
+
+
+std::function<ŠÖ”>	// ˆø”‚ª“¯‚¶‚à‚Ì‚¾‚¯
+
+std::map<std::string, actModule>
