@@ -22,16 +22,16 @@ using funcActModule = std::function<bool(cocos2d::Sprite&, actModule&)>;
 
 struct actModule
 {
-	ACT_STATE actID;
-	std::list<ACT_STATE>white;
-	std::list<ACT_STATE>black;
-	std::list<funcActModule>act;
-	funcActModule runAction;
-	cocos2d::Vec2 speed;
-	std::array<cocos2d::Size, 2> colSize;
-	TRG_STATE keyMode;
-	Timing keyTiming;
-	cocos2d::EventKeyboard::KeyCode keyCode;
+	ACT_STATE actID;							// ±¸¼®İID
+	std::list<ACT_STATE>white;					// ÎÜ²ÄØ½Ä
+	std::list<ACT_STATE>black;					// ÌŞ×¯¸Ø½Ä
+	std::list<funcActModule>act;				// Áª¯¸Œn‚Ì±¸¼®İ
+	funcActModule runAction;					// Às‚·‚é±¸¼®İ
+	cocos2d::Vec2 speed;						// ˆÚ“®‘¬“x
+	std::array<cocos2d::Size, 2> colSize;		// “–‚½‚è”»’è‚Ì»²½Ş
+	TRG_STATE keyMode;							// “ü—Í‚ÌÀ²Ìß@ Á‚·‚©‚à
+	Timing keyTiming;							// ·°‚ÌÀ²Ğİ¸Ş
+	cocos2d::EventKeyboard::KeyCode keyCode;	// ±¸¼®İ‚Åg‚¤·°º°ÄŞ
 };
 
 class ActionMng

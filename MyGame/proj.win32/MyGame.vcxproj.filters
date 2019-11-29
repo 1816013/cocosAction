@@ -87,7 +87,6 @@
     <ClCompile Include="..\Classes\action\ActionMng.cpp">
       <Filter>src\action</Filter>
     </ClCompile>
-    <ClCompile Include="EffectMng.cpp" />
     <ClCompile Include="..\Classes\Effekseer\Effekseer.cpp">
       <Filter>src\effeckseer</Filter>
     </ClCompile>
@@ -97,7 +96,12 @@
     <ClCompile Include="..\Classes\Effekseer\EffekseerRendererNative.cpp">
       <Filter>src\effeckseer</Filter>
     </ClCompile>
-    <ClCompile Include="SoundMng.cpp" />
+    <ClCompile Include="..\Classes\SoundMng.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\EffectMng.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -157,7 +161,6 @@
     <ClInclude Include="_debug\_DebugDispOut.h">
       <Filter>win32\_debug</Filter>
     </ClInclude>
-    <ClInclude Include="EffectMng.h" />
     <ClInclude Include="..\Classes\Effekseer\Effekseer.h">
       <Filter>src\effeckseer</Filter>
     </ClInclude>
@@ -167,7 +170,12 @@
     <ClInclude Include="..\Classes\Effekseer\EffekseerRendererNative.h">
       <Filter>src\effeckseer</Filter>
     </ClInclude>
-    <ClInclude Include="SoundMng.h" />
+    <ClInclude Include="..\Classes\SoundMng.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\EffectMng.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

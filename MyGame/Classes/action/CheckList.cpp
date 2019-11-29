@@ -1,6 +1,5 @@
 #include "CheckList.h"
 #include <Unit/Player.h>
-#include <_debug/_DebugConOut.h>
 
 bool CheckList::operator()(cocos2d::Sprite& sp, actModule& module)
 {

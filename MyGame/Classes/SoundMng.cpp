@@ -13,9 +13,27 @@ SoundMng::~SoundMng()
 
 }
 
-bool SoundMng::AddSound(std::string bank_p, std::string sound_name, SOUND_TYPE type)
+void SoundMng::Init(void)
+{
+#if CK_PLATFORM_ANDROID
+	CkConfig config(env, activity);
+#else
+	CkConfig config;
+#endif
+	CkInit(&config);
+}
+
+bool SoundMng::AddSound(std::string bank_p, std::string soundName, SOUND_TYPE type)
 {
 	_bank = CkBank::newBank(bank_p.c_str(), kCkPathType_FileSystem);
+	if (_bank == nullptr)
+	{
+		return false;
+	}
+	if (_sound.find(soundName) != _sound.end())
+	{
 
-	return false;
+	}
+
+	return true;
 }

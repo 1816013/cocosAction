@@ -18,6 +18,7 @@ public:
 	}
 	~SoundMng();
 
+	void Init(void);
 	bool AddSound(std::string bank_p, std::string sound_name, SOUND_TYPE type);
 
 private:
