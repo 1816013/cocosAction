@@ -6,6 +6,6 @@ struct actModule;
 
 struct Colision
 {
-	// “–‚½‚è”»’è(ŠÖ”µÌŞ¼Şª¸Ä)
+	// “–‚½‚è”»’è
 	bool operator()(cocos2d::Sprite & sp, actModule& module) const;	
 };

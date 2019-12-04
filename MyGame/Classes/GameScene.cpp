@@ -26,8 +26,8 @@
 #include "SimpleAudioEngine.h"
 #include <Unit/Player.h>
 #include <input/OPRT_key.h>
-#include <ck/ck.h>
-#include <ck/config.h>
+//#include <ck/ck.h>
+//#include <ck/config.h>
 #include <EffectMng.h>
 
 USING_NS_CC;
@@ -39,11 +39,11 @@ Scene* GameScene::createScene()
 
 GameScene::~GameScene()
 {
-	sound->releaseLoop();
+	/*sound->releaseLoop();
 	sound->destroy();
 	bank->destroy();
 
-	CkShutdown();
+	CkShutdown();*/
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -100,7 +100,7 @@ bool GameScene::init()
     // add a label shows "Hello World"
     // create and initialize a label
 
-    auto label = Label::createWithTTF("1816013 –Ø‘º—¤", "fonts/Marker Felt.ttf", 24);
+    auto label = Label::createWithTTF("1816013 kimura riku", "fonts/Marker Felt.ttf", 24);
     if (label == nullptr)
     {
         problemLoading("'fonts/Marker Felt.ttf'");
@@ -119,17 +119,17 @@ bool GameScene::init()
 
 	// ƒTƒEƒ“ƒh
 
-#if CK_PLATFORM_ANDROID
-	CkConfig config(env, activity);
-#else
-	CkConfig config;
-#endif
-	CkInit(&config);
-
-	bank = CkBank::newBank("dsptouch.ckb", kCkPathType_FileSystem);
-	sound = CkSound::newBankSound(bank, 1);
-	sound->setLoop(0, sound->getLength());
-	sound->setLoopCount(-1);
+//#if CK_PLATFORM_ANDROID
+//	CkConfig config(env, activity);
+//#else
+//	CkConfig config;
+//#endif
+//	CkInit(&config);
+//
+//	bank = CkBank::newBank("dsptouch.ckb", kCkPathType_FileSystem);
+//	sound = CkSound::newBankSound(bank, 1);
+//	sound->setLoop(0, sound->getLength());
+//	sound->setLoopCount(-1);
 
 
 	// Ú²Ô°ì¬
@@ -166,9 +166,9 @@ bool GameScene::init()
 	/*auto gateS = Sprite::create("image/Environment/Props/gate-01.png");
 	gateS->setPosition(gateS->getContentSize().width / 2, gateS->getContentSize().height / 2 + 48);*/
 	
-	// ÌßÚ²Ô°
+	// ÌßÚ²Ô°ì¬
 	auto player = Player::createSprite();
-
+	
 	// ½Ìß×²Ä‚ðÚ²Ô°‚É‚Ô‚ç‰º‚°‚é
 	charbglayer->addChild(player, 0);
 
@@ -186,6 +186,7 @@ bool GameScene::init()
 	emitter2->setPlayOnEnter(false);
 	emitter2->setRotation3D(cocos2d::Vec3(0, 90, 0));
 	emitter2->setPosition(Vec2(300, 120));*/
+	//lpEffectMng.Init(visibleSize);
 	lpEffectMng.AddEffect("Laser01.efk", 13.0f, { 300, 120 }, { 0, 90, 0 }, effecMng.get());
 
 	flontbglayer->addChild(lpEffectMng.GetEmitter("Laser01.efk"),0);
@@ -204,19 +205,19 @@ bool GameScene::init()
 void GameScene::update(float delta)
 {	
 	(*effecMng).update();
-	CkUpdate();
-	if (count == 0)
-	{
-		sound->play();
-	}
-		
-	if (count == 60)
-	{
-		lpEffectMng.GetEmitter("Laser01.efk")->play();
-		//sound->destroy();
-		sound = CkSound::newBankSound(bank, 0);
-		sound->play();
-	}
+	//CkUpdate();
+	//if (count == 0)
+	//{
+	//	sound->play();
+	//}
+	//	
+	//if (count%120== 0)
+	//{
+	//	lpEffectMng.EmitterPlay("Laser01.efk", { 300, 120 }, { 0, 90, 0 });
+	//	//sound->destroy();
+	//	sound = CkSound::newBankSound(bank, 0);
+	//	sound->play();
+	//}
 	count++;
 }
 
@@ -238,7 +239,9 @@ void GameScene::menuCloseCallback(Ref* pSender)
 void GameScene::visit(cocos2d::Renderer * renderer, const cocos2d::Mat4 & parentTransform, uint32_t parentFlags)
 {
 	(*effecMng).begin(renderer, _globalZOrder);
+	//lpEffectMng.EffectVisit(renderer, *this, true);
 	cocos2d::Scene::visit(renderer, parentTransform, parentFlags);
+	//lpEffectMng.EffectVisit(renderer, *this, false);
 	(*effecMng).end(renderer, _globalZOrder);
 }
 

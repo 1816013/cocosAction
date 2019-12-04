@@ -6,6 +6,8 @@
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 #include "_debug/_DebugConOut.h"
 #endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#include "EffectMng.h"
+
 
 
 USING_NS_CC;
@@ -82,6 +84,28 @@ bool Player::init()
 		module.keyMode = TRG_STATE::NOW;
 		module.keyTiming = Timing::ON;
 		_actMng->AddActModule("‰EˆÚ“®", module);
+	}	
+	// —Ž‰º
+	{
+		actModule module;
+		module.actID = ACT_STATE::FALL;
+		//module.black.emplace_back(ACT_STATE::IDLE);
+		module.black.emplace_back(ACT_STATE::FALLING);
+		module.black.emplace_back(ACT_STATE::JUMP);
+		module.colSize = { Size(30, -60), Size(-30, -60) };
+		//module.speed = Vec2(0, -5);
+		_actMng->AddActModule("—Ž‰º", module);
+	}
+	// —Ž‰º’†
+	{
+		actModule module;
+		module.actID = ACT_STATE::FALLING;
+		module.black.emplace_back(ACT_STATE::JUMPING);
+		//module.black.emplace_back(ACT_STATE::IDLE);
+		module.black.emplace_back(ACT_STATE::JUMP);
+		//module.speed = Vec2(0, 0);
+		module.colSize = { Size(30, -60), Size(-30, -60) };
+		_actMng->AddActModule("—Ž‰º’†", module);
 	}
 	// ¼Þ¬ÝÌß
 	{
@@ -89,7 +113,7 @@ bool Player::init()
 		module.actID = ACT_STATE::JUMP;
 		module.black.emplace_back(ACT_STATE::JUMPING);
 		module.black.emplace_back(ACT_STATE::FALLING);
-		module.black.emplace_back(ACT_STATE::JUMP);
+		module.black.emplace_back(ACT_STATE::FALL);
 		module.keyCode = EventKeyboard::KeyCode::KEY_UP_ARROW;
 		module.keyMode = TRG_STATE::NOW;
 		module.keyTiming = Timing::ON_MOM;
@@ -100,31 +124,12 @@ bool Player::init()
 		actModule module;
 		module.actID = ACT_STATE::JUMPING;
 		module.black.emplace_back(ACT_STATE::FALLING);
-		module.black.emplace_back(ACT_STATE::FALL);
-		module.speed = Vec2(0, _jumpSpeed);
+		module.black.emplace_back(ACT_STATE::IDLE);
+		module.speed = Vec2(0, 0);
 		module.colSize = { Size(30, 45), Size(-30, 40) };
 		_actMng->AddActModule("¼Þ¬ÝÌß’†", module);
 	}
-	// —Ž‰º
-	{
-		actModule module;
-		module.actID = ACT_STATE::FALL;
-		module.black.emplace_back(ACT_STATE::IDLE);
-		module.black.emplace_back(ACT_STATE::FALLING);
-		module.black.emplace_back(ACT_STATE::JUMP);
-		module.colSize = { Size(30, -60), Size(-30, -60) };
-		module.speed = Vec2(0, -5);
-		_actMng->AddActModule("—Ž‰º", module);
-	}
-	// —Ž‰º’†
-	{
-		actModule module;
-		module.actID = ACT_STATE::FALLING;
-		module.black.emplace_back(ACT_STATE::JUMPING);
-		module.speed = Vec2(0, -5);
-		module.colSize = { Size(30, -60), Size(-30, -60) };
-		_actMng->AddActModule("—Ž‰º’†", module);
-	}
+	
 	// Œü‚«•ÏX¶
 	{
 		actModule module;
@@ -145,6 +150,7 @@ bool Player::init()
 	}
 
 	this->scheduleUpdate();
+	count = 0;
 	return true;
 }
 
@@ -152,11 +158,9 @@ void Player::update(float delta)
 {
 	_inputState->update();
 	_actMng->update(*this);
-	
+	//TRACE("%d\n", _nowState);
 	auto anim = SetAnim(_nowState);	// repeatNum‚ÌÝ’è‚ðSetAnim‚ÅÝ’è‚µ‚Ä‚¢‚é‚½‚ßæ“Ç‚Ý•K{@•ÏX—\’è
-	lpAnimMng.runAnim(*this, *anim, _repeatNum);
-
-	
+	lpAnimMng.runAnim(*this, *anim, _repeatNum);	
 }
 
 void Player::JumpSpeed(float speed)
@@ -199,6 +203,7 @@ Animation* Player::SetAnim(ACT_STATE state)
 		if (state == ACT_STATE::FALL || state == ACT_STATE::FALLING)
 		{
 			anim = animCache->getAnimation("stand");
+			
 		}
 		if (anim == nullptr && state == ACT_STATE::IDLE)
 		{

@@ -8,5 +8,6 @@ struct actModule;
 
 struct CheckKey
 {
+	// ·°“ü—ÍŠm”F
 	bool operator()(cocos2d::Sprite& sp, actModule& module);
 };

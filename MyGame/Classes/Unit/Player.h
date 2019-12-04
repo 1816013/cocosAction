@@ -25,8 +25,6 @@ public:
 	CREATE_FUNC(Player);
 	std::unique_ptr<OPRT_state>_inputState;
 
-	
-
 	// •Ï”
 	std::shared_ptr<ActionMng>_actMng;
 	

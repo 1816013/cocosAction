@@ -2,13 +2,11 @@
 
 OPRT_state::OPRT_state()
 {
-	cocos2d::EventKeyboard::KeyCode dirTbl[static_cast<int>(DIR::MAX)] =
-	{
-		cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW,
-		cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW,
-		cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW,
-		cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW
-	};
+	dirTbl[static_cast<int>(DIR::UP)] = cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW;
+	dirTbl[static_cast<int>(DIR::RIGHT)] = cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW;
+	dirTbl[static_cast<int>(DIR::DOWN)] = cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW;
+	dirTbl[static_cast<int>(DIR::LEFT)] = cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW;
+
 
 	for (auto dir : DIR())
 	{

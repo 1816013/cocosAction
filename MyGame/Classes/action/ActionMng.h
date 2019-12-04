@@ -26,7 +26,7 @@ struct actModule
 	std::list<ACT_STATE>white;					// ÎÜ²ÄØ½Ä
 	std::list<ACT_STATE>black;					// ÌŞ×¯¸Ø½Ä
 	std::list<funcActModule>act;				// Áª¯¸Œn‚Ì±¸¼®İ
-	funcActModule runAction;					// Às‚·‚é±¸¼®İ
+	funcActModule runAction;					// Às‚·‚é±¸¼®İ	
 	cocos2d::Vec2 speed;						// ˆÚ“®‘¬“x
 	std::array<cocos2d::Size, 2> colSize;		// “–‚½‚è”»’è‚Ì»²½Ş
 	TRG_STATE keyMode;							// “ü—Í‚ÌÀ²Ìß@ Á‚·‚©‚à
@@ -40,7 +40,7 @@ public:
 	ActionMng();
 	//ActionMng(cocos2d::Sprite& sp);
 	~ActionMng();
-	void AddActModule(const std::string& actName, actModule& module);
+	void AddActModule(const std::string& actName, actModule& module);	// ±¸¼®İ‚Ì¾¯Ä
 	void update(cocos2d::Sprite& sp);
 
 	std::map<std::string, actModule>_moduleMap;

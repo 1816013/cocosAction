@@ -7,6 +7,7 @@
 #include "Fall.h"
 #include "Jump.h"
 #include "ChangeLR.h"
+//#include "_debug/_DebugConOut.h"
 
 USING_NS_CC;
 
@@ -31,20 +32,6 @@ void ActionMng::AddActModule(const std::string & actName, actModule & module)
 			_moduleMap[actName].act.emplace_back(Colision());
 			_moduleMap[actName].runAction = MoveLR();
 		}
-		if (actName == "¼Þ¬ÝÌß")
-		{
-			_moduleMap.emplace(actName, std::move(module));
-			_moduleMap[actName].act.emplace_back(CheckList());
-			_moduleMap[actName].act.emplace_back(CheckKey());
-			_moduleMap[actName].runAction = Jump();
-		}
-		if (actName == "¼Þ¬ÝÌß’†")
-		{
-			_moduleMap.emplace(actName, std::move(module));
-			_moduleMap[actName].act.emplace_back(CheckList());
-			_moduleMap[actName].act.emplace_back(Colision());
-			_moduleMap[actName].runAction = Jumping();
-		}
 		if (actName == "—Ž‰º")
 		{
 			_moduleMap.emplace(actName, std::move(module));
@@ -59,6 +46,20 @@ void ActionMng::AddActModule(const std::string & actName, actModule & module)
 			_moduleMap[actName].act.emplace_back(Colision());
 			_moduleMap[actName].runAction = Falling();
 		}
+		if (actName == "¼Þ¬ÝÌß")
+		{
+			_moduleMap.emplace(actName, std::move(module));
+			_moduleMap[actName].act.emplace_back(CheckList());
+			_moduleMap[actName].act.emplace_back(CheckKey());
+			_moduleMap[actName].runAction = Jump();
+		}
+		if (actName == "¼Þ¬ÝÌß’†")
+		{
+			_moduleMap.emplace(actName, std::move(module));
+			_moduleMap[actName].act.emplace_back(CheckList());
+			_moduleMap[actName].act.emplace_back(Colision());
+			_moduleMap[actName].runAction = Jumping();
+		}
 		if (actName == "‰EŒü‚«" || actName == "¶Œü‚«")
 		{
 			_moduleMap.emplace(actName, std::move(module));
@@ -67,12 +68,6 @@ void ActionMng::AddActModule(const std::string & actName, actModule & module)
 			_moduleMap[actName].runAction = ChangeLR();
 		}
 	}
-	/*if (actName == "—Ž‰º’†")
-	{
-		_moduleMap.try_emplace(actName, std::move(module));
-		
-		_moduleMap[actName].runAction = Falling();
-	}*/
 }
 
 void ActionMng::update(cocos2d::Sprite& sp)
@@ -82,35 +77,29 @@ void ActionMng::update(cocos2d::Sprite& sp)
 		for (auto listModule : module.act/*= module.act.begin(); listModule == module.act.end(); ++listModule*/)
 		{
 			if (!listModule(sp, module))
-			{	
+			{
 				return false;
-			}		
+			}
 		}
 		return true;
 	};
 
-	int count = 0;
+	bool actFlag = false;
 	for (auto mapModule : _moduleMap)
 	{
 		if (check(sp, mapModule.second))
 		{
 			if (mapModule.second.runAction(sp, mapModule.second))
 			{
-				((Player&)sp).ActState(mapModule.second.actID);		
+				((Player&)sp).ActState(mapModule.second.actID);
+				actFlag = true;
 			}
-			else
-			{
-				count++;
-			}
-		}
-		else 
-		{
-			count++;
 		}
 	}
-	if (count >= _moduleMap.size())
+	if (actFlag == false)
 	{
+		//TRACE("idle\n");
 		((Player&)sp).ActState(ACT_STATE::IDLE);
 	}
-	
+
 }

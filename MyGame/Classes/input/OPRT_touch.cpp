@@ -18,35 +18,35 @@ OPRT_touch::OPRT_touch(Node* sp)
 		auto start_p = _startTPos;
 		if (pos.x > start_p.x + margin)
 		{
-			_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::RIGHT)] = true;
-			if (_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::LEFT)])
+			_keyData[static_cast<int>(TRG_STATE::INPUT)][cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW] = true;
+			/*if (_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::LEFT)])
 			{
 				_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::LEFT)] = false;
-			}
+			}*/
 		}
 		if (pos.x < start_p.x - margin)
 		{
-			_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::LEFT)] = true;
-			if (_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::RIGHT)])
+			_keyData[static_cast<int>(TRG_STATE::INPUT)][cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW] = true;
+			/*if (_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::RIGHT)])
 			{
 				_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::RIGHT)] = false;
-			}
+			}*/
 		}
 		if (pos.y > start_p.y + margin)
 		{
-			_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::UP)] = true;
-			if (_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::DOWN)])
+			_keyData[static_cast<int>(TRG_STATE::INPUT)][cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW] = true;
+			/*if (_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::DOWN)])
 			{
 				_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::DOWN)] = false;
-			}
+			}*/
 		}
 		if (pos.y < start_p.y - margin)
 		{
-			_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::DOWN)] = true;
-			if (_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::UP)])
+			_keyData[static_cast<int>(TRG_STATE::INPUT)][cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW] = true;
+			/*if (_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::UP)])
 			{
 				_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(DIR::UP)] = false;
-			}
+			}*/
 		}
 		if (start_p + Vec2{ margin, margin } > pos && start_p - Vec2{ margin, margin } < pos)
 		{
@@ -59,9 +59,9 @@ OPRT_touch::OPRT_touch(Node* sp)
 	};
 	listener->onTouchEnded = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool
 	{
-		for (auto itr : DIR())
+		for (auto dir : DIR())
 		{
-			_touchData[static_cast<int>(TRG_STATE::INPUT)][static_cast<int>(itr)] = false;
+			_keyData[static_cast<int>(TRG_STATE::INPUT)][dirTbl[static_cast<int>(dir)]] = false;
 		}
 		_startTPos = { -9999, -9999 };
 		return true;

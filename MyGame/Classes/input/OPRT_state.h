@@ -63,6 +63,7 @@ struct OPRT_state
 protected:
 	TRG_ArrayKey _keyData;
 	TRG_ArrayTouch _touchData;
+	cocos2d::EventKeyboard::KeyCode dirTbl[static_cast<int>(DIR::MAX)];
 };
 
 DIR begin(DIR);

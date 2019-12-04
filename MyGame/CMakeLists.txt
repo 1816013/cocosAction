@@ -26,6 +26,7 @@
 cmake_minimum_required(VERSION 3.6)
 
 set(APP_NAME MyGame)
+set(CK_ROOT ../../cocosSetup/cricket/cricket-1.6.7)
 
 project(${APP_NAME})
 
@@ -33,6 +34,15 @@ set(COCOS2DX_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cocos2d)
 set(CMAKE_MODULE_PATH ${COCOS2DX_ROOT_PATH}/cmake/Modules/)
 
 include(CocosBuildSet)
+
+include_directories(
+        ${CK_ROOT}/inc
+)
+
+link_directories(
+        ${CK_ROOT}/lib/android/ndk/${ANDROID_ABI}/debug
+)
+
 add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos ${ENGINE_BINARY_PATH}/cocos/core)
 
 # record sources, headers, resources...
@@ -188,3 +198,42 @@ if(LINUX OR WINDOWS)
     cocos_copy_target_res(${APP_NAME} COPY_TO ${APP_RES_DIR} FOLDERS ${GAME_RES_FOLDER})
 endif()
 
+
+add_library(
+        mylib
+
+        SHARED
+
+       # src/main/cpp/hellocricket.cpp
+        Classes/AppDelegate.cpp
+        Classes/GameScene.cpp
+        Classes/input/OPRT_key.cpp
+        Classes/input/OPRT_touch.cpp
+        Classes/input/OPRT_state.cpp
+        Classes/Unit/Player.cpp
+        Classes/Unit/Obj.cpp
+        Classes/AnimMng.cpp
+        Classes/action/ActionMng.cpp
+        Classes/action/ChangeLR.cpp
+        Classes/action/CheckKey.cpp
+        Classes/action/CheckList.cpp
+        Classes/action/Colision.cpp
+        Classes/action/Fall.cpp
+        Classes/action/Jump.cpp
+        Classes/action/MoveLR.cpp
+        Classes/Effekseer/Effekseer.cpp
+        Classes/Effekseer/EffekseerNative.cpp
+        Classes/Effekseer/EffekseerRendererNative.cpp
+        Classes/EffectMng.cpp
+        Classes/SoundMng.cpp
+)
+
+target_link_libraries(
+        mylib
+
+        ck
+        cpufeatures
+        native_app_glue
+        log
+        android
+)
