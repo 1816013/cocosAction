@@ -26,9 +26,8 @@
 #include "SimpleAudioEngine.h"
 #include <Unit/Player.h>
 #include <input/OPRT_key.h>
-//#include <ck/ck.h>
-//#include <ck/config.h>
-#include <EffectMng.h>
+#include "EffectMng.h"
+#include "SoundMng.h"
 
 USING_NS_CC;
 
@@ -39,11 +38,7 @@ Scene* GameScene::createScene()
 
 GameScene::~GameScene()
 {
-	/*sound->releaseLoop();
-	sound->destroy();
-	bank->destroy();
-
-	CkShutdown();*/
+	lpSoundMng.ckEnd();
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -70,6 +65,23 @@ bool GameScene::init()
     // 2. add a menu item with "X" image, which is clicked to quit the program
     //    you may modify it.
 
+	// ﾚｲﾔｰ作成
+	zorderUI = static_cast<int>(Zorder_ID::UI);
+	zorderBack = static_cast<int>(Zorder_ID::BACK);
+	zorderChar = static_cast<int>(Zorder_ID::CHAR);
+	zorderFlont = static_cast<int>(Zorder_ID::FLONT);
+
+	auto uiBglayer = Layer::create();
+	uiBglayer->setName("uiLayer");
+	auto charBglayer = Layer::create();
+	charBglayer->setName("charLayer");
+	auto flontBglayer = Layer::create();
+	flontBglayer->setName("flontLayer");
+	auto backBglayer = Layer::create();
+	backBglayer->setName("backLayer");
+
+	// ｽﾌﾟﾗｲﾄ作成
+
     // add a "close" icon to exit the progress. it's an autorelease object
     auto closeItem = MenuItemImage::create(
                                            "CloseNormal.png",
@@ -92,7 +104,7 @@ bool GameScene::init()
     // create menu, it's an autorelease object
     auto menu = Menu::create(closeItem, NULL);
     menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
+   // this->addChild(menu, zorderUI);
 
     /////////////////////////////
     // 3. add your codes below...
@@ -112,39 +124,11 @@ bool GameScene::init()
                                 origin.y + visibleSize.height - label->getContentSize().height));
 
         // add the label as a child to this layer
-        this->addChild(label, 5);
+       // this->addChild(label, zorderUI);
     }
 
 	auto pos = Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2);
 
-	// サウンド
-
-//#if CK_PLATFORM_ANDROID
-//	CkConfig config(env, activity);
-//#else
-//	CkConfig config;
-//#endif
-//	CkInit(&config);
-//
-//	bank = CkBank::newBank("dsptouch.ckb", kCkPathType_FileSystem);
-//	sound = CkSound::newBankSound(bank, 1);
-//	sound->setLoop(0, sound->getLength());
-//	sound->setLoopCount(-1);
-
-
-	// ﾚｲﾔｰ作成
-	ZorderBack = static_cast<int>(Zorder_ID::BACK);
-	ZorderChar = static_cast<int>(Zorder_ID::CHAR);
-	ZorderFlont = static_cast<int>(Zorder_ID::FLONT);
-	
-	auto charbglayer = Layer::create();
-	charbglayer->setName("charLayer");
-	auto flontbglayer = Layer::create();
-	flontbglayer->setName("flontLayer");
-	auto backbglayer = Layer::create();
-	backbglayer->setName("backLayer");
-
-	// ｽﾌﾟﾗｲﾄ作成
 	// 背景
 	auto backS1 = Sprite::create("image/Environment/middleground2.png");
 	backS1->setPosition(backS1->getContentSize().width / 2, backS1->getContentSize().height / 2);
@@ -152,49 +136,48 @@ bool GameScene::init()
 	backS2->setPosition(backS2->getContentSize().width / 2 + backS2->getContentSize().width, backS2->getContentSize().height / 2);
 
 	// ﾏｯﾌﾟ
-	auto mapS = TMXTiledMap::create("map.tmx");
+	auto mapS = TMXTiledMap::create("map2.tmx");
 	mapS->setName("mapData");
-	//mapS->setPosition({ -16, 0 });
-	//auto waterL = mapS->getLayer("water");	// 水
-	//waterL->setGlobalZOrder(ZorderFlont);
-	//auto plantL = mapS->getLayer("plant");	// 植物
-	//plantL->setGlobalZOrder(ZorderFlont);
-	//auto caveL = mapS->getLayer("cave1");
-	//caveL->setGlobalZOrder(ZorderFlont);
+	mapS->setPosition({ -16, 0 });
+	auto footingL = mapS->getLayer("footing");
+	footingL->setGlobalZOrder(zorderBack);
 	
 	// ｹﾞｰﾄ
-	/*auto gateS = Sprite::create("image/Environment/Props/gate-01.png");
-	gateS->setPosition(gateS->getContentSize().width / 2, gateS->getContentSize().height / 2 + 48);*/
+	auto gateS = Sprite::create("image/Environment/Props/gate-01.png");
+	gateS->setPosition(gateS->getContentSize().width / 2, gateS->getContentSize().height / 2 + 48);
 	
 	// ﾌﾟﾚｲﾔｰ作成
 	auto player = Player::createSprite();
 	
 	// ｽﾌﾟﾗｲﾄをﾚｲﾔｰにぶら下げる
-	charbglayer->addChild(player, 0);
+	uiBglayer->addChild(menu, 0);
+	uiBglayer->addChild(label, 0);
 
-	backbglayer->addChild(backS1, 0);
-	backbglayer->addChild(backS2, 0);
-	backbglayer->addChild(mapS, 0);
+	charBglayer->addChild(player, 0);
 
-	//flontbglayer->addChild(gateS, 0);
+	backBglayer->addChild(backS1, 0);
+	backBglayer->addChild(backS2, 0);
+
+	flontBglayer->addChild(mapS, 0);
+	flontBglayer->addChild(gateS, 0);
 
 	// エフェクト
 	effecMng.reset(efk::EffectManager::create(visibleSize));
-	/*auto effect = efk::Effect::create("Laser01.efk", 13.0f);
-	emitter2 = efk::EffectEmitter::create(effecMng.get());
-	emitter2->setEffect(effect);
-	emitter2->setPlayOnEnter(false);
-	emitter2->setRotation3D(cocos2d::Vec3(0, 90, 0));
-	emitter2->setPosition(Vec2(300, 120));*/
-	//lpEffectMng.Init(visibleSize);
+
 	lpEffectMng.AddEffect("Laser01.efk", 13.0f, { 300, 120 }, { 0, 90, 0 }, effecMng.get());
 
-	flontbglayer->addChild(lpEffectMng.GetEmitter("Laser01.efk"),0);
+	flontBglayer->addChild(lpEffectMng.GetEmitter("Laser01.efk"),0);
 
 	// ｼｰﾝにぶら下げる
-	this->addChild(backbglayer, ZorderBack);
-	this->addChild(charbglayer, ZorderChar);
-	this->addChild(flontbglayer, ZorderFlont);
+	this->addChild(uiBglayer, zorderUI);
+	this->addChild(backBglayer, zorderBack);
+	this->addChild(charBglayer, zorderChar);
+	this->addChild(flontBglayer, zorderFlont);
+
+	// ｻｳﾝﾄﾞ
+	lpSoundMng.Init();
+	lpSoundMng.AddSound("sound.ckb", "shot", SOUND_TYPE::SE);
+	lpSoundMng.AddSound("sound.ckb", "bgm", SOUND_TYPE::BGM);
 
 	this->scheduleUpdate();
 
@@ -205,19 +188,12 @@ bool GameScene::init()
 void GameScene::update(float delta)
 {	
 	(*effecMng).update();
-	//CkUpdate();
-	//if (count == 0)
-	//{
-	//	sound->play();
-	//}
-	//	
-	//if (count%120== 0)
-	//{
-	//	lpEffectMng.EmitterPlay("Laser01.efk", { 300, 120 }, { 0, 90, 0 });
-	//	//sound->destroy();
-	//	sound = CkSound::newBankSound(bank, 0);
-	//	sound->play();
-	//}
+	//lpSoundMng.Update();
+	if (count == 0)
+	{
+		lpSoundMng.PlayBySoundName("bgm");
+	}
+		
 	count++;
 }
 
@@ -239,9 +215,7 @@ void GameScene::menuCloseCallback(Ref* pSender)
 void GameScene::visit(cocos2d::Renderer * renderer, const cocos2d::Mat4 & parentTransform, uint32_t parentFlags)
 {
 	(*effecMng).begin(renderer, _globalZOrder);
-	//lpEffectMng.EffectVisit(renderer, *this, true);
 	cocos2d::Scene::visit(renderer, parentTransform, parentFlags);
-	//lpEffectMng.EffectVisit(renderer, *this, false);
 	(*effecMng).end(renderer, _globalZOrder);
 }
 

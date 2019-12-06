@@ -2,24 +2,17 @@
 
 OPRT_state::OPRT_state()
 {
-	dirTbl[static_cast<int>(DIR::UP)] = cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW;
-	dirTbl[static_cast<int>(DIR::RIGHT)] = cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW;
-	dirTbl[static_cast<int>(DIR::DOWN)] = cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW;
-	dirTbl[static_cast<int>(DIR::LEFT)] = cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW;
+	inputTbl[static_cast<int>(INPUT_ID::UP)] = cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW;
+	inputTbl[static_cast<int>(INPUT_ID::RIGHT)] = cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW;
+	inputTbl[static_cast<int>(INPUT_ID::DOWN)] = cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW;
+	inputTbl[static_cast<int>(INPUT_ID::LEFT)] = cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW;
+	inputTbl[static_cast<int>(INPUT_ID::SHOT)] = cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_SHIFT;
 
 
-	for (auto dir : DIR())
+	for (auto input : INPUT_ID())
 	{
-		_keyData[static_cast<int>(TRG_STATE::INPUT)].emplace(dirTbl[static_cast<int>(dir)], false);
+		_keyData[static_cast<int>(TRG_STATE::INPUT)].emplace(inputTbl[static_cast<int>(input)], false);
 	};
-	for (int trg = 0; trg < static_cast<int>(TRG_STATE::MAX); trg++)
-	{
-		//_keyData[trg][] = false;
-		for (auto itr : DIR())
-		{
-			_touchData[static_cast<int>(trg)][static_cast<int>(itr)] = false;
-		}
-	}
 }
 
 void OPRT_state::update(void)
@@ -28,22 +21,22 @@ void OPRT_state::update(void)
 	_keyData[static_cast<int>(TRG_STATE::NOW)] = _keyData[static_cast<int>(TRG_STATE::INPUT)];
 }
 
-DIR begin(DIR)
+INPUT_ID begin(INPUT_ID)
 {
-	return DIR::UP;
+	return INPUT_ID::UP;
 }
 
-DIR end(DIR)
+INPUT_ID end(INPUT_ID)
 {
-	return DIR::MAX;
+	return INPUT_ID::MAX;
 }
 
-DIR operator*(DIR key)
+INPUT_ID operator*(INPUT_ID key)
 {
 	return key;
 }
 
-DIR operator++(DIR & key)
+INPUT_ID operator++(INPUT_ID & key)
 {
-	return key = DIR(std::underlying_type<DIR>::type(key) + 1);
+	return key = INPUT_ID(std::underlying_type<INPUT_ID>::type(key) + 1);
 }

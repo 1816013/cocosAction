@@ -33,14 +33,21 @@ project(${APP_NAME})
 set(COCOS2DX_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cocos2d)
 set(CMAKE_MODULE_PATH ${COCOS2DX_ROOT_PATH}/cmake/Modules/)
 
+include(AndroidNdkModules)
+android_ndk_import_module_cpufeatures()
+
 include(CocosBuildSet)
 
 include_directories(
-        ${CK_ROOT}/inc
+        D:/cocosSetup/cricket/cricket-1.6.7/inc
 )
 
 link_directories(
-        ${CK_ROOT}/lib/android/ndk/${ANDROID_ABI}/debug
+        D:/cocosSetup/cricket/cricket-1.6.7/lib/android/ndk/${ANDROID_ABI}/debug
+)
+
+link_libraries(
+        D:/cocosSetup/cricket/cricket-1.6.7/lib/android/ndk/${ANDROID_ABI}/debug/libck.a
 )
 
 add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos ${ENGINE_BINARY_PATH}/cocos/core)
@@ -79,6 +86,8 @@ list(APPEND GAME_SOURCE
         Classes/Effekseer/EffekseerRendererNative.cpp
         Classes/EffectMng.cpp
         Classes/SoundMng.cpp
+        Classes/CricketJni.cpp
+        Classes/action/Shot.cpp
         )
 list(APPEND GAME_HEADER
         Classes/AppDelegate.h
@@ -102,6 +111,8 @@ list(APPEND GAME_HEADER
         Classes/Effekseer/EffekseerRendererNative.h
         Classes/EffectMng.h
         Classes/SoundMng.h
+        Classes/CricketJni.h
+        Classes/action/Shot.h
      )
 
 if(ANDROID)
@@ -199,41 +210,3 @@ if(LINUX OR WINDOWS)
 endif()
 
 
-add_library(
-        mylib
-
-        SHARED
-
-       # src/main/cpp/hellocricket.cpp
-        Classes/AppDelegate.cpp
-        Classes/GameScene.cpp
-        Classes/input/OPRT_key.cpp
-        Classes/input/OPRT_touch.cpp
-        Classes/input/OPRT_state.cpp
-        Classes/Unit/Player.cpp
-        Classes/Unit/Obj.cpp
-        Classes/AnimMng.cpp
-        Classes/action/ActionMng.cpp
-        Classes/action/ChangeLR.cpp
-        Classes/action/CheckKey.cpp
-        Classes/action/CheckList.cpp
-        Classes/action/Colision.cpp
-        Classes/action/Fall.cpp
-        Classes/action/Jump.cpp
-        Classes/action/MoveLR.cpp
-        Classes/Effekseer/Effekseer.cpp
-        Classes/Effekseer/EffekseerNative.cpp
-        Classes/Effekseer/EffekseerRendererNative.cpp
-        Classes/EffectMng.cpp
-        Classes/SoundMng.cpp
-)
-
-target_link_libraries(
-        mylib
-
-        ck
-        cpufeatures
-        native_app_glue
-        log
-        android
-)

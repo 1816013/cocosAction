@@ -5,7 +5,7 @@
 #include "action/ActionMng.h"
 
 
-using DIRArrayPair = std::array<std::pair<cocos2d::Size, cocos2d::Size>, static_cast<int>(DIR::MAX)>;
+using DIRArrayPair = std::array<std::pair<cocos2d::Size, cocos2d::Size>, static_cast<int>(INPUT_ID::MAX)>;
 
 class Player : public cocos2d::Sprite
 {

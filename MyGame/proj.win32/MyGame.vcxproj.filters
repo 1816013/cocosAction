@@ -81,9 +81,6 @@
     <ClCompile Include="..\Classes\action\Colision.cpp">
       <Filter>src\action\check</Filter>
     </ClCompile>
-    <ClCompile Include="_debug\_DebugDispOut.cpp">
-      <Filter>win32\_debug</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Effekseer\Effekseer.cpp">
       <Filter>src\effeckseer</Filter>
     </ClCompile>
@@ -100,6 +97,10 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\action\ActionMng.cpp">
+      <Filter>src\action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\CricketJni.cpp" />
+    <ClCompile Include="..\Classes\action\Shot.cpp">
       <Filter>src\action</Filter>
     </ClCompile>
   </ItemGroup>
@@ -158,9 +159,6 @@
     <ClInclude Include="..\Classes\action\Colision.h">
       <Filter>src\action\check</Filter>
     </ClInclude>
-    <ClInclude Include="_debug\_DebugDispOut.h">
-      <Filter>win32\_debug</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Effekseer\Effekseer.h">
       <Filter>src\effeckseer</Filter>
     </ClInclude>
@@ -175,6 +173,10 @@
     </ClInclude>
     <ClInclude Include="..\Classes\EffectMng.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\CricketJni.h" />
+    <ClInclude Include="..\Classes\action\Shot.h">
+      <Filter>src\action</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

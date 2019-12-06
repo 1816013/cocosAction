@@ -7,7 +7,7 @@
 #include "Fall.h"
 #include "Jump.h"
 #include "ChangeLR.h"
-//#include "_debug/_DebugConOut.h"
+#include "Shot.h"
 
 USING_NS_CC;
 
@@ -67,6 +67,13 @@ void ActionMng::AddActModule(const std::string & actName, actModule & module)
 			_moduleMap[actName].act.emplace_back(CheckKey());
 			_moduleMap[actName].runAction = ChangeLR();
 		}
+		if (actName == "¼®¯Ä")
+		{
+			_moduleMap.emplace(actName, std::move(module));
+			_moduleMap[actName].act.emplace_back(CheckList());
+			_moduleMap[actName].act.emplace_back(CheckKey());
+			_moduleMap[actName].runAction = Shot();
+		}
 	}
 }
 
@@ -74,7 +81,7 @@ void ActionMng::update(cocos2d::Sprite& sp)
 {
 	auto check = [this](Sprite& sp, actModule& module)
 	{
-		for (auto listModule : module.act/*= module.act.begin(); listModule == module.act.end(); ++listModule*/)
+		for (auto listModule : module.act)
 		{
 			if (!listModule(sp, module))
 			{
@@ -98,7 +105,6 @@ void ActionMng::update(cocos2d::Sprite& sp)
 	}
 	if (actFlag == false)
 	{
-		//TRACE("idle\n");
 		((Player&)sp).ActState(ACT_STATE::IDLE);
 	}
 

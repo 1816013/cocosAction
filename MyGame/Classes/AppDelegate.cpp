@@ -24,6 +24,7 @@
 
 #include "AppDelegate.h"
 #include "GameScene.h"
+#include "SoundMng.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -98,22 +99,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // Set the design resolution
     glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::SHOW_ALL);
-    //auto frameSize = glview->getFrameSize();
-    //// if the frame's height is larger than the height of medium size.
-    //if (frameSize.height > mediumResolutionSize.height)
-    //{        
-    //    director->setContentScaleFactor(MIN(largeResolutionSize.height/designResolutionSize.height, largeResolutionSize.width/designResolutionSize.width));
-    //}
-    //// if the frame's height is larger than the height of small size.
-    //else if (frameSize.height > smallResolutionSize.height)
-    //{        
-    //    director->setContentScaleFactor(MIN(mediumResolutionSize.height/designResolutionSize.height, mediumResolutionSize.width/designResolutionSize.width));
-    //}
-    //// if the frame's height is smaller than the height of medium size.
-    //else
-    //{        
-    //    director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
-    //}
 
     register_all_packages();
 
@@ -129,7 +114,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 // This function will be called when the app is inactive. Note, when receiving a phone call it is invoked.
 void AppDelegate::applicationDidEnterBackground() {
     Director::getInstance()->stopAnimation();
-
+	lpSoundMng.SetPauseAll(true);
 #if USE_AUDIO_ENGINE
     AudioEngine::pauseAll();
 #elif USE_SIMPLE_AUDIO_ENGINE
@@ -141,7 +126,7 @@ void AppDelegate::applicationDidEnterBackground() {
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground() {
     Director::getInstance()->startAnimation();
-
+	lpSoundMng.SetPauseAll(false);
 #if USE_AUDIO_ENGINE
     AudioEngine::resumeAll();
 #elif USE_SIMPLE_AUDIO_ENGINE

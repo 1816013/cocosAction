@@ -24,7 +24,7 @@ bool AnimMng::AnimCreate(const std::string type, const std::string key, int num,
 		__String* str;
 		if (num == 1)
 		{
-			(*str) = type + "-" + key + ".png";
+			str = __String::createWithFormat((type + "-" + key + ".png").c_str(), i);
 		}
 		else
 		{

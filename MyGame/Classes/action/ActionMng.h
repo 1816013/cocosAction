@@ -14,7 +14,8 @@ enum class ACT_STATE
 	FALLING,
 	IDLE,
 	CHANGE_RIGHT,
-	CHANGE_LEFT
+	CHANGE_LEFT,
+	SHOT
 };
 
 struct actModule;
@@ -31,7 +32,7 @@ struct actModule
 	std::array<cocos2d::Size, 2> colSize;		// “–‚½‚è”»’è‚Ì»²½Ş
 	TRG_STATE keyMode;							// “ü—Í‚ÌÀ²Ìß@ Á‚·‚©‚à
 	Timing keyTiming;							// ·°‚ÌÀ²Ğİ¸Ş
-	cocos2d::EventKeyboard::KeyCode keyCode;	// ±¸¼®İ‚Åg‚¤·°º°ÄŞ
+	INPUT_ID inputID;							// ·°‚Ìí—Ş
 };
 
 class ActionMng

@@ -56,19 +56,21 @@ bool Player::init()
 
 	// ﾌﾟﾚｲﾔｰ初期設定
 	this->Sprite::createWithSpriteFrameName("player-idle-1.png");	// ﾌﾟﾚｲﾔｰの初期画像
-	_pos = Vec2(visibleSize.width / 2, visibleSize.height / 2 +50);	// ﾌﾟﾚｲﾔｰ初期位置
+	_pos = Vec2(visibleSize.width / 2, visibleSize.height / 2 + 50);	// ﾌﾟﾚｲﾔｰ初期位置
 	_size = Size(60, 120);
 	this->setPosition(_pos);
 	this->setContentSize(_size);
 	_jumpSpeed = 0.0f;
 	_nowState = ACT_STATE::IDLE;
+
+	// ｱｸｼｮﾝｾｯﾄ @csv出力にしたい
 	// 左移動
 	{
 		actModule module;
 		module.actID = ACT_STATE::RUN;
 		module.speed = Vec2(-5, 0);
 		module.colSize = { Size(-30, 45), Size(-30, -60) };
-		module.keyCode = EventKeyboard::KeyCode::KEY_LEFT_ARROW;
+		module.inputID = INPUT_ID::LEFT;
 		module.keyMode = TRG_STATE::NOW;
 		module.keyTiming = Timing::ON;
 		_actMng->AddActModule("左移動", module);
@@ -80,7 +82,7 @@ bool Player::init()
 		module.actID = ACT_STATE::RUN;
 		module.speed = Vec2(5, 0);
 		module.colSize = { Size(30, 45), Size(30, -60) };
-		module.keyCode = EventKeyboard::KeyCode::KEY_RIGHT_ARROW;
+		module.inputID = INPUT_ID::RIGHT;
 		module.keyMode = TRG_STATE::NOW;
 		module.keyTiming = Timing::ON;
 		_actMng->AddActModule("右移動", module);
@@ -89,11 +91,9 @@ bool Player::init()
 	{
 		actModule module;
 		module.actID = ACT_STATE::FALL;
-		//module.black.emplace_back(ACT_STATE::IDLE);
 		module.black.emplace_back(ACT_STATE::FALLING);
 		module.black.emplace_back(ACT_STATE::JUMP);
 		module.colSize = { Size(30, -60), Size(-30, -60) };
-		//module.speed = Vec2(0, -5);
 		_actMng->AddActModule("落下", module);
 	}
 	// 落下中
@@ -101,9 +101,7 @@ bool Player::init()
 		actModule module;
 		module.actID = ACT_STATE::FALLING;
 		module.black.emplace_back(ACT_STATE::JUMPING);
-		//module.black.emplace_back(ACT_STATE::IDLE);
 		module.black.emplace_back(ACT_STATE::JUMP);
-		//module.speed = Vec2(0, 0);
 		module.colSize = { Size(30, -60), Size(-30, -60) };
 		_actMng->AddActModule("落下中", module);
 	}
@@ -114,9 +112,9 @@ bool Player::init()
 		module.black.emplace_back(ACT_STATE::JUMPING);
 		module.black.emplace_back(ACT_STATE::FALLING);
 		module.black.emplace_back(ACT_STATE::FALL);
-		module.keyCode = EventKeyboard::KeyCode::KEY_UP_ARROW;
+		module.inputID = INPUT_ID::UP;
 		module.keyMode = TRG_STATE::NOW;
-		module.keyTiming = Timing::ON_MOM;
+		module.keyTiming = Timing::ON;
 		_actMng->AddActModule("ｼﾞｬﾝﾌﾟ", module);
 	}
 	// ｼﾞｬﾝﾌﾟ中
@@ -126,7 +124,7 @@ bool Player::init()
 		module.black.emplace_back(ACT_STATE::FALLING);
 		module.black.emplace_back(ACT_STATE::IDLE);
 		module.speed = Vec2(0, 0);
-		module.colSize = { Size(30, 45), Size(-30, 40) };
+		module.colSize = { Size(30, 40), Size(-30, 40) };
 		_actMng->AddActModule("ｼﾞｬﾝﾌﾟ中", module);
 	}
 	
@@ -134,7 +132,7 @@ bool Player::init()
 	{
 		actModule module;
 		module.actID = ACT_STATE::CHANGE_LEFT;
-		module.keyCode = EventKeyboard::KeyCode::KEY_LEFT_ARROW;
+		module.inputID = INPUT_ID::LEFT;
 		module.keyMode = TRG_STATE::NOW;
 		module.keyTiming = Timing::ON;
 		_actMng->AddActModule("左向き", module);
@@ -143,10 +141,21 @@ bool Player::init()
 	{
 		actModule module;
 		module.actID = ACT_STATE::CHANGE_RIGHT;
-		module.keyCode = EventKeyboard::KeyCode::KEY_RIGHT_ARROW;
+		module.inputID = INPUT_ID::RIGHT;
 		module.keyMode = TRG_STATE::NOW;
 		module.keyTiming = Timing::ON;
 		_actMng->AddActModule("右向き", module);
+	}
+	// ｼｮｯﾄ
+	{
+		actModule module;
+		module.actID = ACT_STATE::SHOT;
+		module.white.emplace_back(ACT_STATE::IDLE);
+		module.black.emplace_back(ACT_STATE::JUMPING);
+		module.inputID = INPUT_ID::SHOT;
+		module.keyMode = TRG_STATE::NOW;
+		module.keyTiming = Timing::ON;
+		_actMng->AddActModule("ｼｮｯﾄ", module);
 	}
 
 	this->scheduleUpdate();
@@ -200,7 +209,7 @@ Animation* Player::SetAnim(ACT_STATE state)
 		{
 			anim = animCache->getAnimation("run");
 		}
-		if (state == ACT_STATE::FALL || state == ACT_STATE::FALLING)
+		if (state == ACT_STATE::FALL || state == ACT_STATE::FALLING || state == ACT_STATE::SHOT)
 		{
 			anim = animCache->getAnimation("stand");
 			

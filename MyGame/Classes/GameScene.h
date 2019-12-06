@@ -30,8 +30,6 @@
 #include <memory>
 #include <Unit/Obj.h>
 #include "Effekseer/Effekseer.h"
-//#include <ck/bank.h>
-//#include <ck/sound.h>
 
 enum class ActionType
 {
@@ -44,6 +42,7 @@ enum class Zorder_ID
 	BACK = 0,
 	CHAR = 50,
 	FLONT = 100,
+	UI = 200,
 	MAX = 1000000
 };
 
@@ -63,15 +62,12 @@ public:
     CREATE_FUNC(GameScene);
 	OPRT_state* state;
 private:
-
-	/*CkBank* bank;
-	CkSound* sound;*/
-
 	std::unique_ptr<efk::EffectManager>effecMng;
 
-	int ZorderBack;		// ˆê”ÔŒã‚ë‚Ìzorder
-	int ZorderChar;		// ·¬×‚Ìzorder
-	int ZorderFlont;	// ˆê”Ô‘O‚Ìzorder
+	int zorderUI;		// UI‚ÌLayer
+	int zorderBack;		// ˆê”ÔŒã‚ë‚Ìzorder
+	int zorderChar;		// ·¬×‚Ìzorder
+	int zorderFlont;	// ˆê”Ô‘O‚Ìzorder
 	int count;
 };
 

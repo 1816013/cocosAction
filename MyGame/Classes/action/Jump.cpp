@@ -12,7 +12,6 @@ bool Jump::operator()(cocos2d::Sprite & sp, actModule & module)
 	}
 	((Player&)sp).JumpSpeed(20.0f);
 	//TRACE("jump\n");
-	//lpEffectMng.EmitterPlay("Laser01.efk", sp.getPosition(), cocos2d::Vec3(0, 90, 0));
 	return true;
 }
 

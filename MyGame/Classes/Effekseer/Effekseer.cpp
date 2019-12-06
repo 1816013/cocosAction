@@ -233,7 +233,7 @@ namespace efk
 
 #pragma region
 	static std::map<Effekseer::TextureData*, std::basic_string<EFK_CHAR>> g_glTex2FilePath;
-	static std::map<std::basic_string<EFK_CHAR>, cocos2d::CCTexture2D*> g_filePath2CTex;
+	static std::map<std::basic_string<EFK_CHAR>, cocos2d::Texture2D*> g_filePath2CTex;
 	static std::map<std::basic_string<EFK_CHAR>, Effekseer::TextureData*> g_filePath2EffectData;
 
 	class TextureLoader

@@ -9,8 +9,8 @@ USING_NS_CC;
 bool Colision::operator()(Sprite & sp, actModule& module) const // ìñÇΩÇËîªíË
 {
 	auto directer = Director::getInstance();
-	auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("backLayer")->getChildByName("mapData");
-	auto col = map->getLayer("layer");
+	auto map = (TMXTiledMap*)directer->getRunningScene()->getChildByName("flontLayer")->getChildByName("mapData");
+	auto col = map->getLayer("footing");
 	auto mapSize = map->getMapSize();
 	auto tileSize = col->getMapTileSize();
 	
@@ -39,9 +39,9 @@ bool Colision::operator()(Sprite & sp, actModule& module) const // ìñÇΩÇËîªíË
 		{
 			if (col->getTileGIDAt({ arrayID[i].x, arrayID[i].y }) != 0)	// mapTileÇÕ0Ç™ãÛîí
 			{
-				if (module.actID == ACT_STATE::JUMPING/* || module.actID == ACT_STATE::FALL || module.actID == ACT_STATE::FALLING*/)	// @ïœçXÇ∑ÇÈÇ©Ç‡
+				if (module.actID == ACT_STATE::JUMPING/* || module.actID == ACT_STATE::FALL*/ || module.actID == ACT_STATE::FALLING)	// @ïœçXÇ∑ÇÈÇ©Ç‡
 				{	
-					((Player&)sp).JumpSpeed(0.0f);	
+					((Player&)sp).JumpSpeed(-1.0f);	
 				}
 				return false;
 			}

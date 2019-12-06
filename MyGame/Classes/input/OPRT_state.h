@@ -12,12 +12,13 @@ enum class OPRT_TYPE	// ëÄçÏï˚ñ@
 	MAX
 };
 
-enum class DIR	// ï˚å¸
+enum class INPUT_ID	// ï˚å¸
 {
 	UP,			// è„
 	RIGHT,		// âE
 	DOWN,		// â∫
 	LEFT,		// ç∂
+	SHOT,
 	MAX			
 };
 
@@ -37,10 +38,9 @@ enum class TRG_STATE	// ƒÿ∂ﬁ∞îªíËóp
 	MAX
 };
 
-using DIR_ArrayTouch =  std::array<bool, intCast(DIR::MAX)>;
-using TRG_ArrayTouch = std::array<DIR_ArrayTouch, intCast(TRG_STATE::MAX)>;
-
-using KeyPair = std::pair<bool, cocos2d::EventKeyboard::KeyCode>;
+//using DIR_ArrayTouch =  std::array<bool, intCast(INPUT_ID::MAX)>;
+//using TRG_ArrayTouch = std::array<DIR_ArrayTouch, intCast(TRG_STATE::MAX)>;
+//using KeyPair = std::pair<bool, cocos2d::EventKeyboard::KeyCode>;
 using KeyMap = std::map<cocos2d::EventKeyboard::KeyCode, bool>;
 //using DIR_ArrayKey = std::array<KeyPair, intCast(DIR::MAX)>;
 using TRG_ArrayKey = std::array<KeyMap, intCast(TRG_STATE::MAX)>;
@@ -52,21 +52,16 @@ struct OPRT_state
 
 	void update(void);
 	
-	bool GetInput(TRG_STATE trg, cocos2d::EventKeyboard::KeyCode keyCode)
+	bool GetInput(TRG_STATE trg, INPUT_ID inputID)
 	{
-		return _keyData[intCast(trg)][keyCode];
-	};
-	bool GetInput(TRG_STATE trg, DIR dir)
-	{
-		return _touchData[intCast(trg)][intCast(dir)];
+		return _keyData[intCast(trg)][inputTbl[static_cast<int>(inputID)]];
 	};
 protected:
 	TRG_ArrayKey _keyData;
-	TRG_ArrayTouch _touchData;
-	cocos2d::EventKeyboard::KeyCode dirTbl[static_cast<int>(DIR::MAX)];
+	cocos2d::EventKeyboard::KeyCode inputTbl[static_cast<int>(INPUT_ID::MAX)];
 };
 
-DIR begin(DIR);
-DIR end(DIR);
-DIR operator*(DIR key);
-DIR operator++(DIR & key);
+INPUT_ID begin(INPUT_ID);
+INPUT_ID end(INPUT_ID);
+INPUT_ID operator*(INPUT_ID key);
+INPUT_ID operator++(INPUT_ID & key);
