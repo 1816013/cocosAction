@@ -1,5 +1,4 @@
 #pragma once
-//--- Android‚Ìcricket‚Ì‰Šú‰» --
 #include <jni.h>
 #ifndef __ANDROID_JNI__
 #define __ANDROID_JNI__

@@ -34,7 +34,7 @@ bool Player::init()
 		return false;
 	}
 
-#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32	
 	_inputState = std::make_unique<OPRT_key>(this);
 	_actMng = std::make_shared<ActionMng>();
 #else
@@ -112,9 +112,10 @@ bool Player::init()
 		module.black.emplace_back(ACT_STATE::JUMPING);
 		module.black.emplace_back(ACT_STATE::FALLING);
 		module.black.emplace_back(ACT_STATE::FALL);
+		module.black.emplace_back(ACT_STATE::SHOT);
 		module.inputID = INPUT_ID::UP;
 		module.keyMode = TRG_STATE::NOW;
-		module.keyTiming = Timing::ON;
+		module.keyTiming = Timing::ON_MOM;
 		_actMng->AddActModule("¼Þ¬ÝÌß", module);
 	}
 	// ¼Þ¬ÝÌß’†

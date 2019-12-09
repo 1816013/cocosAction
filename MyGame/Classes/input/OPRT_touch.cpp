@@ -37,7 +37,8 @@ OPRT_touch::OPRT_touch(Node* sp)
 			_keyData[static_cast<int>(TRG_STATE::INPUT)][inputTbl[static_cast<int>(INPUT_ID::SHOT)]] = true;
 		}
 
-		if (start_p + Vec2{ margin, margin } > pos && start_p - Vec2{ margin, margin } < pos)
+		if (pos.x < start_p.x + margin && pos.x > start_p.x - margin
+			&& pos.y < start_p.y + margin && pos.y > start_p.y - margin)
 		{
 			for (auto input : INPUT_ID())
 			{

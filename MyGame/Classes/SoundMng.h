@@ -22,12 +22,12 @@ public:
 		return *s_Instance;
 	}
 	~SoundMng();
-	void Init(void);		// CkInit()
-	bool AddSound(std::string bank_p, std::string soundName, SOUND_TYPE type);	// 
-	void Update(void);
-	void PlayBySoundName(std::string soundName);
-	void ckEnd(void);
-	void SetPauseAll(bool pauseF);
+	void Init(void);															// CkInit()
+	bool AddSound(std::string bank_p, std::string soundName, SOUND_TYPE type);	// »³İÄŞ’Ç‰Á
+	void Update(void);															// CkUpDate()
+	void PlayBySoundName(std::string soundName);								// “o˜^‚µ‚½»³İÄŞ‚ğ–¼‘O‚©‚çÄ¶‚·‚é
+	void ckEnd(void);															// »³İÄŞI—¹—ƒQ[ƒ€I—¹
+	void SetPauseAll(bool pauseF);												// »³İÄŞ‚ğ‘S‚Äˆê’â~
 
 private:
 	SoundMng();
