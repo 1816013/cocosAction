@@ -170,7 +170,7 @@ void Player::update(float delta)
 	_actMng->update(*this);
 	//TRACE("%d\n", _nowState);
 	auto anim = SetAnim(_nowState);	// repeatNum‚Ìİ’è‚ğSetAnim‚Åİ’è‚µ‚Ä‚¢‚é‚½‚ßæ“Ç‚İ•K{@•ÏX—\’è
-	lpAnimMng.runAnim(*this, *anim, _repeatNum);	
+	//lpAnimMng.runAnim(*this, *anim, _repeatNum);	
 }
 
 void Player::JumpSpeed(float speed)

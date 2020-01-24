@@ -163,7 +163,6 @@ bool GameScene::init()
 
 	// エフェクト
 	effecMng.reset(efk::EffectManager::create(visibleSize));
-	effecMng.get()->end()
 	lpEffectMng.AddEffect("Laser01.efk", 13.0f, effecMng.get());
 
 	flontBglayer->addChild(lpEffectMng.GetEmitter("Laser01.efk"),0);
