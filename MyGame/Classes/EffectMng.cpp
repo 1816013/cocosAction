@@ -12,7 +12,7 @@ EffectMng::~EffectMng()
 
 }
 
-bool EffectMng::AddEffect(const std::string name, float extend, cocos2d::Vec2 pos, cocos2d::Vec3 rotate, efk::EffectManager* efMng)
+bool EffectMng::AddEffect(const std::string name, float extend, efk::EffectManager* efMng)
 {
 	auto effect = efk::Effect::create(name, extend);
 	if (emitter.find(name) == emitter.end())
